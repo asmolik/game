@@ -23,16 +23,10 @@ struct State
 	float mass;
 	float invMass;
 
-	float inertia;
-	float invInertia;
+	glm::mat3 inertia;
+	glm::mat3 invInertia;
 
-	void recalculate()
-	{
-		velocity = momentum * invMass;
-		angularVelocity = angularMomentum * invInertia;
-		glm::normalize(orientation);
-		spin = 0.5f * glm::quat(0.0f, angularVelocity.x, angularVelocity.y, angularVelocity.z) * orientation;
-	}
+	void recalculate();
 };
 
 struct Derivative
@@ -46,12 +40,16 @@ struct Derivative
 class Physics
 {
 public:
+	static const float epsilon;
 
 	/* Evaluate derivative at time t */
 	static Derivative evaluate(State& state, float t);
 
 	/* Evaluate derivative at time t + dt using specified derivative */
 	static Derivative evaluate(State state, float t, float dt, Derivative& derivative);
+
+	/* Integrate state forward by dt seconds */
+	static void integrateRK4(State& state, float t, float dt);
 
 	/* Integrate state forward by dt seconds */
 	static void integrate(State& state, float t, float dt);

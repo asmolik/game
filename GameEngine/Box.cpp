@@ -1,7 +1,7 @@
 
 #include "Box.h"
 
-Box::Box() : RigidBody(1) {}
+Box::Box() : RigidBody(ObjectIDs::boxID) {}
 
 void Box::init(GLuint program)
 {
@@ -39,9 +39,11 @@ void Box::init(GLuint program)
 	glUseProgram(0);
 }
 
-Contact Box::generateContact(RigidBody& body)
+Contact Box::generateContact(RigidBody* body)
 {
-	return Contact();
+	Contact out;
+
+	return out;
 }
 
 void Box::display(glutil::MatrixStack &matrix)
@@ -56,6 +58,16 @@ void Box::display(glutil::MatrixStack &matrix)
 	glBindVertexArray(Box::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Box::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
+}
+
+glm::vec3 Box::getSize()
+{
+	return size;
+}
+
+void Box::setSize(glm::vec3& s)
+{
+	size = s;
 }
 
 GLuint Box::vertexBuffer = 0;

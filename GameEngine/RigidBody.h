@@ -9,6 +9,7 @@ class Contact;
 #include <glm/gtc/quaternion.hpp>
 #include <GL/glew.h>
 #include <glutil/glutil.h>
+#include "ObjectIDs.h"
 #include "Physics.h"
 
 class RigidBody
@@ -27,7 +28,7 @@ public:
 	RigidBody();
 	RigidBody(int id);
 
-	virtual Contact generateContact(RigidBody& body) = 0;
+	virtual Contact generateContact(RigidBody* body) = 0;
 
 	/* Updates physics state. */
 	virtual void update(float time);
@@ -50,15 +51,18 @@ public:
 
 	int getID();
 	glm::vec3 getPosition();
+	glm::vec3 getMomentum();
+	glm::vec3 getAngularMomentum();
 	glm::vec3 getVelocity();
 	glm::vec3 getForce();
 	glm::quat getOrientation();
+	glm::vec3 getAngularVelocity();
 
 	float getMass();
 	float getInvMass();
 	
-	float getInertia();
-	float getInvInertia();
+	glm::mat3 getInertia();
+	glm::mat3 getInvInertia();
 
 	float getDensity();
 	float getRestitution();
@@ -83,9 +87,10 @@ public:
 	void setMass(float m);
 
 	void setInertia(float i);
+	void setInertia(glm::mat3& i);
 
 	void setDensity(float d);
-	void setRestitution(float r);
+	virtual void setRestitution(float r);
 
 	void setStaticFriction(float f);
 	void setDynamicFriction(float f);

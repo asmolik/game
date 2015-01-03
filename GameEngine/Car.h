@@ -9,6 +9,7 @@
 
 class Car : public RigidBody
 {
+	friend class GameEngine;
 private:
 	Box box;
 	Wheel fl, fr, rl, rr;
@@ -25,7 +26,7 @@ public:
 	void turnLeft();
 	void turnRight();
 
-	Contact generateContact(RigidBody& body);
+	Contact generateContact(RigidBody* body);
 
 	void display(glutil::MatrixStack &matrix);
 
@@ -34,6 +35,8 @@ public:
 	void setMass(float m);
 
 	void setInertia(float i);
+
+	void setRestitution(float r);
 };
 
 #endif

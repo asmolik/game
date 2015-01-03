@@ -21,7 +21,7 @@ public:
 
 	static void init(GLuint program);
 
-	Contact generateContact(RigidBody& body);
+	Contact generateContact(RigidBody* body);
 
 	void display(glutil::MatrixStack &matrix);
 

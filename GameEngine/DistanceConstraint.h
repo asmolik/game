@@ -9,9 +9,16 @@ class RigidBody;
 
 class DistanceConstraint : public Constraint
 {
+private:
+	float distance;
+
 public:
 	DistanceConstraint();
 	DistanceConstraint(RigidBody* b1, RigidBody* b2);
+
+	void solve();
+
+	void setDistance(float distance);
 };
 
 #endif

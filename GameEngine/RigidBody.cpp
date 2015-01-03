@@ -1,14 +1,14 @@
 
 #include "RigidBody.h"
 
-RigidBody::RigidBody() : rigidBodyID(-1) {}
+RigidBody::RigidBody() : rigidBodyID(ObjectIDs::defaultID) {}
 
 RigidBody::RigidBody(int id = -1) : rigidBodyID(id) {}
 
 void RigidBody::update(float time)
 {
 	previous = current;
-	Physics::integrate(current, 0, time);
+	Physics::integrateRK4(current, 0, time);
 }
 
 void RigidBody::applyForce(glm::vec3 f)
@@ -46,6 +46,16 @@ glm::vec3 RigidBody::getPosition()
 	return current.position;
 }
 
+glm::vec3 RigidBody::getMomentum()
+{
+	return current.momentum;
+}
+
+glm::vec3 RigidBody::getAngularMomentum()
+{
+	return current.angularMomentum;
+}
+
 glm::vec3 RigidBody::getVelocity()
 {
 	return current.velocity;
@@ -61,6 +71,11 @@ glm::quat RigidBody::getOrientation()
 	return current.orientation;
 }
 
+glm::vec3 RigidBody::getAngularVelocity()
+{
+	return current.angularVelocity;
+}
+
 float RigidBody::getMass()
 {
 	return current.mass;
@@ -71,11 +86,11 @@ float RigidBody::getInvMass()
 	return current.invMass;
 }
 
-float RigidBody::getInertia()
+glm::mat3 RigidBody::getInertia()
 {
 	return current.inertia;
 }
-float RigidBody::getInvInertia()
+glm::mat3 RigidBody::getInvInertia()
 {
 	return current.invInertia;
 }
@@ -162,11 +177,20 @@ void RigidBody::setMass(float m)
 
 void RigidBody::setInertia(float i)
 {
-	current.inertia = i;
+	current.inertia = glm::mat3(i);
 	if (i > 0.00001f)
-		current.invInertia = 1 / i;
+		current.invInertia = glm::inverse(current.inertia);
 	else
-		current.invInertia = 0;
+		current.invInertia = glm::mat3(0.0f);
+}
+
+void RigidBody::setInertia(glm::mat3& i)
+{
+	current.inertia = i;
+	if (i[0].x > 0.00001f)
+		current.invInertia = glm::inverse(i);
+	else
+		current.invInertia = glm::mat3(0.0f);
 }
 
 void RigidBody::setDensity(float d)

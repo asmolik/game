@@ -10,6 +10,7 @@ class Plane;
 #include "Physics.h"
 #include "OpenglRenderer.h"
 #include "Input.h"
+#include "PhysicsEngine.h"
 #include "RigidBody.h"
 #include "Plane.h"
 #include "Track.h"
@@ -17,11 +18,18 @@ class Plane;
 #include "Wheel.h"
 #include "Car.h"
 #include "Contact.h"
+#include "Constraint.h"
+#include "PositionConstraint.h"
+#include "RotationConstraint.h"
 
 
 class GameEngine
 {
 private:
+	Input input;
+	OpenglRenderer renderer;
+	PhysicsEngine physics;
+
 	float timeStep;
 	std::vector<RigidBody*> bodies;
 	std::vector<RigidBody*> balls;
@@ -38,9 +46,6 @@ private:
 	Car* controlledCar;
 
 	double mouseX, mouseY;
-
-	Input input;
-	OpenglRenderer renderer;
 
 public:
 	GameEngine();

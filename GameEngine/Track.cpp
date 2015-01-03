@@ -1,7 +1,7 @@
 
 #include "Track.h"
 
-Track::Track() : RigidBody(4) {}
+Track::Track() : RigidBody(ObjectIDs::trackID) {}
 
 void Track::init(GLuint program)
 {
@@ -31,11 +31,11 @@ void Track::init(GLuint program)
 
 	glUseProgram(program);
 	Track::colorUnif = glGetUniformLocation(program, "theColor");
-	Track::matrixUnif = glGetUniformLocation(program, "perspectiveMatrix");
+	Track::matrixUnif = glGetUniformLocation(program, "matrix");
 	glUseProgram(0);
 }
 
-Contact Track::generateContact(RigidBody& body)
+Contact Track::generateContact(RigidBody* body)
 {
 	return Contact();
 }

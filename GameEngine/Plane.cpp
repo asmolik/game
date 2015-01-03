@@ -1,9 +1,9 @@
 
 #include "Plane.h"
 
-Plane::Plane() : RigidBody(0) {}
+Plane::Plane() : RigidBody(ObjectIDs::planeID) {}
 
-Contact Plane::generateContact(RigidBody& body)
+Contact Plane::generateContact(RigidBody* body)
 {
 	return Contact();
 }

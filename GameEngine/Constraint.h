@@ -2,9 +2,8 @@
 #ifndef CONSTRAINT_H
 #define CONSTRAINT_H
 
-class RigidBody;
-
 #include <glm/vec3.hpp>
+#include "RigidBody.h"
 
 class Constraint
 {
@@ -16,7 +15,7 @@ public:
 	Constraint();
 	Constraint(RigidBody* b1, RigidBody* b2);
 
-	void solve();
+	virtual void solve() = 0;
 	void apply();
 };
 

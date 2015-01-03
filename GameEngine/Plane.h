@@ -13,7 +13,7 @@ private:
 public:
 	Plane();
 
-	Contact generateContact(RigidBody& body);
+	Contact generateContact(RigidBody* body);
 
 	void display(glutil::MatrixStack &matrix);
 

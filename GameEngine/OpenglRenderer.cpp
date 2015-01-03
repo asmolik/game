@@ -153,7 +153,7 @@ void OpenglRenderer::init()
 	initializeVertexBuffer();
 	initializeVertexArrayObjects();
 
-	Track::init(programs[0]);
+	Track::init(programs[2]);
 
 	Box::init(programs[2]);
 
@@ -248,8 +248,6 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 	glutil::MatrixStack matrix(perspectiveMatrix);
 	matrix.ApplyMatrix(camera.cameraTransform());
 
-	glutil::PushStack push(matrix);
-
 	glUseProgram(programs[0]);
 
 
@@ -264,8 +262,6 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 
 	colorUniform = glGetUniformLocation(programs[0], "theColor");
 	glUniform4f(colorUniform, 1.0f, 1.0f, 1.0f, 1.0f);
-	
-	matrix.Translate(objects[0]->getPosition());
 
 	GLuint frustumUnif = glGetUniformLocation(programs[0], "perspectiveMatrix");
 	glUniformMatrix4fv(frustumUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
@@ -275,18 +271,23 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 	glDepthMask(GL_TRUE);
 
 	//draw track
-	objects[1]->display(matrix);
+	//objects[5]->display(matrix);
 
 	glUseProgram(programs[2]);
 
+	for (RigidBody* obj : objects)
+	{
+		obj->display(matrix);
+	}
+
 	//draw box
-	objects[2]->display(matrix);
+	//objects[7]->display(matrix);
 
 	//draw wheel
 	//objects[3]->display(matrix);
 
 	//draw car
-	objects[4]->display(matrix);
+	//objects[4]->display(matrix);
 
 
 

@@ -1,7 +1,7 @@
 
 #include "Car.h"
 
-Car::Car() : RigidBody(3) {}
+Car::Car() : RigidBody(ObjectIDs::carID) { box.setSize(glm::vec3(4.5f, 1.5f, 2.0f)); }
 
 /*Car::Car(glm::vec3& p, glm::vec3& n, float m, float i = 0, float d = 0,
 	float r = 0, float sf = 0, float df = 0) : RigidBody(0, p, glm::vec3(), m, i, d, r, sf, df) {}*/
@@ -42,7 +42,7 @@ void Car::turnRight()
 	fr.applyTorque(-fr.getUpVector());
 }
 
-Contact Car::generateContact(RigidBody& body)
+Contact Car::generateContact(RigidBody* body)
 {
 	return Contact();
 }
@@ -62,10 +62,10 @@ void Car::setPosition(glm::vec3& p)
 	current.position = p;
 	box.setPosition(p);
 
-	fl.setPosition(p + glm::vec3(-1.45f, -0.5f, 0.7f));
-	fr.setPosition(p + glm::vec3(-1.45f, -0.5f, -1.0f));
-	rl.setPosition(p + glm::vec3(1.7f, -0.5f, 0.7f));
-	rr.setPosition(p + glm::vec3(1.7f, -0.5f, -1.0f));
+	fl.setPosition(p + glm::vec3(-1.45f, -0.5f, 0.85f));
+	fr.setPosition(p + glm::vec3(-1.45f, -0.5f, -0.85f));
+	rl.setPosition(p + glm::vec3(1.7f, -0.5f, 0.85f));
+	rr.setPosition(p + glm::vec3(1.7f, -0.5f, -0.85f));
 }
 
 void Car::setMass(float m)
@@ -82,12 +82,22 @@ void Car::setMass(float m)
 
 void Car::setInertia(float i)
 {
-	current.inertia = i;
-	current.invInertia = 1 / i;
+	current.inertia = glm::mat3(i);
+	current.invInertia = glm::inverse(current.inertia);
 
 	box.setInertia(i);
 	fl.setInertia(3.0f);
 	fr.setInertia(3.0f);
 	rl.setInertia(3.0f);
 	rr.setInertia(3.0f);
+}
+
+void Car::setRestitution(float r)
+{
+	restitution = r;
+	box.setRestitution(r);
+	fl.setRestitution(0.8f);
+	fr.setRestitution(0.8f);
+	rl.setRestitution(0.8f);
+	rr.setRestitution(0.8f);
 }
