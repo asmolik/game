@@ -1,7 +1,7 @@
 
 #include "Wheel.h"
 
-Wheel::Wheel() : RigidBody(ObjectIDs::wheelID) {}
+Wheel::Wheel() : radius(0.5f), height(0.3f), RigidBody(ObjectIDs::wheelID) {}
 
 void Wheel::init(GLuint program)
 {
@@ -96,22 +96,41 @@ Contact Wheel::generateContact(RigidBody* body)
 			  Track* plane = (Track*)body;
 			  if (glm::length(current.velocity) < Physics::epsilon)
 				  break;
-			  float dot = glm::dot(glm::normalize(current.velocity), plane->getNormal());
+			  float d = glm::dot(current.velocity, plane->getNormal());
+			  glm::vec3 elo = plane->getNormal() * d;
+			  float dot = glm::dot(glm::normalize(elo), plane->getNormal());
 			  
 			  //wheel moves parallel to plane
 			  if (dot < Physics::epsilon && dot > -Physics::epsilon /*&& current.position.y > 0.5f*/)
 				  break;
 
+			  //find the closest point on the wheel to the plane
+			  glm::vec3 point1 = -glm::clamp(plane->getNormal(), 0.0f, radius);
+			  //wheel's rolling
+			  if (std::fabs(glm::dot(plane->getNormal(), getRightVector())) < Physics::epsilon)
+			  {
+				  point1 = -glm::clamp(plane->getNormal(), 0.0f, radius);
+			  }
+			  //wheel's standing on the plane
+			  else if (std::fabs(glm::dot(plane->getNormal(), getFrontVector())) < Physics::epsilon)
+			  {
+				  point1 = -glm::clamp(plane->getNormal(), 0.0f, height / 2.0f);
+			  }
+			  //the other case
+			  else
+			  {
+				  
+			  }
+
 			  distance = glm::dot(plane->getNormal(), plane->getPosition() - current.position) / dot;
-			  distance -= 0.5f;
+			  distance -= glm::length(point1);
 
 			  toi = distance / glm::length(current.velocity);
 
 			  if (distance < -0.1f)
 				  break;
 
-			  out.set(this, body, -plane->getNormal(), -glm::clamp(plane->getNormal(), 0.0f, 0.5f),
-				  glm::vec3(0.0f), distance, distance / glm::length(current.velocity));
+			  out.set(this, body, -plane->getNormal(), point1, glm::vec3(0.0f), distance, toi);
 
 			  break;
 	}

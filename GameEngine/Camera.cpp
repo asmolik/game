@@ -1,12 +1,18 @@
 
 #include "Camera.h"
 
-Camera::Camera() {}
+Camera::Camera(): follow(0) {}
 
 Camera::Camera(glm::vec3 pos, glm::fquat or) : position(pos), orientation(or) {}
 
 glm::mat4 Camera::cameraTransform()
 {
+	if (follow)
+	{
+		orientation = follow->getOrientation();
+		rotate(glm::vec3(0.0f, 1.0f, 0.0f), 90.0f);
+		position = follow->getPosition() + glm::vec3(-5.0f, 3.0f, 0.0f);
+	}
 	glm::mat4 mat = glm::mat4_cast(orientation);
 	mat = glm::translate(mat, -position);
 	return mat;
@@ -72,6 +78,11 @@ void Camera::setOrientation(glm::fquat& ori)
 void Camera::setVelocity(glm::vec3& vel)
 {
 	velocity = vel;
+}
+
+void Camera::setObjectToFollow(RigidBody* object)
+{
+	follow = object;
 }
 
 

@@ -34,10 +34,14 @@ public:
 	virtual void update(float time);
 
 	/* Adds force f to body's current force vector. */
-	void applyForce(glm::vec3 f);
+	void applyForce(glm::vec3& f);
 
 	/* Adds torque f to body's current torque vector. */
-	void applyTorque(glm::vec3 f);
+	void applyTorque(glm::vec3& f);
+
+	void applyMomentum(glm::vec3& m);
+
+	void applyAngularMomentum(glm::vec3& m);
 
 
 	/* Draws this body (opengl). */
@@ -75,6 +79,7 @@ public:
 	void setPosition(glm::vec3& p);
 	void setMomentum(glm::vec3& m);
 	void setOrientation(glm::quat& o);
+	void rotate(glm::vec3& axis, float angleDeg);
 	void setAngularMomentum(glm::vec3& m);
 	void setVelocity(glm::vec3& v);
 	void setSpin(glm::quat& s);
@@ -82,6 +87,7 @@ public:
 
 	void setForce(glm::vec3& f);
 	void zeroForce();
+	void setTorque(glm::vec3& t);
 	
 	/* Sets mass of the body. If the argument is 0, the body has infinite mass (invMass = 0). */
 	void setMass(float m);

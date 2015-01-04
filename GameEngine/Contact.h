@@ -11,6 +11,7 @@ class Contact
 protected:
 	RigidBody* body1;
 	RigidBody* body2;
+	//Points to body2.
 	glm::vec3 normal;
 	//Point of impact on body1.
 	glm::vec3 point1;

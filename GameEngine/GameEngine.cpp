@@ -65,7 +65,7 @@ void GameEngine::init()
 
 	physics.setTimeStep(1.0f / 60.0f);
 
-	camera.setPosition(glm::vec3(700.0f, 1.0f, 510.0f));
+	camera.setPosition(glm::vec3(707.0f, 1.0f, 515.0f));
 }
 
 void GameEngine::addBody(RigidBody& body)
@@ -274,6 +274,8 @@ void GameEngine::run()
 	{
 		//process input
 		int c = input.action();
+		if (c)
+			camera.setObjectToFollow(&controlledCar->box);
 		input.action(camera);
 		input.action(controlledCar);
 

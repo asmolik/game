@@ -12,6 +12,9 @@
 class Wheel : public RigidBody
 {
 private:
+	float radius;
+	float height;
+
 	static GLuint vertexBuffer;
 	static GLuint indexBuffer;
 	static GLuint vao;

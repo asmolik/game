@@ -65,6 +65,7 @@ void Physics::integrate(State& state, float t, float dt)
 
 void Physics::forces(State& state, float t, glm::vec3& force, glm::vec3& torque)
 {
-	force = state.force;
-	torque = state.torque;
+	//add friction force
+	force = state.force - state.velocity * 0.1f;
+	torque = state.torque - state.angularVelocity * 0.01f;
 }

@@ -9,6 +9,8 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 	for (RigidBody* object : objects)
 	{
 		object->setForce(gravity * object->getMass());
+		object->applyForce(object->getVelocity() * (-1.0f));
+		object->applyTorque(object->getAngularVelocity() * (-0.1f));
 	}
 
 	//collision detection - find contacts
@@ -39,7 +41,7 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 	//apply constraints
 	for (Constraint* constraint : constraints)
 	{
-		//constraint->solve();
+		constraint->solve();
 	}
 
 	//integrate
@@ -50,6 +52,12 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 
 	//clear contacts
 	contacts.clear();
+
+	//clear torque
+	for (RigidBody* object : objects)
+	{
+		object->setTorque(glm::vec3(0.0f));
+	}
 }
 
 //https://en.wikipedia.org/wiki/Collision_response
@@ -83,32 +91,49 @@ void PhysicsEngine::resolveContact(Contact& contact)
 	d += glm::dot(tmp, contact.getNormal());
 
 	//impulse
-	float jm = std::max(-(1 + e) * n / d, 0.0f);
+	float jr = std::max(-(1 + e) * n / d, 0.0f);
 
-	/* speculative contact *//*
-	float remove = -jm + (contact.getDistance() / timeStep) * (body1->getMass() + body2->getMass());
-
-	if (remove < 0)
-	{
-		glm::vec3 jr = -contact.getNormal() * remove;
-		body1->setMomentum(body1->getMomentum() - jr);
-		body2->setMomentum(body2->getMomentum() + jr);
-		body1->setAngularMomentum(body1->getAngularMomentum() - remove * body1->getInvInertia() * glm::cross(contact.getPoint1(), contact.getNormal()));
-		body2->setAngularMomentum(body2->getAngularMomentum() + remove * body2->getInvInertia() * glm::cross(contact.getPoint2(), contact.getNormal()));
-		return;
-	}*/
-
-	glm::vec3 j = contact.getNormal() * jm;
+	glm::vec3 j = contact.getNormal() * jr;
 
 	if (body1->getInvMass() > 0)
 	{
 		body1->setMomentum(body1->getMomentum() - j);
-		body1->setAngularMomentum(body1->getAngularMomentum() - jm * body1->getInvInertia() * glm::cross(contact.getPoint1(), contact.getNormal()));
+		body1->setAngularMomentum(body1->getAngularMomentum() - jr * body1->getInvInertia() * glm::cross(contact.getPoint1(), contact.getNormal()));
 	}
 	if (body2->getInvMass() > 0)
 	{
 		body2->setMomentum(body2->getMomentum() + j);
-		body2->setAngularMomentum(body2->getAngularMomentum() + jm * body2->getInvInertia() * glm::cross(contact.getPoint2(), contact.getNormal()));
+		body2->setAngularMomentum(body2->getAngularMomentum() + jr * body2->getInvInertia() * glm::cross(contact.getPoint2(), contact.getNormal()));
+	}
+
+	//friction
+	glm::vec3 tangent = relVel - (contact.getNormal() * glm::dot(relVel, contact.getNormal()));
+	if (glm::length(tangent) < Physics::epsilon)
+		return;
+	tangent = glm::normalize(tangent);
+
+	float jf = glm::dot(relVel * (body1->getMass() + body2->getMass()), tangent);
+
+	float mu = (body1->getStaticFriction() + body2->getStaticFriction()) / 2;
+
+	if (jf <= mu * jr)
+		j = tangent * (-jf);
+	else
+	{
+		mu = (body1->getDynamicFriction() + body2->getDynamicFriction()) / 2;
+		j = tangent * (-jr * mu);
+		jf = jr * mu;
+	}
+
+	if (body1->getInvMass() > 0)
+	{
+		body1->setMomentum(body1->getMomentum() - j);
+		body1->setAngularMomentum(body1->getAngularMomentum() + jf * body1->getInvInertia() * glm::cross(contact.getPoint1(), tangent));
+	}
+	if (body2->getInvMass() > 0)
+	{
+		body2->setMomentum(body2->getMomentum() + j);
+		body2->setAngularMomentum(body2->getAngularMomentum() - jf * body2->getInvInertia() * glm::cross(contact.getPoint2(), tangent));
 	}
 
 	////friction
@@ -137,45 +162,31 @@ void PhysicsEngine::resolveContact(Contact& contact)
 	//body2->setVelocity(body2->getVelocity() + (frictionImpulse * (body2->getInvMass())));
 }
 
+/* Pushes the lighter body out. */
 void PhysicsEngine::handlePenetration(Contact& contact)
 {
-	if (contact.getDistance() > 0)
+	if (contact.getDistance() >= 0)
 		return;
 
 	RigidBody* body1 = contact.getBody1();
 	RigidBody* body2 = contact.getBody2();
 
-	RigidBody* bodyToMove;
+	if (body1->getInvMass() < body2->getInvMass())
+	{
+		body2->setPosition(body2->getPosition() - contact.getNormal() * contact.getDistance());
+	}
+	else
+	{
+		body1->setPosition(body1->getPosition() + contact.getNormal() * contact.getDistance());
+	}
+
+	/*RigidBody* bodyToMove;
 	if (body1->getInvMass() < body2->getInvMass())
 		bodyToMove = body2;
 	else
 		bodyToMove = body1;
 
-	bodyToMove->setPosition(bodyToMove->getPosition() + contact.getNormal() * contact.getDistance());
-
-	////relative momentum (only linear)
-	//glm::vec3 relMom = body2->getMomentum() - body1->getMomentum();
-
-	////impulse
-	//float jm = -glm::dot(relMom, contact.getNormal());
-
-	////remove relative momentum
-	//glm::vec3 j = contact.getNormal() * jm;
-
-	//body1->setMomentum(body1->getMomentum() - j);
-	//body2->setMomentum(body2->getMomentum() + j);
-
-	////remove relative force
-	//jm = glm::dot(body2->getForce() - body1->getForce(), contact.getNormal());
-
-	//body1->applyForce(contact.getNormal() * jm);
-	//body2->applyForce(contact.getNormal() * jm);
-
-	////reverse relative velocities
-	//jm = -glm::dot(body2->getVelocity() - body1->getVelocity(), contact.getNormal());
-
-	//body1->setVelocity(body1->getVelocity() - contact.getNormal() * jm * 1.1f);
-	//body2->setVelocity(body2->getVelocity() + contact.getNormal() * jm);
+	bodyToMove->setPosition(bodyToMove->getPosition() + contact.getNormal() * contact.getDistance());*/
 }
 
 void PhysicsEngine::addConstraint(Constraint* c)

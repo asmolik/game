@@ -5,10 +5,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "RigidBody.h"
 
 class Camera
 {
 private:
+	RigidBody* follow;
+
 	glm::vec3 position;
 	glm::fquat orientation;
 	glm::vec3 force;
@@ -34,6 +37,7 @@ public:
 	void setPosition(glm::vec3& position);
 	void setOrientation(glm::fquat& orientation);
 	void setVelocity(glm::vec3& velocity);
+	void setObjectToFollow(RigidBody* object);
 };
 
 #endif

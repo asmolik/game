@@ -18,16 +18,16 @@ void Car::update(float time)
 
 void Car::accelerate()
 {
-	rl.applyTorque(rl.getRightVector());
-	rr.applyTorque(rr.getRightVector());
+	rl.applyTorque(rl.getRightVector() * 20.0f);
+	rr.applyTorque(rr.getRightVector() * 20.0f);
 }
 
 void Car::breaks()
 {
-	fl.applyTorque(-fl.getRightVector());
-	fr.applyTorque(-fr.getRightVector());
-	rl.applyTorque(-rl.getRightVector());
-	rr.applyTorque(-rr.getRightVector());
+	fl.applyTorque(-fl.getRightVector() * 20.0f);
+	fr.applyTorque(-fr.getRightVector() * 20.0f);
+	rl.applyTorque(-rl.getRightVector() * 12.0f);
+	rr.applyTorque(-rr.getRightVector() * 12.0f);
 }
 
 void Car::turnLeft()
@@ -78,6 +78,15 @@ void Car::setMass(float m)
 	fr.setMass(3.0f);
 	rl.setMass(3.0f);
 	rr.setMass(3.0f);
+
+	fl.setStaticFriction(0.9f);
+	fl.setDynamicFriction(0.9f);
+	fr.setStaticFriction(0.9f);
+	fr.setDynamicFriction(0.9f);
+	rl.setStaticFriction(0.9f);
+	rl.setDynamicFriction(0.9f);
+	rr.setStaticFriction(0.9f);
+	rr.setDynamicFriction(0.9f);
 }
 
 void Car::setInertia(float i)
@@ -86,10 +95,10 @@ void Car::setInertia(float i)
 	current.invInertia = glm::inverse(current.inertia);
 
 	box.setInertia(i);
-	fl.setInertia(3.0f);
-	fr.setInertia(3.0f);
-	rl.setInertia(3.0f);
-	rr.setInertia(3.0f);
+	fl.setInertia(1.0f);
+	fr.setInertia(1.0f);
+	rl.setInertia(1.0f);
+	rr.setInertia(1.0f);
 }
 
 void Car::setRestitution(float r)

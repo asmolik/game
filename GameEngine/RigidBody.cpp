@@ -11,24 +11,34 @@ void RigidBody::update(float time)
 	Physics::integrateRK4(current, 0, time);
 }
 
-void RigidBody::applyForce(glm::vec3 f)
+void RigidBody::applyForce(glm::vec3& f)
 {
 	current.force += f;
 }
 
-void RigidBody::applyTorque(glm::vec3 f)
+void RigidBody::applyTorque(glm::vec3& t)
 {
-	current.torque += f;
+	current.torque += t;
+}
+
+void RigidBody::applyMomentum(glm::vec3& m)
+{
+	current.momentum += m;
+}
+
+void RigidBody::applyAngularMomentum(glm::vec3& m)
+{
+	current.angularMomentum += m;
 }
  
 glm::vec3 RigidBody::getFrontVector()
 {
-	return glm::vec3(-1.0, 0.0, 0.0) * current.orientation;
+	return glm::vec3(1.0, 0.0, 0.0) * current.orientation;
 }
 
 glm::vec3 RigidBody::getRightVector()
 {
-	return glm::vec3(0.0, 0.0, -1.0) * current.orientation;
+	return glm::vec3(0.0, 0.0, 1.0) * current.orientation;
 }
 
 glm::vec3 RigidBody::getUpVector()
@@ -136,6 +146,22 @@ void RigidBody::setOrientation(glm::quat& o)
 	current.orientation = o;
 }
 
+void RigidBody::rotate(glm::vec3& axis, float angleDeg)
+{
+	float angleRad = angleDeg * 3.1415926f / 180.0f;
+
+	glm::vec3 a = glm::normalize(axis);
+
+	a = a * sinf(angleRad / 2.0f);
+	float scalar = cosf(angleRad / 2.0f);
+
+	glm::fquat offset(scalar, a.x, a.y, a.z);
+
+	current.orientation = current.orientation * offset;
+
+	current.orientation = glm::normalize(current.orientation);
+}
+
 void RigidBody::setAngularMomentum(glm::vec3& m)
 {
 	current.angularMomentum = m;
@@ -164,6 +190,11 @@ void RigidBody::setForce(glm::vec3& f)
 void RigidBody::zeroForce()
 {
 	current.force = glm::vec3();
+}
+
+void RigidBody::setTorque(glm::vec3& t)
+{
+	current.torque = t;
 }
 
 void RigidBody::setMass(float m)
