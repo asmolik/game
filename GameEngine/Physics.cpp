@@ -7,7 +7,7 @@ void State::recalculate()
 {
 	velocity = momentum * invMass;
 	angularVelocity = angularMomentum * invInertia;
-	glm::normalize(orientation);
+	orientation = glm::normalize(orientation);
 	spin = 0.5f * glm::quat(0.0f, angularVelocity.x, angularVelocity.y, angularVelocity.z) * orientation;
 }
 
@@ -50,7 +50,7 @@ void Physics::integrateRK4(State& state, float t, float dt)
 	state.recalculate();
 }
 
-void Physics::integrate(State& state, float t, float dt)
+void Physics::integrateSIE(State& state, float t, float dt)
 {
 	state.momentum += state.force * dt;
 	state.velocity = state.momentum * state.invMass;
@@ -60,7 +60,7 @@ void Physics::integrate(State& state, float t, float dt)
 	state.angularVelocity = state.angularMomentum * state.invInertia;
 	state.spin = 0.5f * glm::quat(0.0f, state.angularVelocity.x, state.angularVelocity.y, state.angularVelocity.z) * state.orientation;
 	state.orientation += state.spin * dt;
-	glm::normalize(state.orientation);
+	state.orientation = glm::normalize(state.orientation);
 }
 
 void Physics::forces(State& state, float t, glm::vec3& force, glm::vec3& torque)

@@ -52,7 +52,7 @@ public:
 	static void integrateRK4(State& state, float t, float dt);
 
 	/* Integrate state forward by dt seconds */
-	static void integrate(State& state, float t, float dt);
+	static void integrateSIE(State& state, float t, float dt);
 
 	static void forces(State& state, float t, glm::vec3& force, glm::vec3& torque);
 };

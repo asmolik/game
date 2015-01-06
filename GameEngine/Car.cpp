@@ -18,16 +18,16 @@ void Car::update(float time)
 
 void Car::accelerate()
 {
-	rl.applyTorque(rl.getRightVector() * 20.0f);
-	rr.applyTorque(rr.getRightVector() * 20.0f);
+	rl.applyTorque(rl.getRightVector() * 1000.0f);
+	rr.applyTorque(rr.getRightVector() * 1000.0f);
 }
 
 void Car::breaks()
 {
-	fl.applyTorque(-fl.getRightVector() * 20.0f);
-	fr.applyTorque(-fr.getRightVector() * 20.0f);
-	rl.applyTorque(-rl.getRightVector() * 12.0f);
-	rr.applyTorque(-rr.getRightVector() * 12.0f);
+	fl.applyTorque(-fl.getRightVector() * 1000.0f);
+	fr.applyTorque(-fr.getRightVector() * 1000.0f);
+	rl.applyTorque(-rl.getRightVector() * 1100.0f);
+	rr.applyTorque(-rr.getRightVector() * 1100.0f);
 }
 
 void Car::turnLeft()

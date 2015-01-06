@@ -8,7 +8,7 @@ RigidBody::RigidBody(int id = -1) : rigidBodyID(id) {}
 void RigidBody::update(float time)
 {
 	previous = current;
-	Physics::integrateRK4(current, 0, time);
+	Physics::integrateSIE(current, 0, time);
 }
 
 void RigidBody::applyForce(glm::vec3& f)
