@@ -35,9 +35,9 @@ void Track::init(GLuint program)
 	glUseProgram(0);
 }
 
-Contact Track::generateContact(RigidBody* body)
+std::vector<Contact*> Track::generateContact(RigidBody* body)
 {
-	return Contact();
+	return std::vector<Contact*>();
 }
 
 void Track::display(glutil::MatrixStack &matrix)

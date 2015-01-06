@@ -39,11 +39,11 @@ void Box::init(GLuint program)
 	glUseProgram(0);
 }
 
-Contact Box::generateContact(RigidBody* body)
+std::vector<Contact*> Box::generateContact(RigidBody* body)
 {
-	Contact out;
+	std::vector<Contact*> contacts;
 
-	return out;
+	return contacts;
 }
 
 void Box::display(glutil::MatrixStack &matrix)

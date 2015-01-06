@@ -9,6 +9,7 @@ class Contact;
 #include <glm/gtc/quaternion.hpp>
 #include <GL/glew.h>
 #include <glutil/glutil.h>
+#include <vector>
 #include "ObjectIDs.h"
 #include "Physics.h"
 
@@ -28,7 +29,7 @@ public:
 	RigidBody();
 	RigidBody(int id);
 
-	virtual Contact generateContact(RigidBody* body) = 0;
+	virtual std::vector<Contact*> generateContact(RigidBody* body) = 0;
 
 	/* Updates physics state. */
 	virtual void update(float time);
@@ -38,6 +39,9 @@ public:
 
 	/* Adds torque f to body's current torque vector. */
 	void applyTorque(glm::vec3& f);
+
+	void applyLinearImpulse(glm::vec3& i);
+	void applyAngularImpulse(glm::vec3& i);
 
 	void applyMomentum(glm::vec3& m);
 
@@ -100,6 +104,14 @@ public:
 
 	void setStaticFriction(float f);
 	void setDynamicFriction(float f);
+
+	void accumulateLinearImpulse(glm::vec3& impusle);
+	void accumulateAngularImpulse(glm::vec3& impusle);
+
+	glm::vec3 getLinearImpulse();
+	glm::vec3 getAngularImpulse();
+
+	void clearAccumulatedImpulses();
 };
 
 #endif

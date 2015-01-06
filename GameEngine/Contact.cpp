@@ -1,7 +1,7 @@
 
 #include "Contact.h"
 
-Contact::Contact() : body1(0), body2(0) {}
+Contact::Contact() : body1(0), body2(0), impulseAccumulator(0.0f) {}
 
 Contact::Contact(RigidBody* b1, RigidBody* b2, glm::vec3 n, float d, float t) : body1(b1), body2(b2), normal(n), distance(d), timeOfImpact(t) {}
 
@@ -74,4 +74,19 @@ float Contact::getDistance()
 float Contact::getTimeOfImpact()
 {
 	return timeOfImpact;
+}
+
+void Contact::accumulateImpulse(float i)
+{
+	impulseAccumulator += i;
+}
+
+float Contact::getAccumulatedImpulse()
+{
+	return impulseAccumulator;
+}
+
+void Contact::clearAccumulator()
+{
+	impulseAccumulator = 0.0f;
 }

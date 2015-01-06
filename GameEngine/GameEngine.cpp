@@ -65,7 +65,7 @@ void GameEngine::init()
 
 	physics.setTimeStep(1.0f / 60.0f);
 
-	camera.setPosition(glm::vec3(707.0f, 1.0f, 515.0f));
+	camera.setPosition(glm::vec3(701.0f, 1.0f, 520.0f));
 }
 
 void GameEngine::addBody(RigidBody& body)
@@ -77,32 +77,7 @@ void GameEngine::addCar(Car& car)
 {
 	controlledCar = &car;
 	cars.push_back(car);
-	bodies.push_back(&car.fl);
-	bodies.push_back(&car.fr);
-	bodies.push_back(&car.rl);
-	bodies.push_back(&car.rr);
-	bodies.push_back(&car.box);
-
-	PositionConstraint* cons = new PositionConstraint(&car.box, &car.fl);
-	cons->setDistance(car.fl.getPosition() - car.getPosition(),
-		car.fl.getPosition() - car.getPosition() + glm::vec3(0.0f, 0.1f, 0.0f),
-		car.fl.getPosition() - car.getPosition() + glm::vec3(0.0f, -0.1f, 0.0f));
-	physics.addConstraint(cons);
-	cons = new PositionConstraint(&car.box, &car.fr);
-	cons->setDistance(car.fr.getPosition() - car.getPosition(),
-		car.fr.getPosition() - car.getPosition() + glm::vec3(0.0f, 0.1f, 0.0f),
-		car.fr.getPosition() - car.getPosition() + glm::vec3(0.0f, -0.1f, 0.0f));
-	physics.addConstraint(cons);
-	cons = new PositionConstraint(&car.box, &car.rl);
-	cons->setDistance(car.rl.getPosition() - car.getPosition(),
-		car.rl.getPosition() - car.getPosition() + glm::vec3(0.0f, 0.1f, 0.0f),
-		car.rl.getPosition() - car.getPosition() + glm::vec3(0.0f, -0.1f, 0.0f));
-	physics.addConstraint(cons);
-	cons = new PositionConstraint(&car.box, &car.rr);
-	cons->setDistance(car.rr.getPosition() - car.getPosition(),
-		car.rr.getPosition() - car.getPosition() + glm::vec3(0.0f, 0.1f, 0.0f),
-		car.rr.getPosition() - car.getPosition() + glm::vec3(0.0f, -0.1f, 0.0f));
-	physics.addConstraint(cons);
+	bodies.push_back(&car);
 }
 /*
 void GameEngine::addBall(Ball& ball)

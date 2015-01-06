@@ -1,6 +1,8 @@
 
 #include "Physics.h"
 
+const glm::vec3 Physics::gravity = glm::vec3(0, -9.80665, 0);
+
 const float Physics::epsilon = 1.0e-8;
 
 void State::recalculate()
@@ -52,12 +54,10 @@ void Physics::integrateRK4(State& state, float t, float dt)
 
 void Physics::integrateSIE(State& state, float t, float dt)
 {
-	state.momentum += state.force * dt;
-	state.velocity = state.momentum * state.invMass;
+	state.velocity += state.force * dt * state.invMass;
 	state.position += state.velocity * dt;
 
-	state.angularMomentum += state.torque * dt;
-	state.angularVelocity = state.angularMomentum * state.invInertia;
+	state.angularVelocity += state.torque * dt * state.invInertia;
 	state.spin = 0.5f * glm::quat(0.0f, state.angularVelocity.x, state.angularVelocity.y, state.angularVelocity.z) * state.orientation;
 	state.orientation += state.spin * dt;
 	state.orientation = glm::normalize(state.orientation);

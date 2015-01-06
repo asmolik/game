@@ -7,8 +7,12 @@ RigidBody::RigidBody(int id = -1) : rigidBodyID(id) {}
 
 void RigidBody::update(float time)
 {
+	current.velocity += current.invMass * current.accumulatedLinearImpulse;
+	current.angularVelocity += current.invInertia * current.accumulatedAngularImpulse;
 	previous = current;
 	Physics::integrateSIE(current, 0, time);
+	current.accumulatedLinearImpulse = glm::vec3(0.0f);
+	current.accumulatedAngularImpulse = glm::vec3(0.0f);
 }
 
 void RigidBody::applyForce(glm::vec3& f)
@@ -19,6 +23,16 @@ void RigidBody::applyForce(glm::vec3& f)
 void RigidBody::applyTorque(glm::vec3& t)
 {
 	current.torque += t;
+}
+
+void RigidBody::applyLinearImpulse(glm::vec3& i)
+{
+	current.velocity += current.invMass * i;
+}
+
+void RigidBody::applyAngularImpulse(glm::vec3& i)
+{
+	current.angularVelocity += current.invInertia * i;
 }
 
 void RigidBody::applyMomentum(glm::vec3& m)
@@ -240,4 +254,30 @@ void RigidBody::setStaticFriction(float f)
 void RigidBody::setDynamicFriction(float f)
 {
 	dynamicFriction = f;
+}
+
+void RigidBody::accumulateLinearImpulse(glm::vec3& i)
+{
+	current.accumulatedLinearImpulse += i;
+}
+
+void RigidBody::accumulateAngularImpulse(glm::vec3& i)
+{
+	current.accumulatedAngularImpulse += i;
+}
+
+glm::vec3 RigidBody::getLinearImpulse()
+{
+	return current.accumulatedLinearImpulse;
+}
+
+glm::vec3 RigidBody::getAngularImpulse()
+{
+	return current.accumulatedAngularImpulse;
+}
+
+void RigidBody::clearAccumulatedImpulses()
+{
+	current.accumulatedLinearImpulse = glm::vec3(0.0f);
+	current.accumulatedAngularImpulse = glm::vec3(0.0f);
 }

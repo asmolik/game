@@ -3,9 +3,9 @@
 
 Plane::Plane() : RigidBody(ObjectIDs::planeID) {}
 
-Contact Plane::generateContact(RigidBody* body)
+std::vector<Contact*> Plane::generateContact(RigidBody* body)
 {
-	return Contact();
+	return std::vector<Contact*>();
 }
 
 void Plane::display(glutil::MatrixStack &matrix)

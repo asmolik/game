@@ -26,6 +26,10 @@ struct State
 	glm::mat3 inertia;
 	glm::mat3 invInertia;
 
+	glm::vec3 accumulatedLinearImpulse;
+	glm::vec3 accumulatedAngularImpulse;
+
+
 	void recalculate();
 };
 
@@ -40,6 +44,8 @@ struct Derivative
 class Physics
 {
 public:
+	static const glm::vec3 gravity;
+
 	static const float epsilon;
 
 	/* Evaluate derivative at time t */

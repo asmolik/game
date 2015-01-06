@@ -20,6 +20,8 @@ protected:
 	float distance;
 	float timeOfImpact;
 
+	float impulseAccumulator;
+
 public:
 	Contact();
 	Contact(RigidBody* b1, RigidBody* b2, glm::vec3 normal, float distance, float timeOfImpact);
@@ -38,6 +40,10 @@ public:
 	glm::vec3 getPoint2();
 	float getDistance();
 	float getTimeOfImpact();
+
+	void accumulateImpulse(float i);
+	float getAccumulatedImpulse();
+	void clearAccumulator();
 };
 
 #endif

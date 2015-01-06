@@ -39,9 +39,10 @@ void Wheel::init(GLuint program)
 	glUseProgram(0);
 }
 
-Contact Wheel::generateContact(RigidBody* body)
+std::vector<Contact*> Wheel::generateContact(RigidBody* body)
 {
-	Contact out;
+	std::vector<Contact*> contacts;
+	Contact* out;
 	float toi;
 	float distance;
 
@@ -72,10 +73,12 @@ Contact Wheel::generateContact(RigidBody* body)
 			  if (pos.x < boxSize.x && pos.y < boxSize.y && pos.z < boxSize.z &&
 				  pos.x > -boxSize.x && pos.y > -boxSize.y && pos.z > -boxSize.z)
 			  {
+				  out = new Contact();
 				  if (glm::length(current.velocity) < Physics::epsilon)
-					  out.set(this, body, body->getFrontVector(), glm::vec3(0.0f), pos, 0, 0);
+					  out->set(this, body, body->getFrontVector(), glm::vec3(0.0f), pos, 0, 0);
 				  else
-					  out.set(this, body, glm::normalize(-current.velocity), glm::vec3(0.0f), pos, 0, 0);
+					  out->set(this, body, glm::normalize(-current.velocity), glm::vec3(0.0f), pos, 0, 0);
+				  contacts.push_back(out);
 			  }
 			  else
 			  {
@@ -130,14 +133,16 @@ Contact Wheel::generateContact(RigidBody* body)
 			  if (distance < -0.1f)
 				  break;
 
-			  out.set(this, body, -plane->getNormal(), point1, glm::vec3(0.0f), distance, toi);
+			  out = new Contact();
+			  out->set(this, body, -plane->getNormal(), point1, glm::vec3(0.0f), distance, toi);
+			  contacts.push_back(out);
 
 			  break;
 	}
 	default:
 		break;
 	}
-	return out;
+	return contacts;
 }
 
 void Wheel::display(glutil::MatrixStack &matrix)
