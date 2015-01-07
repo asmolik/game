@@ -7,8 +7,8 @@ RigidBody::RigidBody(int id = -1) : rigidBodyID(id) {}
 
 void RigidBody::update(float time)
 {
-	current.velocity += current.invMass * current.accumulatedLinearImpulse;
-	current.angularVelocity += current.invInertia * current.accumulatedAngularImpulse;
+	//current.velocity += current.invMass * current.accumulatedLinearImpulse;
+	//current.angularVelocity += current.invInertia * current.accumulatedAngularImpulse;
 	previous = current;
 	Physics::integrateSIE(current, 0, time);
 	current.accumulatedLinearImpulse = glm::vec3(0.0f);
@@ -22,8 +22,6 @@ void RigidBody::integrateForces(float time)
 
 void RigidBody::integrateVelocities(float time)
 {
-	current.velocity += current.invMass * current.accumulatedLinearImpulse;
-	current.angularVelocity += current.invInertia * current.accumulatedAngularImpulse;
 	previous = current;
 	Physics::integrateVelocitiesSIE(current, time);
 	current.accumulatedLinearImpulse = glm::vec3(0.0f);

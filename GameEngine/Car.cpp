@@ -114,9 +114,15 @@ std::vector<Contact*> Car::generateContact(RigidBody* body)
 
 				  if (distance < -0.1f)
 					  break;
+
+				  glm::vec3 tangent = -wheelVel - (-plane->getNormal() * glm::dot(-wheelVel, -plane->getNormal()));
+				  if (glm::length(tangent) < Physics::epsilon)
+					  tangent = glm::vec3(0.0f);
+				  else
+					tangent = glm::normalize(tangent);
 				  
 				  out = new Contact();
-				  out->set(this, body, -plane->getNormal(), w.getPosition(), glm::vec3(0.0f), distance, toi);
+				  out->set(this, body, -plane->getNormal(), tangent, w.getPosition(), glm::vec3(0.0f), distance, toi);
 				  contacts.push_back(out);
 			  }
 

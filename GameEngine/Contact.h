@@ -4,6 +4,7 @@
 
 class RigidBody;
 
+#include <algorithm>
 #include <glm/vec3.hpp>
 
 class Contact
@@ -11,12 +12,16 @@ class Contact
 protected:
 	RigidBody* body1;
 	RigidBody* body2;
+
 	//Points to body2.
 	glm::vec3 normal;
+	glm::vec3 tangent;
+	
 	//Point of impact on body1.
 	glm::vec3 point1;
 	//Point of impact on body2.
 	glm::vec3 point2;
+	
 	float distance;
 	float timeOfImpact;
 
@@ -31,11 +36,13 @@ public:
 	void setNormal(glm::vec3& normal);
 	void setDistance(float distance);
 	void setTimeOfImpact(float time);
-	void set(RigidBody* body1, RigidBody* body2, glm::vec3& normal, glm::vec3& point1, glm::vec3& point2, float distance, float time);
+	void set(RigidBody* body1, RigidBody* body2, glm::vec3& normal, glm::vec3& tangent,
+		glm::vec3& point1, glm::vec3& point2, float distance, float time);
 
 	RigidBody* getBody1();
 	RigidBody* getBody2();
 	glm::vec3 getNormal();
+	glm::vec3 getTangent();
 	glm::vec3 getPoint1();
 	glm::vec3 getPoint2();
 	float getDistance();

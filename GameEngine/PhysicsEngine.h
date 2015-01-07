@@ -14,6 +14,8 @@ private:
 	float timeStep;
 	glm::vec3 gravity;
 
+	int solverIterations;
+
 	std::vector<Contact*> contacts;
 	std::vector<Constraint*> constraints;
 
@@ -21,8 +23,13 @@ public:
 	PhysicsEngine();
 
 	void update(std::vector<RigidBody*>& objects);
+
 	void resolveContact(Contact* contact);
-	void handlePenetration(Contact* contact);
+	float calculateNormalImpulse(Contact* contact);
+	float calculateTangentImpulse(Contact* contact, float normalImpulse);
+	float handlePenetration(Contact* contact);
+
+	void applyImpulses(Contact* contact, float normalImpulse, float tangentImpulse);
 
 	void resolveCarTrackContact(Contact* contact);
 

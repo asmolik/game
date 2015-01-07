@@ -30,15 +30,17 @@ void Contact::setTimeOfImpact(float t)
 	timeOfImpact = t;
 }
 
-void Contact::set(RigidBody* b1, RigidBody* b2, glm::vec3& n, glm::vec3& p1, glm::vec3& p2, float d, float t)
+void Contact::set(RigidBody* b1, RigidBody* b2, glm::vec3& n, glm::vec3& t,
+	glm::vec3& p1, glm::vec3& p2, float d, float toi)
 {
 	body1 = b1;
 	body2 = b2;
 	normal = n;
+	tangent = t;
 	point1 = p1;
 	point2 = p2;
 	distance = d;
-	timeOfImpact = t;
+	timeOfImpact = toi;
 }
 
 RigidBody* Contact::getBody1()
@@ -54,6 +56,11 @@ RigidBody* Contact::getBody2()
 glm::vec3 Contact::getNormal()
 {
 	return normal;
+}
+
+glm::vec3 Contact::getTangent()
+{
+	return tangent;
 }
 
 glm::vec3 Contact::getPoint1()
@@ -79,6 +86,7 @@ float Contact::getTimeOfImpact()
 void Contact::accumulateImpulse(float i)
 {
 	impulseAccumulator += i;
+	impulseAccumulator = std::max(impulseAccumulator, 0.0f);
 }
 
 float Contact::getAccumulatedImpulse()

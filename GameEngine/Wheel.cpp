@@ -75,9 +75,9 @@ std::vector<Contact*> Wheel::generateContact(RigidBody* body)
 			  {
 				  out = new Contact();
 				  if (glm::length(current.velocity) < Physics::epsilon)
-					  out->set(this, body, body->getFrontVector(), glm::vec3(0.0f), pos, 0, 0);
+					  out->set(this, body, body->getFrontVector(), glm::vec3(0.0f), glm::vec3(0.0f), pos, 0, 0);
 				  else
-					  out->set(this, body, glm::normalize(-current.velocity), glm::vec3(0.0f), pos, 0, 0);
+					  out->set(this, body, glm::normalize(-current.velocity), glm::vec3(0.0f), glm::vec3(0.0f), pos, 0, 0);
 				  contacts.push_back(out);
 			  }
 			  else
@@ -134,7 +134,7 @@ std::vector<Contact*> Wheel::generateContact(RigidBody* body)
 				  break;
 
 			  out = new Contact();
-			  out->set(this, body, -plane->getNormal(), point1, glm::vec3(0.0f), distance, toi);
+			  out->set(this, body, -plane->getNormal(), glm::vec3(0.0f), point1, glm::vec3(0.0f), distance, toi);
 			  contacts.push_back(out);
 
 			  break;

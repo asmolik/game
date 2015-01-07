@@ -1,7 +1,7 @@
 
 #include "PhysicsEngine.h"
 
-PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0, -9.80665, 0)) {}
+PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0, -9.80665, 0)), solverIterations(4) {}
 
 void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 {
@@ -28,14 +28,8 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 	}
 
 	//solver
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < solverIterations; ++i)
 	{
-		//handle penetrations
-		for (Contact* contact : contacts)
-		{
-			//handlePenetration(contact);
-		}
-
 		//resolve contacts
 		for (Contact* contact : contacts)
 		{
@@ -147,29 +141,13 @@ void PhysicsEngine::resolveContact(Contact* contact)
 	body2->setAngularVelocity(body2->getAngularVelocity() - jf * body2->getInvInertia() * glm::cross(contact->getPoint2(), tangent));
 }
 
-
-void PhysicsEngine::resolveCarTrackContact(Contact* contact)
+float PhysicsEngine::calculateNormalImpulse(Contact* contact)
 {
-	if (contact->getTimeOfImpact() > timeStep /*|| contact->getDistance() < 0.001f*/)
-		return;
-
-	Car* body1 = (Car*)contact->getBody1();
+	RigidBody* body1 = contact->getBody1();
 	RigidBody* body2 = contact->getBody2();
 
 	float e = body1->getRestitution() < body2->getRestitution() ?
 		body1->getRestitution() : body2->getRestitution();
-
-	//which wheel hit
-	int wheel;
-	glm::vec3 point = contact->getPoint1();
-	if (point.x < 0 && point.z < 0)
-		wheel = 1;
-	else if (point.x < 0 && point.z > 0)
-		wheel = 0;
-	else if (point.x > 0 && point.z < 0)
-		wheel = 3;
-	else if (point.x > 0 && point.z > 0)
-		wheel = 2;
 
 	//relative velocity
 	//linear
@@ -187,69 +165,92 @@ void PhysicsEngine::resolveCarTrackContact(Contact* contact)
 	d += glm::dot(tmp, contact->getNormal());
 
 	//impulse
-	float jr = std::max(-(1 + e) * n / d, 0.0f);
-
-	glm::vec3 j = contact->getNormal() * jr;
-	glm::vec3 angj = jr * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getNormal());
-
-	contact->accumulateImpulse(jr);
-	body1->applyLinearImpulse(-j);
-	body1->applyAngularImpulse(angj);
-	body1->accumulateLinearImpulse(-j, wheel);
-	body1->accumulateAngularImpulse(-angj);
-
-	//friction
-	glm::vec3 tangent = relVel - (contact->getNormal() * glm::dot(relVel, contact->getNormal()));
-	if (glm::length(tangent) < Physics::epsilon)
-		return;
-	tangent = glm::normalize(tangent);
-
-	float jf = glm::dot(relVel * (body1->getMass() + body2->getMass()), tangent);
-
-	float mu = (body1->getStaticFriction() + body2->getStaticFriction()) / 2;
-
-	if (jf <= mu * jr)
-		j = tangent * (-jf);
-	else
-	{
-		mu = (body1->getDynamicFriction() + body2->getDynamicFriction()) / 2;
-		j = tangent * (-jr * mu);
-		jf = jr * mu;
-	}
-
-	body1->applyLinearImpulse(-j);
-	body1->applyAngularImpulse(jf * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getNormal()));
-	body1->accumulateLinearImpulse(-j, wheel);
-	body1->accumulateAngularImpulse(jf * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getNormal()));
+	return -(1 + e) * n / d;
 }
 
-/* Pushes the lighter body out. */
-void PhysicsEngine::handlePenetration(Contact* contact)
+float PhysicsEngine::calculateTangentImpulse(Contact* contact, float normalImpulse)
 {
-	if (contact->getDistance() >= 0)
-		return;
-
 	RigidBody* body1 = contact->getBody1();
 	RigidBody* body2 = contact->getBody2();
 
-	if (body1->getInvMass() < body2->getInvMass())
-	{
-		body2->setPosition(body2->getPosition() - contact->getNormal() * contact->getDistance());
-	}
+	//relative velocity
+	//linear
+	glm::vec3 relVel = body2->getVelocity() - body1->getVelocity();
+	//angular
+	relVel += glm::cross(body2->getAngularVelocity(), contact->getPoint2()) - glm::cross(body1->getAngularVelocity(), contact->getPoint1());
+
+	float tangentImpulse = glm::dot(relVel * (body1->getMass() + body2->getMass()), contact->getTangent());
+
+	float mu = (body1->getStaticFriction() + body2->getStaticFriction()) / 2;
+
+	if (tangentImpulse <= mu * normalImpulse)
+		return tangentImpulse;
 	else
 	{
-		body1->setPosition(body1->getPosition() + contact->getNormal() * contact->getDistance());
-		//body1->accumulateLinearImpulse(contact->getNormal() * contact->getDistance() * body1->getMass() * 100.0f);
-		contact->setDistance(0.0f);
+		mu = (body1->getDynamicFriction() + body2->getDynamicFriction()) / 2;
+		return normalImpulse * mu;
 	}
+}
 
-	/*RigidBody* bodyToMove;
-	if (body1->getInvMass() < body2->getInvMass())
-		bodyToMove = body2;
-	else
-		bodyToMove = body1;
+void PhysicsEngine::applyImpulses(Contact* contact, float normalImpulse, float tangentImpulse)
+{
+	RigidBody* body1 = contact->getBody1();
+	RigidBody* body2 = contact->getBody2();
 
-	bodyToMove->setPosition(bodyToMove->getPosition() + contact.getNormal() * contact.getDistance());*/
+	glm::vec3 linearImpulse = contact->getNormal() * normalImpulse;
+	glm::vec3 angularImpulse = normalImpulse * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getNormal());
+	linearImpulse += contact->getTangent() * tangentImpulse;
+	angularImpulse += tangentImpulse * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getTangent());
+
+	body1->applyLinearImpulse(-linearImpulse);
+	body1->applyAngularImpulse(angularImpulse);
+
+	angularImpulse = normalImpulse * body2->getInvInertia() * glm::cross(contact->getPoint2(), contact->getNormal());
+	angularImpulse += tangentImpulse * body2->getInvInertia() * glm::cross(contact->getPoint2(), contact->getTangent());
+
+	body2->applyLinearImpulse(linearImpulse);
+	body2->applyAngularImpulse(angularImpulse);
+}
+
+void PhysicsEngine::resolveCarTrackContact(Contact* contact)
+{
+	if (contact->getTimeOfImpact() > timeStep /*|| contact->getDistance() < 0.001f*/)
+		return;
+
+	float tmpImpulse = contact->getAccumulatedImpulse();
+
+	Car* body1 = (Car*)contact->getBody1();
+	RigidBody* body2 = contact->getBody2();
+
+	//which wheel hit
+	int wheel;
+	glm::vec3 point = contact->getPoint1();
+	if (point.x < 0 && point.z < 0)
+		wheel = 1;
+	else if (point.x < 0 && point.z > 0)
+		wheel = 0;
+	else if (point.x > 0 && point.z < 0)
+		wheel = 3;
+	else if (point.x > 0 && point.z > 0)
+		wheel = 2;
+
+	float normalImpulse = calculateNormalImpulse(contact);
+	normalImpulse += handlePenetration(contact);
+
+	contact->accumulateImpulse(normalImpulse);
+	float impulseChange = contact->getAccumulatedImpulse() - tmpImpulse;
+
+	applyImpulses(contact, impulseChange, 0);
+	body1->accumulateLinearImpulse(-normalImpulse * contact->getNormal(), wheel);
+}
+
+float PhysicsEngine::handlePenetration(Contact* contact)
+{
+	if (contact->getDistance() >= -0.001f)
+		return 0.0f;
+
+	float b = 0.6f;
+	return -b / timeStep * contact->getDistance();
 }
 
 void PhysicsEngine::addConstraint(Constraint* c)
