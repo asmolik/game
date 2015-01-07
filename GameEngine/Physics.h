@@ -59,6 +59,8 @@ public:
 
 	/* Integrate state forward by dt seconds */
 	static void integrateSIE(State& state, float t, float dt);
+	static void integrateForcesSIE(State& state, float dt);
+	static void integrateVelocitiesSIE(State& state, float dt);
 
 	static void forces(State& state, float t, glm::vec3& force, glm::vec3& torque);
 };

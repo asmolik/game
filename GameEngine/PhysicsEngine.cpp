@@ -5,10 +5,10 @@ PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0, -9.80665, 0)) {}
 
 void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 {
-	//external forces
+	//integrate forces -> new velocities
 	for (RigidBody* object : objects)
 	{
-		object->setForce(gravity * object->getMass());
+		object->integrateForces(timeStep);
 	}
 
 	//collision detection - find contacts
@@ -27,7 +27,8 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 		}
 	}
 
-	for (int i = 0; i < 5; ++i)
+	//solver
+	for (int i = 0; i < 10; ++i)
 	{
 		//handle penetrations
 		for (Contact* contact : contacts)
@@ -54,10 +55,10 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 		}
 	}
 
-	//integrate
+	//integrate velocities -> new positions
 	for (RigidBody* object : objects)
 	{
-		object->update(timeStep);
+		object->integrateVelocities(timeStep);
 	}
 
 	//clear contacts
@@ -67,11 +68,12 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 	}
 	contacts.clear();
 
-	//clear torque
+	//clear torque and force
 	for (RigidBody* object : objects)
 	{
+		object->setForce(gravity * object->getMass());
 		object->setTorque(glm::vec3(0.0f));
-	}
+	}	
 }
 
 //https://en.wikipedia.org/wiki/Collision_response

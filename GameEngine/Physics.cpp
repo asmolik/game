@@ -63,6 +63,21 @@ void Physics::integrateSIE(State& state, float t, float dt)
 	state.orientation = glm::normalize(state.orientation);
 }
 
+void Physics::integrateForcesSIE(State& state, float dt)
+{
+	state.velocity += state.force * dt * state.invMass;
+	state.angularVelocity += state.torque * dt * state.invInertia;
+}
+
+void Physics::integrateVelocitiesSIE(State& state, float dt)
+{
+	state.position += state.velocity * dt;
+	state.spin = 0.5f * glm::quat(0.0f, state.angularVelocity.x, state.angularVelocity.y, state.angularVelocity.z) * state.orientation;
+	state.orientation += state.spin * dt;
+	state.orientation = glm::normalize(state.orientation);
+
+}
+
 void Physics::forces(State& state, float t, glm::vec3& force, glm::vec3& torque)
 {
 	//add friction force

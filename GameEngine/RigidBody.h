@@ -34,6 +34,9 @@ public:
 	/* Updates physics state. */
 	virtual void update(float time);
 
+	virtual void integrateForces(float time);
+	virtual void integrateVelocities(float time);
+
 	/* Adds force f to body's current force vector. */
 	void applyForce(glm::vec3& f);
 

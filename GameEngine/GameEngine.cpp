@@ -1,9 +1,9 @@
 
 #include "GameEngine.h"
 
-GameEngine::GameEngine() : gravity(glm::vec3(0, 9.80665, 0)), timeStep(1.0f / 60.0f), renderer(1600, 900, "Game", this) {}
+GameEngine::GameEngine() : gravity(glm::vec3(0, 9.80665f, 0)), timeStep(1.0f / 60.0f), renderer(1600, 900, "Game", this) {}
 
-GameEngine::GameEngine(float t) : gravity(glm::vec3(0, 9.80665, 0)), timeStep(t), renderer(1600, 900, "Game", this) {}
+GameEngine::GameEngine(float t) : gravity(glm::vec3(0, 9.80665f, 0)), timeStep(t), renderer(1600, 900, "Game", this) {}
 
 void cursorPosCallback_g(GLFWwindow* window, double xpos, double ypos)
 {
@@ -12,8 +12,8 @@ void cursorPosCallback_g(GLFWwindow* window, double xpos, double ypos)
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 
-	r->rotateCamera(glm::vec3(0.0f, 1.0f, 0.0f), ((xpos - r->getMouseX()) / 10));
-	r->rotateCamera(-r->getCameraRightVector(), ((ypos - r->getMouseY()) / 10));
+	r->rotateCamera(glm::vec3(0.0f, 1.0f, 0.0f), ((float)(xpos - r->getMouseX()) / 10.0f));
+	r->rotateCamera(-r->getCameraRightVector(), ((float)(ypos - r->getMouseY()) / 10.0f));
 
 	r->setMouseX(xpos);
 	r->setMouseY(ypos);

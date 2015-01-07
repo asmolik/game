@@ -53,8 +53,8 @@ int Input::action()
 
 void Input::action(Camera& cam)
 {
-	cam.rotate(glm::vec3(0.0f, 1.0f, 0.0f), (newMouseX - oldMouseX) / 10.0f);
-	cam.rotate(-cam.getRightVector(), (newMouseY - oldMouseY) / 10.0f);
+	cam.rotate(glm::vec3(0.0f, 1.0f, 0.0f), (float)(newMouseX - oldMouseX) / 10.0f);
+	cam.rotate(-cam.getRightVector(), (float)(newMouseY - oldMouseY) / 10.0f);
 
 	oldMouseX = newMouseX;
 	oldMouseY = newMouseY;

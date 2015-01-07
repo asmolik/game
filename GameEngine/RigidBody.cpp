@@ -15,6 +15,21 @@ void RigidBody::update(float time)
 	current.accumulatedAngularImpulse = glm::vec3(0.0f);
 }
 
+void RigidBody::integrateForces(float time)
+{
+	Physics::integrateForcesSIE(current, time);
+}
+
+void RigidBody::integrateVelocities(float time)
+{
+	current.velocity += current.invMass * current.accumulatedLinearImpulse;
+	current.angularVelocity += current.invInertia * current.accumulatedAngularImpulse;
+	previous = current;
+	Physics::integrateVelocitiesSIE(current, time);
+	current.accumulatedLinearImpulse = glm::vec3(0.0f);
+	current.accumulatedAngularImpulse = glm::vec3(0.0f);
+}
+
 void RigidBody::applyForce(glm::vec3& f)
 {
 	current.force += f;
