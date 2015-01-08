@@ -18,7 +18,7 @@ int main()
 	box.setAngularVelocity(glm::vec3(0.0f, 10.0f, 0.0f));
 	Car car;
 	car.setPosition(glm::vec3(700.0f, 1.5f, 505.0f));
-	car.setMass(10.0f);
+	car.setMass(1500.0f);
 	car.setInertia(200.0f);
 	car.setRestitution(0.3f);
 	Wheel w;

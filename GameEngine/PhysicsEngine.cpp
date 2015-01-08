@@ -1,7 +1,7 @@
 
 #include "PhysicsEngine.h"
 
-PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0, -9.80665, 0)), solverIterations(4) {}
+PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0.0f, -9.80665f, 0.0f)), solverIterations(8) {}
 
 void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 {
@@ -155,6 +155,9 @@ float PhysicsEngine::calculateNormalImpulse(Contact* contact)
 	//angular
 	relVel += glm::cross(body2->getAngularVelocity(), contact->getPoint2()) - glm::cross(body1->getAngularVelocity(), contact->getPoint1());
 
+	if (glm::length(relVel) < 0.05f)
+		e = 0.0f;
+
 	float n = glm::dot(relVel, contact->getNormal());
 
 	float d = body1->getInvMass() + body2->getInvMass();
@@ -203,7 +206,7 @@ void PhysicsEngine::applyImpulses(Contact* contact, float normalImpulse, float t
 	angularImpulse += tangentImpulse * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getTangent());
 
 	body1->applyLinearImpulse(-linearImpulse);
-	body1->applyAngularImpulse(angularImpulse);
+	body1->applyAngularImpulse(-angularImpulse);
 
 	angularImpulse = normalImpulse * body2->getInvInertia() * glm::cross(contact->getPoint2(), contact->getNormal());
 	angularImpulse += tangentImpulse * body2->getInvInertia() * glm::cross(contact->getPoint2(), contact->getTangent());
@@ -246,10 +249,10 @@ void PhysicsEngine::resolveCarTrackContact(Contact* contact)
 
 float PhysicsEngine::handlePenetration(Contact* contact)
 {
-	if (contact->getDistance() >= -0.001f)
+	if (contact->getDistance() >= -0.0001f)
 		return 0.0f;
 
-	float b = 0.6f;
+	float b = 1.5f;
 	return -b / timeStep * contact->getDistance();
 }
 

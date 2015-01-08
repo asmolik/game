@@ -93,7 +93,7 @@ std::vector<Contact*> Car::generateContact(RigidBody* body)
 			  {
 				  glm::vec3 wheelPos = w.getPosition();
 				  wheelPos.y -= 0.5;
-				  wheelPos = wheelPos * current.orientation;
+				  wheelPos = wheelPos * glm::conjugate(current.orientation);
 				  //calculate velocity for the wheel
 				  glm::vec3 wheelVel = current.velocity + glm::cross(current.angularVelocity, wheelPos);
 				  wheelPos += current.position;
