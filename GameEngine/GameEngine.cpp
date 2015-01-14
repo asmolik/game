@@ -90,90 +90,7 @@ void GameEngine::addPlane(Plane& plane)
 	planes.push_back(&plane);
 	bodies.push_back(&plane);
 }
-/*
-void GameEngine::applyExternalForces()
-{
-	for (RigidBody* ball : balls)
-	{
-		ball->zeroForce();
-		ball->applyForce(gravity);
-		ball->integrate(timeStep);
-	}
-}
 
-void GameEngine::solveContacts()
-{
-	for (RigidBody* ball : balls)
-	{
-		for (RigidBody* plane : planes)
-		{
-			Contact contact = ball->generateContact(*plane);
-			applyImpulse(contact);
-		}
-	}
-	for (RigidBody* ball1 : balls)
-	{
-		for (RigidBody* ball2 : balls)
-		{
-			if (&ball1 != &ball2)
-			{
-				Contact contact = ball1->generateContact(*ball2);
-				applyImpulse(contact);
-			}
-		}
-	}
-}
-
-void GameEngine::applyImpulse(Contact contact)
-{
-	glm::vec3 relativeVelocity(contact.body2->getVelocity() - contact.body1->getVelocity());
-	//Relative velocity along the collision's normal.
-	float normalVelocity = glm::dot(relativeVelocity, contact.normal);
-
-	//Don't resolve a collision if the bodies aren't moving towards each other.
-	if (normalVelocity > 0)
-		return;
-
-	//Restitution of collision. Minimum of bodies' restitutions.
-	float e = contact.body1->getRestitution() > contact.body2->getRestitution() ? 
-		contact.body1->getRestitution() : contact.body2->getRestitution();
-
-	//Strength of the impulse.
-	float j = -(1 + e) * normalVelocity;
-	j /= contact.body1->getInvMass() + contact.body2->getInvMass();
-
-	glm::vec3 impulse = contact.normal * j;
-
-	//Modify velocities of colliding bodies.
-	contact.body1->setVelocity(contact.body1->getVelocity() + (impulse * (-contact.body1->getInvMass())));
-	contact.body2->setVelocity(contact.body2->getVelocity() + (impulse * (contact.body2->getInvMass())));
-
-	//friction
-	//http://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-friction-scene-and-jump-table--gamedev-7756
-
-	relativeVelocity = contact.body2->getVelocity() - contact.body1->getVelocity();
-
-	glm::vec3 tangent = relativeVelocity - (contact.normal * glm::dot(relativeVelocity, contact.normal));
-	//tangent.normalizeThis(); idk
-
-	float jt = -glm::dot(tangent, relativeVelocity);
-	jt /= contact.body1->getMass() + contact.body2->getMass();
-
-	float mu = (contact.body1->getStaticFriction() + contact.body2->getStaticFriction()) / 2;
-
-	glm::vec3 frictionImpulse;
-	if (std::abs(jt) < j * mu)
-		frictionImpulse = tangent * jt;
-	else
-	{
-		mu = (contact.body1->getDynamicFriction() + contact.body2->getDynamicFriction()) / 2;
-		frictionImpulse = tangent * (-j * mu);
-	}
-
-	contact.body1->setVelocity(contact.body1->getVelocity() + (frictionImpulse * (-contact.body1->getInvMass())));
-	contact.body2->setVelocity(contact.body2->getVelocity() + (frictionImpulse * (contact.body2->getInvMass())));
-}
-*/
 void GameEngine::integrate()
 {
 	camera.move(timeStep);
@@ -250,7 +167,7 @@ void GameEngine::run()
 		//process input
 		int c = input.action();
 		if (c)
-			camera.setObjectToFollow(&controlledCar->box);
+			camera.setObjectToFollow(controlledCar);
 		input.action(camera);
 		input.action(controlledCar);
 
@@ -258,8 +175,6 @@ void GameEngine::run()
 		double lol = std::clock() / (double)(CLOCKS_PER_SEC / 1000);
 		physics.update(bodies);
 		camera.move(timeStep);
-
-		//move camera behind the controlled car
 
 		//graphics
 		running = display();

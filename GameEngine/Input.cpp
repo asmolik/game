@@ -85,7 +85,7 @@ void Input::action(Car* car)
 	if (key[GLFW_KEY_UP])
 		car->accelerate();
 	if (key[GLFW_KEY_DOWN])
-		car->breaks();
+		car->brakes();
 	if (key[GLFW_KEY_LEFT])
 		car->turnLeft();
 	if (key[GLFW_KEY_RIGHT])
