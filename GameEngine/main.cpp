@@ -21,6 +21,7 @@ int main()
 	car.setMass(1500.0f);
 	car.setInertia(200.0f);
 	car.setRestitution(0.3f);
+	//car.setAngularVelocity(glm::vec3(0.0f, 5.1f, 0.0f));
 	Wheel w;
 	w.setPosition(glm::vec3(708.0f, 5.5f, 505.0f));
 	w.setMass(5.0f);
@@ -33,7 +34,7 @@ int main()
 	game.addPlane(map);
 	game.addBody(track);
 	game.addBody(box);
-	//game.addBody(w);
+	game.addBody(w);
 	game.init();
 	game.run();
 	return 0;

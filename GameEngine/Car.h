@@ -21,7 +21,12 @@ private:
 	float throttle;
 	//Position of the brake pedal [0; 1]
 	float brakePedal;
+	//Rotation of the front wheels [-1; 1]
+	float frontWheelRot;
+	float maxFrontWheelRot;
 	float wheelBase;
+	//distance between left and right wheel
+	float trackWidth;
 	float wheelRadius;
 
 	Box box;
@@ -40,8 +45,10 @@ public:
 	//Parameters heve to be in range [0; 1]
 	void accelerate(float a = 1.0f);
 	void brakes(float b = 1.0f);
-	void turnLeft(float t = 1.0f);
-	void turnRight(float t = 1.0f);
+	void turnLeft(float t);
+	void turnRight(float t);
+	void turnLeft();
+	void turnRight();
 
 	std::vector<Contact*> generateContact(RigidBody* body);
 
@@ -58,17 +65,25 @@ public:
 	void accumulateLinearImpulse(glm::vec3& impulse, int wheel);
 
 	//Calculates load on each wheel
-	void weightTransfer(float wheelLoad[4]);
+	void loadTransfer(float wheelLoad[4]);
 
 	//Calculates slip ratio for each wheel
-	void tyreSlip(float slip[4]);
+	void longTyreSlip(float slip[4]);
 
-	//Calculates longitudinal force for each wheel
+	//Calculates maximum longitudinal force for each wheel
 	void longWheelForce(float force[4], float load[4]);
 
+	//Calculate actual longitudinal force for each wheel
 	void driveForce(float force[4], float engineForce);
 
 	void applyLongForces(float force[4]);
+
+	void latTyreSlip(float slip[4]);
+
+	//Calculates lateral force for each wheel
+	void latWheelForce(float force[4], float load[4]);
+
+	void applyLatForces(float force[4]);
 
 private:
 	void clearInput();

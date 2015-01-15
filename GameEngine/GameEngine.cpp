@@ -180,8 +180,8 @@ void GameEngine::run()
 		running = display();
 
 		lol = (std::clock() / (double)(CLOCKS_PER_SEC / 1000)) - lol;
-		if (lol > timeStep * 1000.0f)
-			std::cout << std::fixed << lol << std::endl;
+		/*if (lol > timeStep * 1000.0f)
+			std::cout << std::fixed << lol << std::endl;*/
 		while ((newTime = std::clock() / (double)(CLOCKS_PER_SEC / 1000)) < (currentTime + timeStep * 1000.0f));
 		currentTime = newTime;
 	}

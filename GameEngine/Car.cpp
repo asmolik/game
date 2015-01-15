@@ -1,7 +1,8 @@
 
 #include "Car.h"
 
-Car::Car() : RigidBody(ObjectIDs::carID), wheelBase(0), throttle(0.0f), brakePedal(0.0f), engineTorque(500.0f), wheelRadius(0.4f)
+Car::Car() : RigidBody(ObjectIDs::carID), wheelBase(0), throttle(0.0f), brakePedal(0.0f), engineTorque(500.0f), 
+wheelRadius(0.4f), frontWheelRot(0.0f), trackWidth(2.0f), maxFrontWheelRot(Physics::pi / 3.0f)
 {
 	massCenter = glm::vec3(0.0f, 0.2f, 0.0f);
 
@@ -28,7 +29,7 @@ void Car::update(float time)
 
 	//weight transfer for each wheel
 	float wh[4];
-	weightTransfer(wh);
+	loadTransfer(wh);
 
 	//calculate longitudinal forces for each wheel
 	float force[4];
@@ -58,17 +59,20 @@ void Car::integrateForces(float time)
 
 	//weight transfer for each wheel
 	float wh[4];
-	weightTransfer(wh);
+	loadTransfer(wh);
 
 	//calculate longitudinal forces for each wheel
 	float force[4];
 	longWheelForce(force, wh);
-
 	driveForce(force, engineForce + brakeForce);
-
 	applyLongForces(force);
 
+	//calculate lateral forces for each wheel
+	latWheelForce(force, wh);
+	applyLatForces(force);
+
 	//do what every rigidbody
+	previous = current;
 	Physics::integrateForcesSIE(current, time);
 
 	//clear user input before next frame
@@ -87,14 +91,26 @@ void Car::brakes(float b)
 
 void Car::turnLeft(float t)
 {
-	wheels[0].rotate(wheels[0].getRightVector(), 60.0f * t);
-	wheels[1].rotate(wheels[1].getRightVector(), 60.0f * t);
+	frontWheelRot = -t;
 }
 
 void Car::turnRight(float t)
 {
-	wheels[0].rotate(wheels[0].getRightVector(), -60.0f * t);
-	wheels[1].rotate(wheels[1].getRightVector(), -60.0f * t);
+	frontWheelRot = t;
+}
+
+void Car::turnLeft()
+{
+	frontWheelRot -= -0.05f;
+	if (frontWheelRot < -1.0f)
+		frontWheelRot = -1.0f;
+}
+
+void Car::turnRight()
+{
+	frontWheelRot += 0.05f;
+	if (frontWheelRot > 1.0f)
+		frontWheelRot = 1.0f;
 }
 
 std::vector<Contact*> Car::generateContact(RigidBody* body)
@@ -124,6 +140,8 @@ std::vector<Contact*> Car::generateContact(RigidBody* body)
 				  float d = glm::dot(current.velocity, plane->getNormal());
 				  glm::vec3 elo = plane->getNormal() * d;
 				  float dot = glm::dot(glm::normalize(elo), plane->getNormal());
+				  if (std::fabs(d) < Physics::epsilon)
+					  dot = 0.0f;
 
 				  //wheel moves parallel to plane
 				  if (dot < Physics::epsilon && dot > -Physics::epsilon /*&& current.position.y > 0.5f*/)
@@ -225,23 +243,45 @@ void Car::accumulateLinearImpulse(glm::vec3& i, int w)
 	wheels[w].accumulateLinearImpulse(i);
 }
 
-void Car::weightTransfer(float wheel[4])
+void Car::loadTransfer(float wheel[4])
 {
 	float weight = current.mass * glm::length(Physics::gravity);
-	//front wheels
-	for (int i = 0; i < 2; ++i)
-	{
-		wheel[i] = std::fabs(wheels[0].getPosition().x - massCenter.x) / wheelBase * weight;
-		wheel[i] -= massCenter.y / wheelBase * glm::length(current.force) / current.mass;
-		wheel[i] /= 2.0f;
-	}
-	//rear wheels
-	for (int i = 2; i < 4; ++i)
-	{
-		wheel[i] = std::fabs(wheels[0].getPosition().x - massCenter.x) / wheelBase * weight;
-		wheel[i] += massCenter.y / wheelBase * glm::length(current.force) / current.mass;
-		wheel[i] /= 2.0f;
-	}
+	float frontAcc = (glm::dot(current.velocity, getFrontVector()) - glm::dot(previous.velocity, getFrontVector())) * 60.0f;
+	float sideAcc = (glm::dot(current.velocity, getRightVector()) - glm::dot(previous.velocity, getRightVector())) * 60.0f;
+
+	//front left
+	//longitudinal
+	wheel[0] = std::fabs(wheels[0].getPosition().x - massCenter.x) / wheelBase * weight;
+	wheel[0] -= massCenter.y / wheelBase * frontAcc * current.mass;
+	wheel[0] /= 2.0f;
+	//lateral
+	wheel[0] += sideAcc / glm::length(Physics::gravity) * wheel[0] * massCenter.y / trackWidth;
+
+	//front right
+	//longitudinal
+	wheel[1] = std::fabs(wheels[1].getPosition().x - massCenter.x) / wheelBase * weight;
+	wheel[1] -= massCenter.y / wheelBase * frontAcc * current.mass;
+	wheel[1] /= 2.0f;
+	//lateral
+	wheel[1] -= sideAcc / glm::length(Physics::gravity) * wheel[1] * massCenter.y / trackWidth;
+
+
+	//rear left
+	//longitudinal
+	wheel[2] = std::fabs(wheels[2].getPosition().x - massCenter.x) / wheelBase * weight;
+	wheel[2] += massCenter.y / wheelBase * frontAcc * current.mass;
+	wheel[2] /= 2.0f;
+	//lateral
+	wheel[2] += sideAcc / glm::length(Physics::gravity) * wheel[2] * massCenter.y / trackWidth;
+
+
+	//rear right
+	//longitudinal
+	wheel[3] = std::fabs(wheels[3].getPosition().x - massCenter.x) / wheelBase * weight;
+	wheel[3] += massCenter.y / wheelBase * frontAcc * current.mass;
+	wheel[3] /= 2.0f;
+	//lateral
+	wheel[3] -= sideAcc / glm::length(Physics::gravity) * wheel[3] * massCenter.y / trackWidth;
 
 	//calculate forces on wheels from collision detection	@TODO
 	float d = 0.0f;
@@ -249,16 +289,15 @@ void Car::weightTransfer(float wheel[4])
 		d += glm::length(w.getLinearImpulse());
 }
 
-void Car::tyreSlip(float slip[4])
+void Car::longTyreSlip(float slip[4])
 {
 	float C = 2.0f;
+	float longVel = glm::dot(current.velocity, getFrontVector());
 	for (int i = 0; i < 4; i++)
 	{
 		slip[i] = 0.0f;
-		if (glm::length(wheels[i].getAngularVelocity()) > Physics::epsilon)
-			slip[i] = glm::length(wheels[i].getAngularVelocity()) * wheelRadius;
+		slip[i] = wheels[i].getAngularVelocity().x * wheelRadius;
 		//longitudinal velocity
-		float longVel = glm::dot(current.velocity, getFrontVector());
 		slip[i] -= longVel;
 		if (std::fabs(longVel) > Physics::epsilon)
 			slip[i] /= std::fabs(longVel);
@@ -282,27 +321,87 @@ void Car::applyLongForces(float force[4])
 {
 	for (int i = 0; i < 4; ++i)
 	{
-		glm::vec3 wheelPos = wheels[i].getPosition();
-		wheelPos.y -= 0.5;
-		wheelPos = wheelPos * glm::conjugate(current.orientation);
-		
-		glm::vec3 linearForce = force[i] * wheels[i].getFrontVector();
+		glm::vec3 linearForce = force[i] * getFrontVector();
 		applyForce(linearForce);
-		//applyTorque(glm::cross(-linearForce / 100.0f, wheelPos));
 	}
 }
 
 void Car::longWheelForce(float force[4], float load[4])
 {
-	tyreSlip(force);
+	longTyreSlip(force);
 	for (int i = 0; i < 4; ++i)
 	{
 		force[i] *= load[i];
 	}
 }
 
+void Car::latTyreSlip(float slip[4])
+{
+	float longVel;
+	float latVel;
+	glm::vec3 wheelPos;
+	glm::vec3 angular;
+	for (int i = 0; i < 4; ++i)
+	{
+		wheelPos = wheels[i].getPosition();
+		longVel = glm::dot(current.velocity, getFrontVector());
+		latVel = glm::dot(current.velocity, getRightVector());
+		angular = glm::cross(current.angularVelocity, wheelPos);
+		latVel += glm::length(angular) * Physics::signum(glm::dot(angular, getRightVector()));
+		slip[i] = -std::atan2f(latVel, std::fabs(longVel));
+	}
+	slip[0] += frontWheelRot * maxFrontWheelRot;
+	slip[1] += frontWheelRot * maxFrontWheelRot;
+}
+
+void Car::latWheelForce(float force[4], float load[4])
+{
+	latTyreSlip(force);
+
+	float radius = wheelBase / std::fabs(std::sinf(frontWheelRot * Physics::pi / 3.0f));
+	float longVel = glm::dot(current.velocity, getFrontVector());
+	float centripetalForce = current.mass * longVel * longVel / radius;
+	if (std::fabs(frontWheelRot) < Physics::epsilon)
+		centripetalForce = 0.0f;
+
+	for (int i = 0; i < 4; ++i)
+	{
+		//force[i] = std::min(force[i] * centripetalForce, load[i]);
+		force[i] = force[i] * load[i];
+		if (force[i] > 0)
+			force[i] = std::min(load[i] * 1.2f, force[i]);
+		else
+			force[i] = std::max(-load[i] * 1.2f, force[i]);
+	}
+}
+
+void Car::applyLatForces(float force[4])
+{
+	//cornering force
+	glm::vec3 latForce(0.0f);
+	glm::vec3 torque(0.0f);
+	float cos = std::cosf(frontWheelRot);
+
+	latForce += force[0] * getRightVector() * cos;
+	latForce += force[1] * getRightVector() * cos;
+	latForce += force[2] * getRightVector();
+	latForce += force[3] * getRightVector();
+
+	torque = glm::vec3(0.0f, 1.0f, 0.0f) * 
+		(cos * (force[0] + force[1]) * std::fabs(wheels[0].getPosition().x - massCenter.x) - 
+		(force[0] + force[1]) * std::fabs(wheels[2].getPosition().x - massCenter.x));
+
+	applyForce(latForce);
+	applyTorque(torque);
+}
+
 void Car::clearInput()
 {
 	throttle = 0.0f;
 	brakePedal = 0.0f;
+	/*if (frontWheelRot > 0)
+		frontWheelRot -= 0.05f;
+	if (frontWheelRot < 0)
+		frontWheelRot += 0.05f;*/
+	//frontWheelRot = 0.0f;
 }

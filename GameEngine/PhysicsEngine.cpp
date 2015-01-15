@@ -5,12 +5,6 @@ PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0.0f, -9.80665f, 0.0f)), solv
 
 void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 {
-	//integrate forces -> new velocities
-	for (RigidBody* object : objects)
-	{
-		object->integrateForces(timeStep);
-	}
-
 	//collision detection - find contacts
 	for (int i = 0; i < objects.size(); ++i)
 	{
@@ -67,7 +61,14 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 	{
 		object->setForce(gravity * object->getMass());
 		object->setTorque(glm::vec3(0.0f));
-	}	
+	}
+
+	//integrate forces -> new velocities
+	for (RigidBody* object : objects)
+	{
+		object->integrateForces(timeStep);
+	}
+
 }
 
 //https://en.wikipedia.org/wiki/Collision_response
@@ -79,66 +80,22 @@ void PhysicsEngine::resolveContact(Contact* contact)
 	if (contact->getTimeOfImpact() > timeStep /*|| contact->getDistance() < 0.001f*/)
 		return;
 
+	float tmpImpulse = contact->getAccumulatedImpulse();
+
 	RigidBody* body1 = contact->getBody1();
 	RigidBody* body2 = contact->getBody2();
 
-	float e = body1->getRestitution() < body2->getRestitution() ?
-		body1->getRestitution() : body2->getRestitution();
+	float normalImpulse = calculateNormalImpulse(contact);
+	normalImpulse += handlePenetration(contact);
 
-	//relative velocity
-	//linear
-	glm::vec3 relVel = body2->getVelocity() - body1->getVelocity();
-	//angular
-	relVel += glm::cross(body2->getAngularVelocity(), contact->getPoint2()) - glm::cross(body1->getAngularVelocity(), contact->getPoint1());
+	contact->accumulateImpulse(normalImpulse);
+	contact->clampImpulse();
+	float impulseChange = contact->getAccumulatedImpulse() - tmpImpulse;
 
-	float n = glm::dot(relVel, contact->getNormal());
+	float tangentImpulse = calculateTangentImpulse(contact, normalImpulse);
 
-	float d = body1->getInvMass() + body2->getInvMass();
+	applyImpulses(contact, impulseChange, tangentImpulse);
 
-	glm::vec3 tmp = glm::cross(body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getNormal()), contact->getPoint1());
-	tmp += glm::cross(body2->getInvInertia() * glm::cross(contact->getPoint2(), contact->getNormal()), contact->getPoint2());
-
-	d += glm::dot(tmp, contact->getNormal());
-
-	//impulse
-	float jr = std::max(-(1 + e) * n / d, 0.0f);
-
-	glm::vec3 j = contact->getNormal() * jr;
-	glm::vec3 angj = jr * body1->getInvInertia() * glm::cross(contact->getPoint1(), contact->getNormal());
-
-	contact->accumulateImpulse(jr);
-	body1->applyLinearImpulse(-j);
-	body1->applyAngularImpulse(-angj);
-
-	angj = jr * body2->getInvInertia() * glm::cross(contact->getPoint2(), contact->getNormal());
-
-	body2->applyLinearImpulse(j);
-	body2->applyAngularImpulse(angj);
-
-	//friction
-	glm::vec3 tangent = relVel - (contact->getNormal() * glm::dot(relVel, contact->getNormal()));
-	if (glm::length(tangent) < Physics::epsilon)
-		return;
-	tangent = glm::normalize(tangent);
-
-	float jf = glm::dot(relVel * (body1->getMass() + body2->getMass()), tangent);
-
-	float mu = (body1->getStaticFriction() + body2->getStaticFriction()) / 2;
-
-	if (jf <= mu * jr)
-		j = tangent * (-jf);
-	else
-	{
-		mu = (body1->getDynamicFriction() + body2->getDynamicFriction()) / 2;
-		j = tangent * (-jr * mu);
-		jf = jr * mu;
-	}
-
-	body1->setVelocity(body1->getVelocity() - j * body1->getInvMass());
-	body1->setAngularVelocity(body1->getAngularVelocity() + jf * body1->getInvInertia() * glm::cross(contact->getPoint1(), tangent));
-
-	body2->setVelocity(body2->getVelocity() + j * body2->getInvMass());
-	body2->setAngularVelocity(body2->getAngularVelocity() - jf * body2->getInvInertia() * glm::cross(contact->getPoint2(), tangent));
 }
 
 float PhysicsEngine::calculateNormalImpulse(Contact* contact)
@@ -241,6 +198,7 @@ void PhysicsEngine::resolveCarTrackContact(Contact* contact)
 	normalImpulse += handlePenetration(contact);
 
 	contact->accumulateImpulse(normalImpulse);
+	contact->clampImpulse();
 	float impulseChange = contact->getAccumulatedImpulse() - tmpImpulse;
 
 	applyImpulses(contact, impulseChange, 0);
@@ -252,7 +210,7 @@ float PhysicsEngine::handlePenetration(Contact* contact)
 	if (contact->getDistance() >= -0.0001f)
 		return 0.0f;
 
-	float b = 1.5f;
+	float b = 2.5f;
 	return -b / timeStep * contact->getDistance();
 }
 

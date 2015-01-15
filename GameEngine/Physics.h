@@ -48,6 +48,10 @@ public:
 
 	static const float epsilon;
 
+	static const float pi;
+
+	static float signum(float a);
+
 	/* Evaluate derivative at time t */
 	static Derivative evaluate(State& state, float t);
 

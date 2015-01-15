@@ -94,6 +94,11 @@ float Contact::getAccumulatedImpulse()
 	return impulseAccumulator;
 }
 
+void Contact::clampImpulse()
+{
+	impulseAccumulator = std::max(0.0f, impulseAccumulator);
+}
+
 void Contact::clearAccumulator()
 {
 	impulseAccumulator = 0.0f;

@@ -22,7 +22,6 @@ void RigidBody::integrateForces(float time)
 
 void RigidBody::integrateVelocities(float time)
 {
-	previous = current;
 	Physics::integrateVelocitiesSIE(current, time);
 	current.accumulatedLinearImpulse = glm::vec3(0.0f);
 	current.accumulatedAngularImpulse = glm::vec3(0.0f);

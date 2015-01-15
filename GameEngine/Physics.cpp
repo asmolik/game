@@ -1,9 +1,16 @@
 
 #include "Physics.h"
 
-const glm::vec3 Physics::gravity = glm::vec3(0, -9.80665, 0);
+const glm::vec3 Physics::gravity = glm::vec3(0, -9.80665f, 0);
 
 const float Physics::epsilon = 1.0e-8;
+
+const float Physics::pi = 3.14159265359f;
+
+float Physics::signum(float x)
+{
+	return (x > 0) - (x < 0);
+}
 
 void State::recalculate()
 {

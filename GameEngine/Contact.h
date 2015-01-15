@@ -50,6 +50,7 @@ public:
 
 	void accumulateImpulse(float i);
 	float getAccumulatedImpulse();
+	void clampImpulse();
 	void clearAccumulator();
 };
 
