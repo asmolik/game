@@ -9,9 +9,9 @@ glm::mat4 Camera::cameraTransform()
 {
 	if (follow)
 	{
+		position = follow->getPosition() + glm::vec3(-13.0f, 2.3f, 0.0f);
 		orientation = follow->getOrientation();
 		rotate(glm::vec3(0.0f, 1.0f, 0.0f), 90.0f);
-		position = follow->getPosition() + glm::vec3(-13.0f, 2.3f, 0.0f);
 	}
 	glm::mat4 mat = glm::mat4_cast(orientation);
 	mat = glm::translate(mat, -position);

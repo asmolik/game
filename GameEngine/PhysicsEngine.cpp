@@ -1,7 +1,7 @@
 
 #include "PhysicsEngine.h"
 
-PhysicsEngine::PhysicsEngine() : gravity(glm::vec3(0.0f, -9.80665f, 0.0f)), solverIterations(8) {}
+PhysicsEngine::PhysicsEngine() : gravity(Physics::gravity), solverIterations(4) {}
 
 void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 {
@@ -33,7 +33,6 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 				resolveCarTrackContact(contact);
 			else
 				resolveContact(contact);
-
 		}
 
 		//apply constraints
@@ -185,14 +184,14 @@ void PhysicsEngine::resolveCarTrackContact(Contact* contact)
 	//which wheel hit
 	int wheel;
 	glm::vec3 point = contact->getPoint1();
-	if (point.x < 0 && point.z < 0)
-		wheel = 1;
-	else if (point.x < 0 && point.z > 0)
+	if (point.x > 0 && point.z < 0)
 		wheel = 0;
-	else if (point.x > 0 && point.z < 0)
-		wheel = 3;
 	else if (point.x > 0 && point.z > 0)
+		wheel = 1;
+	else if (point.x < 0 && point.z < 0)
 		wheel = 2;
+	else if (point.x < 0 && point.z > 0)
+		wheel = 3;
 
 	float normalImpulse = calculateNormalImpulse(contact);
 	normalImpulse += handlePenetration(contact);
@@ -209,8 +208,13 @@ float PhysicsEngine::handlePenetration(Contact* contact)
 {
 	if (contact->getDistance() >= -0.0001f)
 		return 0.0f;
+	if (contact->getDistance() < -0.1f)
+	{
+		int i = 0;
+		++i;
+	}
 
-	float b = 2.5f;
+	float b = 5.5f;
 	return -b / timeStep * contact->getDistance();
 }
 

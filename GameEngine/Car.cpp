@@ -49,6 +49,10 @@ void Car::update(float time)
 
 void Car::integrateForces(float time)
 {
+	glm::vec3 f = getFrontVector();
+	glm::vec3 r = getRightVector();
+	glm::vec3 u = getUpVector();
+
 	float engineForce = engineTorque * throttle * 10.0f / wheelRadius;
 	float brakeForce = -brakePedal * 3000.0f * 4.0f;
 	float drag = 0.5f;
@@ -101,14 +105,14 @@ void Car::turnRight(float t)
 
 void Car::turnLeft()
 {
-	frontWheelRot -= -0.05f;
+	frontWheelRot += -0.45f;
 	if (frontWheelRot < -1.0f)
 		frontWheelRot = -1.0f;
 }
 
 void Car::turnRight()
 {
-	frontWheelRot += 0.05f;
+	frontWheelRot += 0.45f;
 	if (frontWheelRot > 1.0f)
 		frontWheelRot = 1.0f;
 }
@@ -128,8 +132,9 @@ std::vector<Contact*> Car::generateContact(RigidBody* body)
 			  for (Wheel& w : wheels)
 			  {
 				  glm::vec3 wheelPos = w.getPosition();
+				  wheelPos = wheelPos * glm::inverse(current.orientation);
+				  glm::vec3 point1 = wheelPos;
 				  wheelPos.y -= 0.5;
-				  wheelPos = wheelPos * glm::conjugate(current.orientation);
 				  //calculate velocity for the wheel
 				  glm::vec3 wheelVel = current.velocity + glm::cross(current.angularVelocity, wheelPos);
 				  wheelPos += current.position;
@@ -150,17 +155,17 @@ std::vector<Contact*> Car::generateContact(RigidBody* body)
 				  distance = glm::dot(plane->getNormal(), plane->getPosition() - wheelPos) / dot;
 				  toi = distance / glm::length(wheelVel);
 
-				  if (distance < -0.1f)
+				  if (distance < -0.4f)
 					  break;
 
 				  glm::vec3 tangent = -wheelVel - (-plane->getNormal() * glm::dot(-wheelVel, -plane->getNormal()));
 				  if (glm::length(tangent) < Physics::epsilon)
 					  tangent = glm::vec3(0.0f);
 				  else
-					tangent = glm::normalize(tangent);
-				  
+					  tangent = glm::normalize(tangent);
+
 				  out = new Contact();
-				  out->set(this, body, -plane->getNormal(), tangent, w.getPosition(), glm::vec3(0.0f), distance, toi);
+				  out->set(this, body, -plane->getNormal(), tangent, point1, glm::vec3(0.0f), distance, toi);
 				  contacts.push_back(out);
 			  }
 
@@ -191,10 +196,10 @@ void Car::setPosition(glm::vec3& p)
 {
 	current.position = p;
 
-	wheels[0].setPosition(glm::vec3(1.45f, -0.5f, 0.85f));
-	wheels[1].setPosition(glm::vec3(1.45f, -0.5f, -0.85f));
-	wheels[2].setPosition(glm::vec3(-1.7f, -0.5f, 0.85f));
-	wheels[3].setPosition(glm::vec3(-1.7f, -0.5f, -0.85f));
+	wheels[0].setPosition(glm::vec3(1.7f, -0.5f, -0.85f));
+	wheels[1].setPosition(glm::vec3(1.7f, -0.5f, 0.85f));
+	wheels[2].setPosition(glm::vec3(-1.7f, -0.5f, -0.85f));
+	wheels[3].setPosition(glm::vec3(-1.7f, -0.5f, 0.85f));
 
 	wheelBase = 1.7f + 1.45f;
 }
@@ -344,14 +349,22 @@ void Car::latTyreSlip(float slip[4])
 	for (int i = 0; i < 4; ++i)
 	{
 		wheelPos = wheels[i].getPosition();
+		wheelPos = wheelPos * glm::conjugate(current.orientation);
 		longVel = glm::dot(current.velocity, getFrontVector());
 		latVel = glm::dot(current.velocity, getRightVector());
 		angular = glm::cross(current.angularVelocity, wheelPos);
 		latVel += glm::length(angular) * Physics::signum(glm::dot(angular, getRightVector()));
-		slip[i] = -std::atan2f(latVel, std::fabs(longVel));
+		//slip[i] = -std::atan2f(longVel, latVel);
+		if (std::fabs(longVel) > Physics::epsilon)
+			slip[i] = -std::atanf(latVel / longVel);
+		else
+			slip[i] = -std::atanf(latVel);
 	}
 	slip[0] += frontWheelRot * maxFrontWheelRot;
 	slip[1] += frontWheelRot * maxFrontWheelRot;
+	/*if (std::fabs(latVel) < 0.1f)
+		slip[0] = slip[1] = slip[2] = slip[3] = 0.0f;*/
+	std::cout << frontWheelRot << std::endl;
 }
 
 void Car::latWheelForce(float force[4], float load[4])
@@ -387,9 +400,9 @@ void Car::applyLatForces(float force[4])
 	latForce += force[2] * getRightVector();
 	latForce += force[3] * getRightVector();
 
-	torque = glm::vec3(0.0f, 1.0f, 0.0f) * 
+	torque = -getUpVector() * 
 		(cos * (force[0] + force[1]) * std::fabs(wheels[0].getPosition().x - massCenter.x) - 
-		(force[0] + force[1]) * std::fabs(wheels[2].getPosition().x - massCenter.x));
+		(force[2] + force[3]) * std::fabs(wheels[2].getPosition().x - massCenter.x));
 
 	applyForce(latForce);
 	applyTorque(torque);
@@ -400,8 +413,8 @@ void Car::clearInput()
 	throttle = 0.0f;
 	brakePedal = 0.0f;
 	/*if (frontWheelRot > 0)
-		frontWheelRot -= 0.05f;
+		frontWheelRot -= 0.01f;
 	if (frontWheelRot < 0)
-		frontWheelRot += 0.05f;*/
-	//frontWheelRot = 0.0f;
+		frontWheelRot += 0.01f;*/
+	frontWheelRot = 0.0f;
 }

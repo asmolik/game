@@ -59,17 +59,17 @@ void RigidBody::applyAngularMomentum(glm::vec3& m)
  
 glm::vec3 RigidBody::getFrontVector()
 {
-	return glm::vec3(1.0, 0.0, 0.0) * current.orientation;
+	return glm::vec3(1.0, 0.0, 0.0) * glm::conjugate(current.orientation);
 }
 
 glm::vec3 RigidBody::getRightVector()
 {
-	return glm::vec3(0.0, 0.0, 1.0) * current.orientation;
+	return glm::vec3(0.0, 0.0, 1.0) * glm::conjugate(current.orientation);
 }
 
 glm::vec3 RigidBody::getUpVector()
 {
-	return glm::vec3(0.0, 1.0, 0.0) * current.orientation;
+	return glm::vec3(0.0, 1.0, 0.0) * glm::conjugate(current.orientation);
 }
 
 int RigidBody::getID()

@@ -15,13 +15,15 @@ int main()
 	box.setInertia(10.0f);
 	box.setPosition(glm::vec3(600.0f, 10.2f, 505.0f));
 	box.setForce(glm::vec3(50.0f, 0.0f, 0.0f));
-	box.setAngularVelocity(glm::vec3(0.0f, 10.0f, 0.0f));
+	box.setAngularVelocity(glm::vec3(0.0f, 1.0f, 0.0f));
+	box.setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
 	Car car;
-	car.setPosition(glm::vec3(700.0f, 1.5f, 505.0f));
+	car.setPosition(glm::vec3(700.0f, 1.1f, 505.0f));
 	car.setMass(1500.0f);
 	car.setInertia(200.0f);
 	car.setRestitution(0.3f);
-	//car.setAngularVelocity(glm::vec3(0.0f, 5.1f, 0.0f));
+	car.rotate(glm::vec3(0.0f, 1.0f, 0.0f), 180.0f);
+	//car.setAngularVelocity(glm::vec3(0.0f, 10.8f, 0.0f));
 	Wheel w;
 	w.setPosition(glm::vec3(708.0f, 5.5f, 505.0f));
 	w.setMass(5.0f);
