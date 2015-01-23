@@ -21,9 +21,13 @@ void Track::init(GLuint program)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
+	size_t normalsDataOffset = sizeof(float) * 3 * 12;
+
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)normalsDataOffset);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
 	glBindVertexArray(0);
@@ -66,6 +70,7 @@ GLuint Track::matrixUnif = 0;
 GLuint Track::colorUnif = 0;
 
 const float Track::vertexPositions[] = {
+	//vertices
 	200.0f, 0.0f, 500.0f,
 	210.0f, 0.0f, 510.0f,
 	1700.0f, 0.0f, 500.0f,
@@ -78,6 +83,19 @@ const float Track::vertexPositions[] = {
 	1290.0f, 0.0f, 1490.0f,
 	200.0f, 0.0f, 1500.0f,
 	210.0f, 0.0f, 1490.0f,
+	//normals
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
 };
 
 const short Track::indexData[] = {

@@ -24,6 +24,7 @@ public:
 	glm::mat4 cameraTransform();
 	glm::vec3 getPosition();
 	glm::fquat getOrientation();
+	RigidBody* getFollowedObject();
 
 	glm::vec3 getFrontVector();
 	glm::vec3 getRightVector();

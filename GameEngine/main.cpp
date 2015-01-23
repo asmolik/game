@@ -32,8 +32,8 @@ int main()
 	w.rotate(glm::vec3(1.0f, 0.0f, 0.0f), -90.0f);
 	w.setStaticFriction(0.5f);
 	w.setDynamicFriction(0.5f);
-	game.addCar(car);
 	game.addPlane(map);
+	game.addCar(car);
 	game.addBody(track);
 	game.addBody(box);
 	game.addBody(w);

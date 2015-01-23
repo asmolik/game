@@ -5,6 +5,7 @@
 class Ball;
 class Plane;
 
+#include <cmath>
 #include <ctime>
 #include <vector>
 #include "Physics.h"
@@ -30,6 +31,10 @@ private:
 	OpenglRenderer renderer;
 	PhysicsEngine physics;
 
+	double gameTime;
+	double startHour;
+	double dayLength;
+
 	float timeStep;
 	std::vector<RigidBody*> bodies;
 	std::vector<RigidBody*> balls;
@@ -40,7 +45,6 @@ private:
 	
 	glm::vec3 gravity;
 
-	bool freeCamera; //free camera if true, locked behind a car if not
 	Camera camera;
 
 	Car* controlledCar;
@@ -58,37 +62,23 @@ public:
 	void addBall(Ball& ball);
 	void addPlane(Plane& plane);
 
-	/*void createObject();
-	void deleteObject();*/
-
-	/*
-	static void errorCallback();
-	void errorCallbackImpl();
-
-	static void keyCallback();
-	void keyCallbackImpl();
-
-	static void windowSizeCallback(GLFWwindow* window, int width, int height);
-	void windowSizeCallbackImpl(int width, int height);*/
-
-
-	//void applyExternalForces();
-	//void applyImpulse(Contact contact);
-	//void solveContacts();
-	void integrate();
-
 	glm::vec3 getCameraRightVector();
 	glm::vec3 getCameraUpVector();
 	glm::vec3 getCameraFrontVector();
 	void setCameraVelocity(glm::vec3& v);
 	void moveCamera(glm::vec3& v);
 	void rotateCamera(glm::vec3& axis, float angleDeg);
+	void changeCameraTarget();
 
 	double getMouseX();
 	double getMouseY();
 
 	void setMouseX(double x);
 	void setMouseY(double y);
+
+	void calcSun(glm::vec3& sunDirection, glm::vec3& sunColor);
+
+	double currentHour();
 
 	int display();
 

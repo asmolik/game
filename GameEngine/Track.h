@@ -29,7 +29,7 @@ public:
 
 	void setNormal(glm::vec3& n);
 
-	static const float vertexPositions[36];
+	static const float vertexPositions[84];
 	static const short indexData[36];
 };
 

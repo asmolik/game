@@ -105,14 +105,14 @@ void Car::turnRight(float t)
 
 void Car::turnLeft()
 {
-	frontWheelRot += -0.45f;
+	frontWheelRot += -0.15f;
 	if (frontWheelRot < -1.0f)
 		frontWheelRot = -1.0f;
 }
 
 void Car::turnRight()
 {
-	frontWheelRot += 0.45f;
+	frontWheelRot += 0.15f;
 	if (frontWheelRot > 1.0f)
 		frontWheelRot = 1.0f;
 }

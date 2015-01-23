@@ -7,20 +7,38 @@ Camera::Camera(glm::vec3 pos, glm::fquat or) : position(pos), orientation(or) {}
 
 glm::mat4 Camera::cameraTransform()
 {
+	glm::mat4 mat;
 	if (follow)
 	{
-		position = follow->getPosition() + glm::vec3(-13.0f, 2.3f, 0.0f);
+		position = follow->getPosition();
 		orientation = follow->getOrientation();
-		rotate(glm::vec3(0.0f, 1.0f, 0.0f), 90.0f);
+		rotate(glm::vec3(0.0f, 1.0f, 0.0f), -90.0f);
+		rotate(glm::vec3(1.0f, 0.0f, 0.0f), -7.0f);
+		mat = glm::translate(mat, glm::vec3(0.0f, -2.4f, -14.0f));
+		mat *= glm::mat4_cast(glm::inverse(orientation));
+		mat = glm::translate(mat, -position);
 	}
-	glm::mat4 mat = glm::mat4_cast(orientation);
-	mat = glm::translate(mat, -position);
+	else
+	{
+		mat = glm::mat4_cast(orientation);
+		mat = glm::translate(mat, -position);
+	}
 	return mat;
 }
 
 glm::vec3 Camera::getPosition()
 {
 	return position;
+}
+
+glm::fquat Camera::getOrientation()
+{
+	return orientation;
+}
+
+RigidBody* Camera::getFollowedObject()
+{
+	return follow;
 }
 
 glm::vec3 Camera::getFrontVector()

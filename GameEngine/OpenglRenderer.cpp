@@ -141,6 +141,9 @@ OpenglRenderer::OpenglRenderer(int width, int height, std::string name, void* pt
 	zNear = 0.1f;
 	zFar = 3000.0f;
 
+	wWidth = width;
+	wHeight = height;
+
 	init();
 }
 
@@ -152,6 +155,8 @@ void OpenglRenderer::init()
 	initializeProgram(programs);
 	initializeVertexBuffer();
 	initializeVertexArrayObjects();
+
+	Plane::init(programs[2]);
 
 	Track::init(programs[2]);
 
@@ -197,7 +202,9 @@ GLFWwindow* OpenglRenderer::getWindow()
 
 void OpenglRenderer::reshapeWindow(int width, int height)
 {
-	perspectiveMatrix = glm::perspective(45.0f, (width / (float)height), zNear, zFar);
+	wWidth = width;
+	wHeight = height;
+	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
 
 	glViewport(0, 0, width, height);
 }
@@ -239,6 +246,16 @@ void OpenglRenderer::clear()
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void OpenglRenderer::setAmbientColor(glm::vec3& c)
+{
+	ambientColor = c;
+}
+void OpenglRenderer::setSun(glm::vec3& d, glm::vec3& c)
+{
+	sunDirection = d;
+	sunColor = c;
+}
+
 void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -265,19 +282,31 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 
 	GLuint frustumUnif = glGetUniformLocation(programs[0], "perspectiveMatrix");
 	glUniformMatrix4fv(frustumUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	//draw ground
-	glDepthMask(GL_FALSE);
-	glDrawElements(GL_TRIANGLES, sizeof(Plane::planeIndexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
-	glDepthMask(GL_TRUE);
 
 	//draw track
 	//objects[5]->display(matrix);
 
 	glUseProgram(programs[2]);
 
-	for (RigidBody* obj : objects)
+	//set ambient intensity
+	GLuint ambInt = glGetUniformLocation(programs[2], "ambientColor");
+	glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
+	//set directional light intensity and direction(sun)
+	GLuint dirLightInt = glGetUniformLocation(programs[2], "sunColor");
+	GLuint dirLightDir = glGetUniformLocation(programs[2], "sunDirection");
+	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
+	glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
+	GLuint maxInt = glGetUniformLocation(programs[2], "maxIntensity");
+	glUniform1f(maxInt, sunColor.x * 1.5f);
+
+	//draw ground
+	glDepthMask(GL_FALSE);
+	objects[0]->display(matrix);
+	glDepthMask(GL_TRUE);
+
+	for (int i = 1; i < objects.size(); ++i)
 	{
-		obj->display(matrix);
+		objects[i]->display(matrix);
 	}
 
 	//draw box
@@ -421,14 +450,14 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 
 	//car program
 	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShaderNormals.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShader.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShaderNormals.txt")));
 
 	programs.push_back(createProgram(shaderList));
 
 	for (GLuint& i : shaderList)
 		glDeleteShader;
 
-	perspectiveMatrix = glm::perspective(45.0f, (1280.0f / 720.0f), zNear, zFar);
+	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
 
 	glUseProgram(programs[0]);
 	GLuint frustumUnif = glGetUniformLocation(programs[0], "perspectiveMatrix");
@@ -438,19 +467,6 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 
 void OpenglRenderer::initializeVertexBuffer()
 {
-	glGenBuffers(1, &vertexBufferObject);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Plane::planeVertexPositions), Plane::planeVertexPositions, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &indexBufferObject);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Plane::planeIndexData), Plane::planeIndexData, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-
 	glGenBuffers(1, &box);
 
 	glBindBuffer(GL_ARRAY_BUFFER, box);
@@ -486,6 +502,20 @@ void OpenglRenderer::initializeVertexArrayObjects()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
 
 	glBindVertexArray(0);
+}
+
+void OpenglRenderer::initializeUniformBuffer()
+{
+	glGenBuffers(1, &lightBufferUniform);
+	glBindBuffer(GL_UNIFORM_BUFFER, lightBufferUniform);
+	glBufferData(lightBufferUniform, sizeof(Light), NULL, GL_STREAM_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+	GLuint lightBlock = glGetUniformBlockIndex(programs[2], "Light");
+	glUniformBlockBinding(programs[2], lightBlock, 0);
+
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0,	lightBufferUniform, 0, sizeof(Light));
+
 }
 
 int OpenglRenderer::isRunning()

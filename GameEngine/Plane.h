@@ -8,10 +8,18 @@
 class Plane : public RigidBody
 {
 private:
+	static GLuint vertexBuffer;
+	static GLuint indexBuffer;
+	static GLuint vao;
+	static GLuint matrixUnif;
+	static GLuint colorUnif;
+
 	glm::vec3 normal;
 
 public:
 	Plane();
+
+	static void init(GLuint program);
 
 	std::vector<Contact*> generateContact(RigidBody* body);
 
@@ -21,8 +29,8 @@ public:
 
 	void setNormal(glm::vec3& n);
 
-	static const float planeVertexPositions[12];
-	static const short planeIndexData[6];
+	static const float vertexPositions[28];
+	static const short indexData[6];
 };
 
 #endif

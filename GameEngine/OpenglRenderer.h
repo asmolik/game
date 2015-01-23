@@ -23,8 +23,17 @@ class GameEngine;
 
 class OpenglRenderer
 {
+	struct Light
+	{
+		glm::vec4 ambientColor;
+		glm::vec4 sunColor;
+		glm::vec4 sunDirection;
+		float maxIntensity;
+	};
+
 private:
 	GLFWwindow* window;
+	int wWidth, wHeight;
 	std::vector<GLuint> programs;
 
 	GLuint box;
@@ -33,9 +42,13 @@ private:
 	GLuint vaoObject1, vaoObject2;
 	GLuint offsetUniform;
 	GLuint colorUniform;
+	GLuint lightBufferUniform;
 
 	float zNear, zFar;
 
+	glm::vec3 ambientColor;
+	glm::vec3 sunDirection;
+	glm::vec3 sunColor;
 
 	glm::mat4 perspectiveMatrix;
 	float fFrustumScale;
@@ -61,6 +74,9 @@ public:
 
 	void clear();
 
+	void setAmbientColor(glm::vec3& color);
+	void setSun(glm::vec3& direction, glm::vec3& color);
+
 	void display(std::vector<RigidBody*>& objects, Camera& camera);
 
 
@@ -72,6 +88,7 @@ public:
 	void initializeProgram(std::vector<GLuint> &programs);
 	void initializeVertexBuffer();
 	void initializeVertexArrayObjects();
+	void initializeUniformBuffer();
 
 	int isRunning();
 };

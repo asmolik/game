@@ -1,52 +1,10 @@
 
 #include "GameEngine.h"
 
-GameEngine::GameEngine() : gravity(glm::vec3(0, 9.80665f, 0)), timeStep(1.0f / 60.0f), renderer(1600, 900, "Game", this) {}
+GameEngine::GameEngine() : gravity(glm::vec3(0, 9.80665f, 0)), gameTime(0.0), startHour(8.0), dayLength(1.0 / 1440.0),
+timeStep(1.0f / 60.0f), renderer(1600, 900, "Game", this) {}
 
 GameEngine::GameEngine(float t) : gravity(glm::vec3(0, 9.80665f, 0)), timeStep(t), renderer(1600, 900, "Game", this) {}
-
-void cursorPosCallback_g(GLFWwindow* window, double xpos, double ypos)
-{
-	GameEngine* r = (GameEngine*)glfwGetWindowUserPointer(window);
-
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-
-	r->rotateCamera(glm::vec3(0.0f, 1.0f, 0.0f), ((float)(xpos - r->getMouseX()) / 10.0f));
-	r->rotateCamera(-r->getCameraRightVector(), ((float)(ypos - r->getMouseY()) / 10.0f));
-
-	r->setMouseX(xpos);
-	r->setMouseY(ypos);
-	xpos = ypos = 0;
-}
-
-void keyCallback_g(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	GameEngine* r = (GameEngine*)glfwGetWindowUserPointer(window);
-
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	if (action == GLFW_PRESS)
-	{
-		switch (key)
-		{
-		case GLFW_KEY_W: r->setCameraVelocity(r->getCameraFrontVector() / 0.01f); break;
-		case GLFW_KEY_S: r->setCameraVelocity(-r->getCameraFrontVector() / 0.01f); break;
-
-		case GLFW_KEY_A: r->setCameraVelocity(-r->getCameraRightVector() / 0.01f); break;
-		case GLFW_KEY_D: r->setCameraVelocity(r->getCameraRightVector() / 0.01f); break;
-
-		case GLFW_KEY_Q: r->rotateCamera(glm::vec3(0.0f, 0.0f, 1.0f), 5.0f); break;
-		case GLFW_KEY_E: r->rotateCamera(glm::vec3(0.0f, 0.0f, 1.0f), -5.0f); break;
-
-		case GLFW_KEY_SPACE: r->setCameraVelocity(glm::vec3(0.0f, 10.0f, 0.0f)); break;
-		}
-	}
-	else if (action == GLFW_RELEASE)
-	{
-		r->setCameraVelocity(glm::vec3(0.0));
-	}
-}
 
 void windowSizeCallback_g(GLFWwindow* window, int width, int height)
 {
@@ -91,15 +49,6 @@ void GameEngine::addPlane(Plane& plane)
 	bodies.push_back(&plane);
 }
 
-void GameEngine::integrate()
-{
-	camera.move(timeStep);
-	for (RigidBody* object : bodies)
-	{
-		object->update(timeStep);
-	}
-}
-
 glm::vec3 GameEngine::getCameraRightVector()
 {
 	return camera.getRightVector();
@@ -128,6 +77,14 @@ void GameEngine::rotateCamera(glm::vec3& axis, float angleDeg)
 	camera.rotate(axis, angleDeg);
 }
 
+void GameEngine::changeCameraTarget()
+{
+	if (camera.getFollowedObject() == 0)
+		camera.setObjectToFollow(controlledCar);
+	else
+		camera.setObjectToFollow(0);
+}
+
 double GameEngine::getMouseX()
 {
 	return mouseX;
@@ -144,6 +101,24 @@ void GameEngine::setMouseX(double x)
 void GameEngine::setMouseY(double y)
 {
 	mouseY = y;
+}
+
+void GameEngine::calcSun(glm::vec3& sunDir, glm::vec3& sunCol)
+{
+	double hour = currentHour();
+	if (hour > 12.0)
+		hour = 24.0 - hour;
+	double t = Physics::pi * hour / 24.0;
+	sunDir = glm::normalize(glm::vec3(std::cosf(t), -std::sinf(t), 0.0f));
+	sunCol = glm::vec3(80000.0f, 80000.0f, 80000.0f);
+	sunCol *= (hour / 12.0);
+}
+
+double GameEngine::currentHour()
+{
+	double time = gameTime / 3600.0;
+	time = std::fmod(time, 24.0 * dayLength);
+	return time / dayLength;
 }
 
 int GameEngine::display()
@@ -167,7 +142,7 @@ void GameEngine::run()
 		//process input
 		int c = input.action();
 		if (c)
-			camera.setObjectToFollow(controlledCar);
+			changeCameraTarget();
 		input.action(camera);
 		input.action(controlledCar);
 
@@ -177,7 +152,13 @@ void GameEngine::run()
 		camera.move(timeStep);
 
 		//graphics
+		glm::vec3 sunDir, sunCol;
+		calcSun(sunDir, sunCol);
+		renderer.setSun(sunDir, sunCol);
+		renderer.setAmbientColor(glm::vec3(0.3f, 0.3f, 0.3f));
 		running = display();
+
+		gameTime += 1.0 / 60.0;
 
 		lol = (std::clock() / (double)(CLOCKS_PER_SEC / 1000)) - lol;
 		/*if (lol > timeStep * 1000.0f)

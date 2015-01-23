@@ -1,0 +1,22 @@
+#version 330
+
+in vec4 vertexNormal;
+
+out vec4 outputColor;
+
+uniform vec4 theColor;
+
+uniform vec4 ambientColor;
+uniform vec4 sunColor;
+uniform vec4 sunDirection;
+uniform float maxIntensity;
+
+void main()
+{
+	float cosAng = dot(normalize(vertexNormal), -sunDirection);
+	cosAng = clamp(cosAng, 0, 1);
+
+	outputColor = (theColor * ambientColor) + 
+		(theColor * sunColor * cosAng);
+	outputColor /= maxIntensity;
+}
