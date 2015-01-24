@@ -8,13 +8,17 @@
 class Plane : public RigidBody
 {
 private:
+	glm::vec3 normal;
+	glm::mat4 worldMat;
+
 	static GLuint vertexBuffer;
 	static GLuint indexBuffer;
 	static GLuint vao;
 	static GLuint matrixUnif;
-	static GLuint colorUnif;
-
-	glm::vec3 normal;
+	static GLuint worldMatrixUnif;
+	static GLuint diffuseColorUnif;
+	static GLuint specularColorUnif;
+	static GLuint shininessFactorUnif;
 
 public:
 	Plane();

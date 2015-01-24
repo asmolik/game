@@ -41,6 +41,21 @@ RigidBody* Camera::getFollowedObject()
 	return follow;
 }
 
+float Camera::getX()
+{
+	return position.x;
+}
+
+float Camera::getY()
+{
+	return position.y;
+}
+
+float Camera::getZ()
+{
+	return position.z;
+}
+
 glm::vec3 Camera::getFrontVector()
 {
 	return glm::vec3(0.0, 0.0, -1.0) * orientation;

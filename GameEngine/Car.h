@@ -41,6 +41,7 @@ public:
 	void update(float time);
 
 	void integrateForces(float time);
+	void integrateVelocities(float time);
 
 	//Parameters heve to be in range [0; 1]
 	void accelerate(float a = 1.0f);

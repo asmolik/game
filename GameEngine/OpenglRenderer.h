@@ -23,14 +23,6 @@ class GameEngine;
 
 class OpenglRenderer
 {
-	struct Light
-	{
-		glm::vec4 ambientColor;
-		glm::vec4 sunColor;
-		glm::vec4 sunDirection;
-		float maxIntensity;
-	};
-
 private:
 	GLFWwindow* window;
 	int wWidth, wHeight;

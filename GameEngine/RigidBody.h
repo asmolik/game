@@ -7,6 +7,7 @@ class Contact;
 #include <glm/vec3.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <glutil/glutil.h>
 #include <vector>

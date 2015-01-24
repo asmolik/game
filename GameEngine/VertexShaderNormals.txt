@@ -4,11 +4,14 @@ layout (location = 0) in vec4 position;
 layout (location = 1) in vec4 normal;
 
 out vec4 vertexNormal;
+out vec4 worldPos;
 
 uniform mat4 matrix;
+uniform mat4 worldMatrix;
 
 void main()
 {
 	gl_Position = matrix * position;
-	vertexNormal = matrix * normal;
+	vertexNormal = worldMatrix * normal;
+	worldPos = worldMatrix * position;
 }

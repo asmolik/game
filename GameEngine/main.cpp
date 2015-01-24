@@ -13,9 +13,9 @@ int main()
 	Box box;
 	box.setMass(1000.0f);
 	box.setInertia(10.0f);
-	box.setPosition(glm::vec3(600.0f, 10.2f, 505.0f));
+	box.setPosition(glm::vec3(600.0f, 5.2f, 505.0f));
 	box.setForce(glm::vec3(50.0f, 0.0f, 0.0f));
-	box.setAngularVelocity(glm::vec3(0.0f, 1.0f, 0.0f));
+	box.setAngularVelocity(glm::vec3(0.0f, 0.1f, 0.0f));
 	box.setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
 	Car car;
 	car.setPosition(glm::vec3(700.0f, 1.1f, 505.0f));

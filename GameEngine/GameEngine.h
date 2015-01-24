@@ -76,7 +76,7 @@ public:
 	void setMouseX(double x);
 	void setMouseY(double y);
 
-	void calcSun(glm::vec3& sunDirection, glm::vec3& sunColor);
+	void calcSun(glm::vec3& sunDirection, glm::vec3& sunColor, glm::vec3& ambient);
 
 	double currentHour();
 

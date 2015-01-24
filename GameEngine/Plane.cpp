@@ -34,8 +34,11 @@ void Plane::init(GLuint program)
 
 
 	glUseProgram(program);
-	Plane::colorUnif = glGetUniformLocation(program, "theColor");
+	Plane::diffuseColorUnif = glGetUniformLocation(program, "diffuseColor");
+	Plane::specularColorUnif = glGetUniformLocation(program, "specularColor");
+	Plane::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
 	Plane::matrixUnif = glGetUniformLocation(program, "matrix");
+	Plane::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
 	glUseProgram(0);
 }
 
@@ -46,8 +49,14 @@ std::vector<Contact*> Plane::generateContact(RigidBody* body)
 
 void Plane::display(glutil::MatrixStack &matrix)
 {
+	//matrices
 	glUniformMatrix4fv(Plane::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	glUniform4f(Plane::colorUnif, 0.9f, 0.9f, 0.9f, 1.0f);
+	glUniformMatrix4fv(Plane::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
+	//material
+	glUniform4f(Plane::diffuseColorUnif, 0.9f, 0.9f, 0.9f, 1.0f);
+	glUniform4f(Plane::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
+	glUniform1f(Plane::shininessFactorUnif, 0.1f);
+
 	glBindVertexArray(Plane::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Plane::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
@@ -67,7 +76,10 @@ GLuint Plane::vertexBuffer = 0;
 GLuint Plane::indexBuffer = 0;
 GLuint Plane::vao = 0;
 GLuint Plane::matrixUnif = 0;
-GLuint Plane::colorUnif = 0;
+GLuint Plane::worldMatrixUnif = 0;
+GLuint Plane::diffuseColorUnif = 0;
+GLuint Plane::specularColorUnif = 0;
+GLuint Plane::shininessFactorUnif = 0;
 
 const float Plane::vertexPositions[] = {
 	//vertices

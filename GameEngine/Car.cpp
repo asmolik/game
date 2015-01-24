@@ -83,6 +83,14 @@ void Car::integrateForces(float time)
 	clearInput();
 }
 
+void Car::integrateVelocities(float time)
+{
+	Physics::integrateVelocitiesSIE(current, time);
+	current.accumulatedLinearImpulse = glm::vec3(0.0f);
+	current.accumulatedAngularImpulse = glm::vec3(0.0f);
+	box.setOrientation(current.orientation);
+}
+
 void Car::accelerate(float a)
 {
 	throttle = a;
@@ -182,10 +190,10 @@ void Car::display(glutil::MatrixStack &matrix)
 	glutil::PushStack push(matrix);
 
 	matrix.Translate(current.position);
-	matrix *= glm::mat4_cast(current.orientation);
 
 	box.display(matrix);
 
+	matrix *= glm::mat4_cast(current.orientation);
 	for (Wheel& w : wheels)
 	{
 		w.display(matrix);

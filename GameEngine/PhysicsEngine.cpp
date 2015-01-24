@@ -61,7 +61,7 @@ void PhysicsEngine::update(std::vector<RigidBody*>& objects)
 		object->setForce(gravity * object->getMass());
 		object->setTorque(glm::vec3(0.0f));
 	}
-
+	objects[3]->setForce(glm::vec3(0.0f));
 	//integrate forces -> new velocities
 	for (RigidBody* object : objects)
 	{

@@ -34,8 +34,11 @@ void Box::init(GLuint program)
 
 
 	glUseProgram(program);
-	Box::colorUnif = glGetUniformLocation(program, "theColor");
+	Box::diffuseColorUnif = glGetUniformLocation(program, "diffuseColor");
+	Box::specularColorUnif = glGetUniformLocation(program, "specularColor");
+	Box::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
 	Box::matrixUnif = glGetUniformLocation(program, "matrix");
+	Box::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
 	glUseProgram(0);
 }
 
@@ -50,11 +53,18 @@ void Box::display(glutil::MatrixStack &matrix)
 {
 	glutil::PushStack push(matrix);
 
-	matrix.Translate(current.position);
-	matrix *= glm::mat4_cast(current.orientation);
+	worldMat = glm::translate(glm::mat4(), current.position);
+	worldMat *= glm::mat4_cast(current.orientation);
+	matrix *= worldMat;
 
+	//matrices
 	glUniformMatrix4fv(Box::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	glUniform4f(Box::colorUnif, 237.0f / 255.0f, 28.0f / 255.0f, 36.0f / 255.0f, 1.0f);
+	glUniformMatrix4fv(Box::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
+	//material
+	glUniform4f(Box::diffuseColorUnif, 237.0f / 255.0f, 28.0f / 255.0f, 36.0f / 255.0f, 1.0f);
+	glUniform4f(Box::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
+	glUniform1f(Box::shininessFactorUnif, 1.3f);
+
 	glBindVertexArray(Box::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Box::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
@@ -74,7 +84,10 @@ GLuint Box::vertexBuffer = 0;
 GLuint Box::indexBuffer = 0;
 GLuint Box::vao = 0;
 GLuint Box::matrixUnif = 0;
-GLuint Box::colorUnif = 0;
+GLuint Box::worldMatrixUnif = 0;
+GLuint Box::diffuseColorUnif = 0;
+GLuint Box::specularColorUnif = 0;
+GLuint Box::shininessFactorUnif = 0;
 
 const float Box::vertexPositions[] = {
 	//vertices

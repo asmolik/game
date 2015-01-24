@@ -297,7 +297,10 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
 	glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
 	GLuint maxInt = glGetUniformLocation(programs[2], "maxIntensity");
-	glUniform1f(maxInt, sunColor.x * 1.5f);
+	glUniform1f(maxInt, sunColor.x * 1.3f);
+	//set camera pos
+	GLuint cameraPos = glGetUniformLocation(programs[2], "cameraPos");
+	glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
 
 	//draw ground
 	glDepthMask(GL_FALSE);
@@ -508,13 +511,13 @@ void OpenglRenderer::initializeUniformBuffer()
 {
 	glGenBuffers(1, &lightBufferUniform);
 	glBindBuffer(GL_UNIFORM_BUFFER, lightBufferUniform);
-	glBufferData(lightBufferUniform, sizeof(Light), NULL, GL_STREAM_DRAW);
+	glBufferData(lightBufferUniform, sizeof(float), NULL, GL_STREAM_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 	GLuint lightBlock = glGetUniformBlockIndex(programs[2], "Light");
 	glUniformBlockBinding(programs[2], lightBlock, 0);
 
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0,	lightBufferUniform, 0, sizeof(Light));
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0,	lightBufferUniform, 0, sizeof(float));
 
 }
 

@@ -103,15 +103,16 @@ void GameEngine::setMouseY(double y)
 	mouseY = y;
 }
 
-void GameEngine::calcSun(glm::vec3& sunDir, glm::vec3& sunCol)
+void GameEngine::calcSun(glm::vec3& sunDir, glm::vec3& sunCol, glm::vec3& amb)
 {
 	double hour = currentHour();
 	if (hour > 12.0)
 		hour = 24.0 - hour;
 	double t = Physics::pi * hour / 24.0;
 	sunDir = glm::normalize(glm::vec3(std::cosf(t), -std::sinf(t), 0.0f));
-	sunCol = glm::vec3(80000.0f, 80000.0f, 80000.0f);
+	sunCol = glm::vec3(8000.0f, 8000.0f, 8000.0f);
 	sunCol *= (hour / 12.0);
+	amb = sunCol / 4.0f;
 }
 
 double GameEngine::currentHour()
@@ -152,10 +153,10 @@ void GameEngine::run()
 		camera.move(timeStep);
 
 		//graphics
-		glm::vec3 sunDir, sunCol;
-		calcSun(sunDir, sunCol);
+		glm::vec3 sunDir, sunCol, ambient;
+		calcSun(sunDir, sunCol, ambient);
 		renderer.setSun(sunDir, sunCol);
-		renderer.setAmbientColor(glm::vec3(0.3f, 0.3f, 0.3f));
+		renderer.setAmbientColor(ambient);
 		running = display();
 
 		gameTime += 1.0 / 60.0;

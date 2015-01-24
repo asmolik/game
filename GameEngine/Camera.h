@@ -26,6 +26,10 @@ public:
 	glm::fquat getOrientation();
 	RigidBody* getFollowedObject();
 
+	float getX();
+	float getY();
+	float getZ();
+
 	glm::vec3 getFrontVector();
 	glm::vec3 getRightVector();
 	glm::vec3 getUpVector();

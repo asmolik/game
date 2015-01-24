@@ -34,8 +34,11 @@ void Track::init(GLuint program)
 
 
 	glUseProgram(program);
-	Track::colorUnif = glGetUniformLocation(program, "theColor");
+	Track::diffuseColorUnif = glGetUniformLocation(program, "diffuseColor");
+	Track::specularColorUnif = glGetUniformLocation(program, "specularColor");
+	Track::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
 	Track::matrixUnif = glGetUniformLocation(program, "matrix");
+	Track::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
 	glUseProgram(0);
 }
 
@@ -46,8 +49,14 @@ std::vector<Contact*> Track::generateContact(RigidBody* body)
 
 void Track::display(glutil::MatrixStack &matrix)
 {
+	//matrices
 	glUniformMatrix4fv(Track::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	glUniform4f(Track::colorUnif, 0.3f, 0.3f, 0.3f, 1.0f);
+	glUniformMatrix4fv(Track::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
+	//material
+	glUniform4f(Track::diffuseColorUnif, 0.3f, 0.3f, 0.3f, 1.0f);
+	glUniform4f(Track::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
+	glUniform1f(Track::shininessFactorUnif, 0.3f);
+
 	glBindVertexArray(Track::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Track::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
 	glBindVertexArray(0);
@@ -67,7 +76,10 @@ GLuint Track::vertexBuffer = 0;
 GLuint Track::indexBuffer = 0;
 GLuint Track::vao = 0;
 GLuint Track::matrixUnif = 0;
-GLuint Track::colorUnif = 0;
+GLuint Track::worldMatrixUnif = 0;
+GLuint Track::diffuseColorUnif = 0;
+GLuint Track::specularColorUnif = 0;
+GLuint Track::shininessFactorUnif = 0;
 
 const float Track::vertexPositions[] = {
 	//vertices
