@@ -1,0 +1,44 @@
+#version 330
+
+in vec4 vertexNormal;
+in vec4 worldPos;
+in vec2 texCo;
+
+out vec4 outputColor;
+
+uniform sampler2D diffuseColorSampler;
+uniform sampler2D specularColorSampler;
+uniform float shininessFactor;
+
+uniform vec4 ambientColor;
+uniform vec4 sunColor;
+uniform vec4 sunDirection;
+uniform float maxIntensity;
+
+uniform vec4 cameraPos;
+
+void main()
+{
+	vec4 diffuseColor = texture(diffuseColorSampler, texCo);
+	vec4 specularColor = texture(specularColorSampler, texCo);
+	vec4 surfaceNormal = normalize(vertexNormal);
+
+	float cosAng = dot(surfaceNormal, -sunDirection);
+	cosAng = clamp(cosAng, 0, 1);
+
+	vec4 viewDirection = normalize(cameraPos - worldPos);
+
+	vec4 halfAngle = normalize(-sunDirection + viewDirection);
+	float angleNormalHalf = acos(dot(halfAngle, surfaceNormal));
+	float exponent = angleNormalHalf / shininessFactor;
+	exponent = -(exponent * exponent);
+	float gaussianTerm = exp(exponent);
+
+	gaussianTerm = cosAng != 0.0 ? gaussianTerm : 0.0;
+
+	outputColor = (diffuseColor * ambientColor) + 
+		(diffuseColor * sunColor * cosAng) + 
+		(specularColor * sunColor * gaussianTerm);
+
+	outputColor /= maxIntensity;
+}

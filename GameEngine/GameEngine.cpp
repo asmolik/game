@@ -18,6 +18,7 @@ void GameEngine::init()
 	renderer.setWindowSizeCallback(windowSizeCallback_g);
 	renderer.setCursorPosCallback(Input::glfwCursorPosCallback);
 	renderer.setKeyCallback(Input::glfwKeyCallback);
+	renderer.initializeDS();
 
 	input.init(renderer.getWindow());
 
@@ -47,6 +48,16 @@ void GameEngine::addPlane(Plane& plane)
 {
 	planes.push_back(&plane);
 	bodies.push_back(&plane);
+}
+
+void GameEngine::addPointLight(PointLight& l)
+{
+	pointLights.push_back(l);
+}
+
+void GameEngine::addSpotLight(SpotLight& l)
+{
+	spotLights.push_back(l);
 }
 
 glm::vec3 GameEngine::getCameraRightVector()
@@ -124,7 +135,7 @@ double GameEngine::currentHour()
 
 int GameEngine::display()
 {
-	renderer.display(bodies, camera);
+	renderer.dsDisplay(bodies, pointLights, spotLights, camera);
 	return renderer.isRunning();
 }
 

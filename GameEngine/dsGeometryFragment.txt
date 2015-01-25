@@ -1,0 +1,25 @@
+#version 330
+
+in vec4 vertexNormal;
+in vec4 worldPos;
+
+layout (location = 0) out vec3 worldPosOut;
+layout (location = 1) out vec3 diffuseOut;
+layout (location = 2) out vec3 specularOut;
+layout (location = 3) out vec3 normalOut;
+layout (location = 4) out vec3 texCoOut;
+layout (location = 5) out float shininessOut;
+
+uniform vec4 diffuseColor;
+uniform vec4 specularColor;
+uniform float shininessFactor;
+
+void main()
+{
+    worldPosOut = worldPos.xyz;
+    diffuseOut = diffuseColor.xyz;
+	specularOut = specularColor.xyz;
+    normalOut = normalize(vertexNormal).xyz;
+    texCoOut = vec3(0.0, 0.0, 0.0);
+	shininessOut = shininessFactor;
+}

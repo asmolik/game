@@ -138,6 +138,7 @@ OpenglRenderer::OpenglRenderer(int width, int height, std::string name, void* pt
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
 
+
 	zNear = 0.1f;
 	zFar = 3000.0f;
 
@@ -156,13 +157,15 @@ void OpenglRenderer::init()
 	initializeVertexBuffer();
 	initializeVertexArrayObjects();
 
-	Plane::init(programs[2]);
+	Plane::init(programs[4]);
 
-	Track::init(programs[2]);
+	//Track::init(programs[5]);
 
-	Box::init(programs[2]);
+	Box::init(programs[4]);
 
-	Wheel::init(programs[2]);
+	Wheel::init(programs[4]);
+
+	Quad::init(programs[6]);
 
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -286,31 +289,39 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 	//draw track
 	//objects[5]->display(matrix);
 
-	glUseProgram(programs[2]);
+	for (int i = 2; i < 4; ++i)
+	{
+		glUseProgram(programs[i]);
 
-	//set ambient intensity
-	GLuint ambInt = glGetUniformLocation(programs[2], "ambientColor");
-	glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
-	//set directional light intensity and direction(sun)
-	GLuint dirLightInt = glGetUniformLocation(programs[2], "sunColor");
-	GLuint dirLightDir = glGetUniformLocation(programs[2], "sunDirection");
-	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
-	glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
-	GLuint maxInt = glGetUniformLocation(programs[2], "maxIntensity");
-	glUniform1f(maxInt, sunColor.x * 1.3f);
-	//set camera pos
-	GLuint cameraPos = glGetUniformLocation(programs[2], "cameraPos");
-	glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
+		//set ambient intensity
+		GLuint ambInt = glGetUniformLocation(programs[i], "ambientColor");
+		glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
+		//set directional light intensity and direction(sun)
+		GLuint dirLightInt = glGetUniformLocation(programs[i], "sunColor");
+		GLuint dirLightDir = glGetUniformLocation(programs[i], "sunDirection");
+		glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
+		glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
+		GLuint maxInt = glGetUniformLocation(programs[i], "maxIntensity");
+		glUniform1f(maxInt, sunColor.x * 1.3f);
+		//set camera pos
+		GLuint cameraPos = glGetUniformLocation(programs[i], "cameraPos");
+		glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
+	}
+
+	glUseProgram(programs[2]);
 
 	//draw ground
 	glDepthMask(GL_FALSE);
 	objects[0]->display(matrix);
 	glDepthMask(GL_TRUE);
 
-	for (int i = 1; i < objects.size(); ++i)
+	for (int i = 2; i < objects.size(); ++i)
 	{
 		objects[i]->display(matrix);
 	}
+
+	glUseProgram(programs[3]);
+	objects[1]->display(matrix);
 
 	//draw box
 	//objects[7]->display(matrix);
@@ -344,6 +355,159 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 	
 	glfwSwapBuffers(window);
 	glfwPollEvents();
+}
+
+
+void OpenglRenderer::dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
+{
+	dsGeometry(objects, camera);
+	dsLighting(objects, pLights, sLights, camera);
+
+	glfwSwapBuffers(window);
+	glfwPollEvents();
+}
+void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera)
+{
+	gbuffer.bindForWriting();
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		fprintf(stderr, "FB error, status: 0x%x\n", status);
+	}
+
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glutil::MatrixStack matrix(perspectiveMatrix);
+	matrix.ApplyMatrix(camera.cameraTransform());
+
+	for (int i = 4; i < 6; ++i)
+	{
+		glUseProgram(programs[i]);
+
+		//set ambient intensity
+		GLuint ambInt = glGetUniformLocation(programs[i], "ambientColor");
+		glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
+		//set directional light intensity and direction(sun)
+		GLuint dirLightInt = glGetUniformLocation(programs[i], "sunColor");
+		GLuint dirLightDir = glGetUniformLocation(programs[i], "sunDirection");
+		glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
+		glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
+		GLuint maxInt = glGetUniformLocation(programs[i], "maxIntensity");
+		glUniform1f(maxInt, sunColor.x * 1.3f);
+		//set camera pos
+		GLuint cameraPos = glGetUniformLocation(programs[i], "cameraPos");
+		glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
+	}
+
+	glUseProgram(programs[4]);
+
+	//draw ground
+	glDepthMask(GL_FALSE);
+	objects[0]->display(matrix);
+	glDepthMask(GL_TRUE);
+
+	for (int i = 2; i < objects.size(); ++i)
+	{
+		objects[i]->display(matrix);
+	}
+
+	glUseProgram(programs[5]);
+	//objects[1]->display(matrix);
+
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
+}
+void OpenglRenderer::dsLighting(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
+{
+	glEnable(GL_BLEND);
+	glBlendEquation(GL_FUNC_ADD);
+	glBlendFunc(GL_ONE, GL_ONE);
+
+	gbuffer.bindForReading();
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glUseProgram(programs[6]);
+
+	//set ambient intensity
+	GLuint ambInt = glGetUniformLocation(programs[6], "ambientColor");
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR || ambInt == -1)
+		std::cout << "lol";
+
+	glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
+	//set directional light intensity and direction(sun)
+	GLuint dirLightInt = glGetUniformLocation(programs[6], "sunColor");
+	GLuint dirLightDir = glGetUniformLocation(programs[6], "sunDirection");
+	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
+	glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
+	GLuint maxInt = glGetUniformLocation(programs[6], "maxIntensity");
+	glUniform1f(maxInt, sunColor.x * 1.3f);
+	//set camera pos
+	GLuint cameraPos = glGetUniformLocation(programs[6], "cameraPos");
+	glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
+	//set screen size
+	GLuint screenSize = glGetUniformLocation(programs[6], "screenSize");
+	glUniform2f(screenSize, (float)wWidth, (float)wHeight);
+
+	glm::mat4 mat(1.0f);
+	glutil::MatrixStack matrix(mat);
+
+
+	Quad::display(matrix);
+	err = glGetError();
+	if (err != GL_NO_ERROR)
+		std::cout << "lol";
+
+	/*GLenum err = glGetError();
+	if (err != GL_NO_ERROR)
+		std::cout << "lol";
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		fprintf(stderr, "FB error, status: 0x%x\n", status);
+	}
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearDepth(1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	err = glGetError();
+	if (err != GL_NO_ERROR)
+		std::cout << "lol";
+	gbuffer.bindForReading();
+	status = glCheckFramebufferStatus(GL_READ_FRAMEBUFFER);
+	err = glGetError();
+	if (err != GL_NO_ERROR)
+		std::cout << "lol";
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		fprintf(stderr, "FB error, status: 0x%x\n", status);
+	}
+
+	GLsizei hw = (GLsizei)wWidth / 2;
+	GLsizei hh = (GLsizei)wHeight / 2;
+
+	gbuffer.setReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+	glBlitFramebuffer(0, 0, wWidth, wHeight,
+		0, 0, hw, hh, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	gbuffer.setReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE);
+	glBlitFramebuffer(0, 0, wWidth, wHeight,
+		0, hh, hw, wHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	gbuffer.setReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+	glBlitFramebuffer(0, 0, wWidth, wHeight,
+		hw, hh, wWidth, wHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	gbuffer.setReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_SHININESS);
+	glBlitFramebuffer(0, 0, wWidth, wHeight,
+		hw, 0, wWidth, hh, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
 }
 
 
@@ -451,7 +615,7 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 
 	shaderList.clear();
 
-	//car program
+	//program[2]
 	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShaderNormals.txt")));
 	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShaderNormals.txt")));
 
@@ -459,6 +623,52 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 
 	for (GLuint& i : shaderList)
 		glDeleteShader;
+
+	shaderList.clear();
+
+	//program[3] - texture
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShaderTextureBump.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShaderTextureBump.txt")));
+
+	programs.push_back(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
+
+	//program[4] - dsgeo
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragment.txt")));
+
+	programs.push_back(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
+
+	//program[5] - dsgeotexture
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertexTex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragmentTex.txt")));
+
+	programs.push_back(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
+
+	//program[6] - dslight
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentDir.txt")));
+
+	programs.push_back(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
 
 	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
 
@@ -519,6 +729,11 @@ void OpenglRenderer::initializeUniformBuffer()
 
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0,	lightBufferUniform, 0, sizeof(float));
 
+}
+
+void OpenglRenderer::initializeDS()
+{
+	gbuffer.init(wWidth, wHeight);
 }
 
 int OpenglRenderer::isRunning()

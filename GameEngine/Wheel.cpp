@@ -34,7 +34,7 @@ void Wheel::init(GLuint program)
 
 
 	glUseProgram(program);
-	Wheel::colorUnif = glGetUniformLocation(program, "theColor");
+	Wheel::colorUnif = glGetUniformLocation(program, "diffuseColor");
 	Wheel::matrixUnif = glGetUniformLocation(program, "matrix");
 	glUseProgram(0);
 }

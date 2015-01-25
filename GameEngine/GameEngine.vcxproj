@@ -86,13 +86,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.10.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutilD.lib;glloadD.lib;glutil.lib;glload.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.10.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutilD.lib;glloadD.lib;glutil.lib;glload.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -134,15 +134,19 @@
     <ClCompile Include="Contact.cpp" />
     <ClCompile Include="DistanceConstraint.cpp" />
     <ClCompile Include="GameEngine.cpp" />
+    <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpenglRenderer.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PositionConstraint.cpp" />
+    <ClCompile Include="Quad.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RotationConstraint.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="Wheel.cpp" />
   </ItemGroup>
@@ -152,27 +156,43 @@
     <ClInclude Include="Car.h" />
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="Contact.h" />
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DistanceConstraint.h" />
     <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="GBuffer.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="ObjectIDs.h" />
     <ClInclude Include="OpenglRenderer.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsEngine.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="PositionConstraint.h" />
+    <ClInclude Include="Quad.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RotationConstraint.h" />
+    <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="Wheel.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="dsGeometryFragment.txt" />
+    <Text Include="dsGeometryFragmentTex.txt" />
+    <Text Include="dsGeometryVertex.txt" />
+    <Text Include="dsGeometryVertexTex.txt" />
+    <Text Include="dsLightingFragmentDir.txt" />
+    <Text Include="dsLightingVertex.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="FragmentShader2.txt" />
     <Text Include="FragmentShaderNormals.txt" />
+    <Text Include="FragmentShaderTexture.txt" />
+    <Text Include="FragmentShaderTextureBump.txt" />
     <Text Include="VertexShader.txt" />
     <Text Include="VertexShader2.txt" />
     <Text Include="VertexShaderNormals.txt" />
+    <Text Include="VertexShaderTexture.txt" />
+    <Text Include="VertexShaderTextureBump.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

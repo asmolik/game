@@ -372,7 +372,6 @@ void Car::latTyreSlip(float slip[4])
 	slip[1] += frontWheelRot * maxFrontWheelRot;
 	/*if (std::fabs(latVel) < 0.1f)
 		slip[0] = slip[1] = slip[2] = slip[3] = 0.0f;*/
-	std::cout << frontWheelRot << std::endl;
 }
 
 void Car::latWheelForce(float force[4], float load[4])

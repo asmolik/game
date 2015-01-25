@@ -10,6 +10,7 @@ class Contact;
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 #include <glutil/glutil.h>
+#include <SOIL.h>
 #include <vector>
 #include "ObjectIDs.h"
 #include "Physics.h"

@@ -1,0 +1,48 @@
+#version 330
+
+uniform sampler2D positionTex;
+uniform sampler2D diffuseTex;
+uniform sampler2D specularTex;
+uniform sampler2D normalTex;
+uniform sampler2D shininessTex;
+uniform vec2 screenSize;
+
+uniform vec4 ambientColor;
+uniform vec4 sunColor;
+uniform vec4 sunDirection;
+uniform float maxIntensity;
+
+uniform vec4 cameraPos;
+
+out vec4 outputColor;
+
+void main()
+{
+	vec2 texCo = gl_FragCoord.xy / screenSize;
+	vec4 worldPos = texture(positionTex, texCo);
+	vec4 diffuseColor = texture(diffuseTex, texCo);
+	vec4 specularColor = texture(specularTex, texCo);
+	vec4 normal = texture(normalTex, texCo);
+	normal = normalize(normal);
+	float shininess = texture(shininessTex, texCo),x;
+
+	float cosAng = dot(normal, -sunDirection);
+	cosAng = clamp(cosAng, 0, 1);
+
+	vec4 viewDirection = normalize(cameraPos - worldPos);
+
+	vec4 halfAngle = normalize(-sunDirection + viewDirection);
+	float angleNormalHalf = acos(dot(halfAngle, normal));
+	float exponent = angleNormalHalf / shininess;
+	exponent = -(exponent * exponent);
+	float gaussianTerm = exp(exponent);
+
+	gaussianTerm = cosAng != 0.0 ? gaussianTerm : 0.0;
+
+	outputColor = (diffuseColor * ambientColor) + 
+		(diffuseColor * sunColor * cosAng) + 
+		(specularColor * sunColor * gaussianTerm);
+
+	outputColor /= maxIntensity;
+	outputColor = diffuseColor;
+}

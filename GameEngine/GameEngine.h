@@ -18,6 +18,9 @@ class Plane;
 #include "Box.h"
 #include "Wheel.h"
 #include "Car.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 #include "Contact.h"
 #include "Constraint.h"
 #include "PositionConstraint.h"
@@ -42,6 +45,10 @@ private:
 	std::vector<Car> cars;
 	std::vector<RigidBody*> planes;
 	Track track;
+
+	DirectionalLight sun;
+	std::vector<PointLight> pointLights;
+	std::vector<SpotLight> spotLights;
 	
 	glm::vec3 gravity;
 
@@ -61,6 +68,9 @@ public:
 	void addCar(Car& car);
 	void addBall(Ball& ball);
 	void addPlane(Plane& plane);
+
+	void addPointLight(PointLight& pointLight);
+	void addSpotLight(SpotLight& spotLight);
 
 	glm::vec3 getCameraRightVector();
 	glm::vec3 getCameraUpVector();

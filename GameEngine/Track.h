@@ -13,11 +13,17 @@ private:
 
 	static GLuint vertexBuffer;
 	static GLuint indexBuffer;
+	static GLuint diffuseTexture;
+	static GLuint specularTexture;
+	static GLuint normalTexture;
 	static GLuint vao;
+
 	static GLuint matrixUnif;
 	static GLuint worldMatrixUnif;
-	static GLuint diffuseColorUnif;
-	static GLuint specularColorUnif;
+
+	static GLuint diffuseTextureUnif;
+	static GLuint specularTextureUnif;
+	static GLuint normalTextureUnif;
 	static GLuint shininessFactorUnif;
 
 public:
@@ -33,7 +39,7 @@ public:
 
 	void setNormal(glm::vec3& n);
 
-	static const float vertexPositions[84];
+	static const float vertexPositions[156];
 	static const short indexData[36];
 };
 

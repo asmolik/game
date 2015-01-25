@@ -33,8 +33,8 @@ int main()
 	w.setStaticFriction(0.5f);
 	w.setDynamicFriction(0.5f);
 	game.addPlane(map);
-	game.addCar(car);
 	game.addBody(track);
+	game.addCar(car);
 	game.addBody(box);
 	game.addBody(w);
 	game.init();

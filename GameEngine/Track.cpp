@@ -5,6 +5,46 @@ Track::Track() : RigidBody(ObjectIDs::trackID) {}
 
 void Track::init(GLuint program)
 {
+	glActiveTexture(GL_TEXTURE0);
+	diffuseTexture = SOIL_load_OGL_texture("C:/Users/Olek/Documents/opengl/Road_Texture_Collection_Vol01/Road_0007_diffuse.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_INVERT_Y
+		);
+	glBindTexture(GL_TEXTURE_2D, diffuseTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glActiveTexture(GL_TEXTURE1);
+	specularTexture = SOIL_load_OGL_texture("C:/Users/Olek/Documents/opengl/Road_Texture_Collection_Vol01/Road_0007_specular.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_INVERT_Y
+		);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glActiveTexture(GL_TEXTURE2);
+	normalTexture = SOIL_load_OGL_texture("C:/Users/Olek/Documents/opengl/Road_Texture_Collection_Vol01/Road_0007_bump.jpg",
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		SOIL_FLAG_INVERT_Y
+		);
+	glBindTexture(GL_TEXTURE_2D, normalTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0f);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	
 	glGenBuffers(1, &Track::vertexBuffer);
 
 	glBindBuffer(GL_ARRAY_BUFFER, Track::vertexBuffer);
@@ -21,21 +61,28 @@ void Track::init(GLuint program)
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
-	size_t normalsDataOffset = sizeof(float) * 3 * 12;
+	size_t normalsDataOffset = sizeof(float)* 3 * 12;
+	size_t tangentsDataOffset = sizeof(float)* 4 * 12;
+	size_t textureDataOffset = tangentsDataOffset + sizeof(float)* 4 * 12;
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)normalsDataOffset);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, 0, (void*)tangentsDataOffset);
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 0, (void*)textureDataOffset);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
 	glBindVertexArray(0);
 
 
 	glUseProgram(program);
-	Track::diffuseColorUnif = glGetUniformLocation(program, "diffuseColor");
-	Track::specularColorUnif = glGetUniformLocation(program, "specularColor");
+	Track::diffuseTextureUnif = glGetUniformLocation(program, "diffuseColorSampler");
+	Track::specularTextureUnif = glGetUniformLocation(program, "specularColorSampler");
+	Track::normalTextureUnif = glGetUniformLocation(program, "normalSampler");
 	Track::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
 	Track::matrixUnif = glGetUniformLocation(program, "matrix");
 	Track::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
@@ -53,9 +100,17 @@ void Track::display(glutil::MatrixStack &matrix)
 	glUniformMatrix4fv(Track::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
 	glUniformMatrix4fv(Track::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
 	//material
-	glUniform4f(Track::diffuseColorUnif, 0.3f, 0.3f, 0.3f, 1.0f);
-	glUniform4f(Track::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-	glUniform1f(Track::shininessFactorUnif, 0.3f);
+	glUniform1f(Track::shininessFactorUnif, 0.9f);
+	//texture
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, diffuseTexture);
+	glUniform1i(diffuseTextureUnif, 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, specularTexture);
+	glUniform1i(specularTextureUnif, 0);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, normalTexture);
+	glUniform1i(normalTextureUnif, 0);
 
 	glBindVertexArray(Track::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Track::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
@@ -74,11 +129,15 @@ void Track::setNormal(glm::vec3& n)
 
 GLuint Track::vertexBuffer = 0;
 GLuint Track::indexBuffer = 0;
+GLuint Track::diffuseTexture = 0;
+GLuint Track::specularTexture = 0;
+GLuint Track::normalTexture = 0;
 GLuint Track::vao = 0;
 GLuint Track::matrixUnif = 0;
 GLuint Track::worldMatrixUnif = 0;
-GLuint Track::diffuseColorUnif = 0;
-GLuint Track::specularColorUnif = 0;
+GLuint Track::diffuseTextureUnif = 0;
+GLuint Track::specularTextureUnif = 0;
+GLuint Track::normalTextureUnif = 0;
 GLuint Track::shininessFactorUnif = 0;
 
 const float Track::vertexPositions[] = {
@@ -108,6 +167,32 @@ const float Track::vertexPositions[] = {
 	0.0f, 1.0f, 0.0f, 0.0f,
 	0.0f, 1.0f, 0.0f, 0.0f,
 	0.0f, 1.0f, 0.0f, 0.0f,
+	//tangents
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	1.0f, 0.0f, 0.0f, 0.0f,
+	//textures
+	20.0f, 50.0f,
+	21.0f, 51.0f,
+	170.0f, 50.0f,
+	169.0f, 51.0f,
+	170.0f, 70.0f,
+	169.0f, 69.0f,
+	130.0f, 70.0f,
+	129.0f, 69.0f,
+	130.0f, 150.0f,
+	129.0f, 149.0f,
+	20.0f, 150.0f,
+	21.0f, 149.0f,
 };
 
 const short Track::indexData[] = {

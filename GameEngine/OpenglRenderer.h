@@ -9,8 +9,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glutil/glutil.h>
+#include <SOIL.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "GBuffer.h"
 #include "RigidBody.h"
 #include "Plane.h"
 #include "Track.h"
@@ -18,6 +20,10 @@
 #include "Wheel.h"
 #include "Car.h"
 #include "Camera.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
+#include "Quad.h"
 
 class GameEngine;
 
@@ -27,6 +33,8 @@ private:
 	GLFWwindow* window;
 	int wWidth, wHeight;
 	std::vector<GLuint> programs;
+
+	GBuffer gbuffer;
 
 	GLuint box;
 	GLuint vertexBufferObject;
@@ -71,6 +79,12 @@ public:
 
 	void display(std::vector<RigidBody*>& objects, Camera& camera);
 
+	void dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, 
+		std::vector<SpotLight>& sLights, Camera& camera);
+	void dsGeometry(std::vector<RigidBody*>& objects, Camera& camera);
+	void dsLighting(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, 
+		std::vector<SpotLight>& sLights, Camera& camera);
+
 
 	std::string txtToString(std::string fileName);
 
@@ -81,6 +95,8 @@ public:
 	void initializeVertexBuffer();
 	void initializeVertexArrayObjects();
 	void initializeUniformBuffer();
+	
+	void initializeDS();
 
 	int isRunning();
 };
