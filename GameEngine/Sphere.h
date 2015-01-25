@@ -3,8 +3,9 @@
 
 #include <GL/glew.h>
 #include "glutil/glutil.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-namespace Quad
+namespace Sphere
 {
 	extern GLuint vertexBuffer;
 	extern GLuint indexBuffer;
@@ -19,8 +20,8 @@ namespace Quad
 
 	void init(GLuint program);
 
-	void display(glutil::MatrixStack& matrix);
+	void display(glutil::MatrixStack& matrix, float scale);
 
-	extern const float vertexPositions[12];
-	extern const short indexData[6];
+	extern const float vertexPositions[24];
+	extern const short indexData[14];
 };

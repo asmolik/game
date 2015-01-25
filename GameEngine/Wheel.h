@@ -14,11 +14,13 @@ class Wheel : public RigidBody
 private:
 	float radius;
 	float height;
+	glm::mat4 worldMat;
 
 	static GLuint vertexBuffer;
 	static GLuint indexBuffer;
 	static GLuint vao;
 	static GLuint matrixUnif;
+	static GLuint worldMatrixUnif;
 	static GLuint colorUnif;
 
 public:

@@ -189,10 +189,11 @@ void Car::display(glutil::MatrixStack &matrix)
 {
 	glutil::PushStack push(matrix);
 
-	matrix.Translate(current.position);
+	box.setPosition(current.position);
 
 	box.display(matrix);
 
+	matrix.Translate(current.position);
 	matrix *= glm::mat4_cast(current.orientation);
 	for (Wheel& w : wheels)
 	{

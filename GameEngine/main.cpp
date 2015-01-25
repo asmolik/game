@@ -15,10 +15,16 @@ int main()
 	box.setInertia(10.0f);
 	box.setPosition(glm::vec3(600.0f, 5.2f, 505.0f));
 	box.setForce(glm::vec3(50.0f, 0.0f, 0.0f));
-	box.setAngularVelocity(glm::vec3(0.0f, 0.1f, 0.0f));
+	box.setAngularVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
 	box.setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+	PointLight l;
+	l.set(glm::vec3(500.0f), glm::vec3(600.0f, 5.2f, 507.0f), 1.0f / 15.0f);
+	PointLight l2;
+	l2.set(glm::vec3(400.0f), glm::vec3(650.0f, 5.2f, 507.0f), 1.0f / 15.0f);
+	PointLight l3;
+	l3.set(glm::vec3(400.0f), glm::vec3(700.0f, 5.2f, 507.0f), 1.0f / 15.0f);
 	Car car;
-	car.setPosition(glm::vec3(700.0f, 1.1f, 505.0f));
+	car.setPosition(glm::vec3(650.0f, 1.1f, 505.0f));
 	car.setMass(1500.0f);
 	car.setInertia(200.0f);
 	car.setRestitution(0.3f);
@@ -37,6 +43,9 @@ int main()
 	game.addCar(car);
 	game.addBody(box);
 	game.addBody(w);
+	game.addPointLight(l);
+	game.addPointLight(l2);
+	game.addPointLight(l3);
 	game.init();
 	game.run();
 	return 0;

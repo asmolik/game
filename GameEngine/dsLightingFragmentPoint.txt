@@ -8,14 +8,23 @@ uniform sampler2D textTex;
 uniform sampler2D shininessTex;
 uniform vec2 screenSize;
 
-uniform vec4 ambientColor;
-uniform vec4 sunColor;
-uniform vec4 sunDirection;
+uniform vec4 lightColor;
+uniform vec4 lightPosition;
+uniform float attenuation;
 uniform float maxIntensity;
 
 uniform vec4 cameraPos;
 
 out vec4 outputColor;
+
+vec4 applyLightIntensity(in vec4 worldP, out vec4 lightD)
+{
+	vec4 lightDifference = worldP - lightPosition;
+	float lightDistanceSqr = dot(lightDifference, lightDifference);
+	lightD = lightDifference * inversesqrt(lightDistanceSqr);
+
+	return lightColor * (1 / ( 1.0 + attenuation * lightDistanceSqr));
+}
 
 void main()
 {
@@ -27,12 +36,15 @@ void main()
 	normal = normalize(normal);
 	float shininess = texture(shininessTex, texCo);
 
-	float cosAng = dot(normal, -sunDirection);
+	vec4 lightDir = vec4(0.0);
+	vec4 attenIntensity = applyLightIntensity(worldPos, lightDir);
+
+	float cosAng = dot(normal, -lightDir);
 	cosAng = clamp(cosAng, 0, 1);
 
 	vec4 viewDirection = normalize(cameraPos - worldPos);
 
-	vec4 halfAngle = normalize(-sunDirection + viewDirection);
+	vec4 halfAngle = normalize(-lightDir + viewDirection);
 	float angleNormalHalf = acos(dot(halfAngle, normal));
 	float exponent = angleNormalHalf / shininess;
 	exponent = -(exponent * exponent);
@@ -40,9 +52,8 @@ void main()
 
 	gaussianTerm = cosAng != 0.0 ? gaussianTerm : 0.0;
 
-	outputColor = (diffuseColor * ambientColor) + 
-		(diffuseColor * sunColor * cosAng) + 
-		(specularColor * sunColor * gaussianTerm);
+	outputColor = (diffuseColor * attenIntensity * cosAng) + 
+		(specularColor * attenIntensity * gaussianTerm);
 
 	outputColor /= maxIntensity;
 }

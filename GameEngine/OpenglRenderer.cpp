@@ -159,13 +159,14 @@ void OpenglRenderer::init()
 
 	Plane::init(programs[4]);
 
-	//Track::init(programs[5]);
+	Track::init(programs[5]);
 
 	Box::init(programs[4]);
 
 	Wheel::init(programs[4]);
 
 	Quad::init(programs[6]);
+	Sphere::init(programs[7]);
 
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -361,7 +362,7 @@ void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 void OpenglRenderer::dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
 {
 	dsGeometry(objects, camera);
-	dsLighting(objects, pLights, sLights, camera);
+	dsLighting(pLights, sLights, camera);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -389,17 +390,7 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 	for (int i = 4; i < 6; ++i)
 	{
 		glUseProgram(programs[i]);
-
-		//set ambient intensity
-		GLuint ambInt = glGetUniformLocation(programs[i], "ambientColor");
-		glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
-		//set directional light intensity and direction(sun)
-		GLuint dirLightInt = glGetUniformLocation(programs[i], "sunColor");
-		GLuint dirLightDir = glGetUniformLocation(programs[i], "sunDirection");
-		glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
-		glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
-		GLuint maxInt = glGetUniformLocation(programs[i], "maxIntensity");
-		glUniform1f(maxInt, sunColor.x * 1.3f);
+		
 		//set camera pos
 		GLuint cameraPos = glGetUniformLocation(programs[i], "cameraPos");
 		glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
@@ -418,12 +409,12 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 	}
 
 	glUseProgram(programs[5]);
-	//objects[1]->display(matrix);
+	objects[1]->display(matrix);
 
 	glDepthMask(GL_FALSE);
 	glDisable(GL_DEPTH_TEST);
 }
-void OpenglRenderer::dsLighting(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
+void OpenglRenderer::dsLighting(std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
 {
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
@@ -433,35 +424,11 @@ void OpenglRenderer::dsLighting(std::vector<RigidBody*>& objects, std::vector<Po
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(programs[6]);
+	dsLightingPoint(pLights, camera);
+	dsLightingDirectional(camera);
 
-	//set ambient intensity
-	GLuint ambInt = glGetUniformLocation(programs[6], "ambientColor");
+	
 	GLenum err = glGetError();
-	if (err != GL_NO_ERROR || ambInt == -1)
-		std::cout << "lol";
-
-	glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
-	//set directional light intensity and direction(sun)
-	GLuint dirLightInt = glGetUniformLocation(programs[6], "sunColor");
-	GLuint dirLightDir = glGetUniformLocation(programs[6], "sunDirection");
-	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
-	glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
-	GLuint maxInt = glGetUniformLocation(programs[6], "maxIntensity");
-	glUniform1f(maxInt, sunColor.x * 1.3f);
-	//set camera pos
-	GLuint cameraPos = glGetUniformLocation(programs[6], "cameraPos");
-	glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
-	//set screen size
-	GLuint screenSize = glGetUniformLocation(programs[6], "screenSize");
-	glUniform2f(screenSize, (float)wWidth, (float)wHeight);
-
-	glm::mat4 mat(1.0f);
-	glutil::MatrixStack matrix(mat);
-
-
-	Quad::display(matrix);
-	err = glGetError();
 	if (err != GL_NO_ERROR)
 		std::cout << "lol";
 
@@ -508,6 +475,70 @@ void OpenglRenderer::dsLighting(std::vector<RigidBody*>& objects, std::vector<Po
 	gbuffer.setReadBuffer(GBuffer::GBUFFER_TEXTURE_TYPE_SHININESS);
 	glBlitFramebuffer(0, 0, wWidth, wHeight,
 		hw, 0, wWidth, hh, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
+}
+void OpenglRenderer::dsLightingPoint(std::vector<PointLight>& pLights, Camera& camera)
+{
+	glutil::MatrixStack matrix(perspectiveMatrix);
+	matrix.ApplyMatrix(camera.cameraTransform());
+
+	glUseProgram(programs[7]);
+
+	for (PointLight& p : pLights)
+	{
+		//set light params
+		GLuint lightColor = glGetUniformLocation(programs[7], "lightColor");
+		GLuint lightPosition = glGetUniformLocation(programs[7], "lightPosition");
+		GLuint attenuation = glGetUniformLocation(programs[7], "attenuation");
+		GLuint maxInt = glGetUniformLocation(programs[7], "maxIntensity");
+		glUniform4f(lightColor, p.getColor().x, p.getColor().y, p.getColor().z, 1.0f);
+		glUniform4f(lightPosition, p.getPosition().x, p.getPosition().y, p.getPosition().z, 1.0f);
+		glUniform1f(attenuation, p.getAttenuation());
+		glUniform1f(maxInt, sunColor.x * 1.0f);
+		//set camera pos
+		GLuint cameraPos = glGetUniformLocation(programs[7], "cameraPos");
+		glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
+		//set screen size
+		GLuint screenSize = glGetUniformLocation(programs[7], "screenSize");
+		glUniform2f(screenSize, (float)wWidth, (float)wHeight);
+		GLenum err = glGetError();
+		if (err != GL_NO_ERROR)
+			std::cout << "lol";
+
+		float scale = 2 / p.getAttenuation();
+		glutil::PushStack push(matrix);
+		matrix.Translate(p.getPosition());
+		Sphere::display(matrix, scale);
+	}
+}
+void OpenglRenderer::dsLightingDirectional(Camera& camera)
+{
+	glUseProgram(programs[6]);
+
+	//set ambient intensity
+	GLuint ambInt = glGetUniformLocation(programs[6], "ambientColor");
+	GLenum err = glGetError();
+	if (err != GL_NO_ERROR || ambInt == -1)
+		std::cout << "lol";
+
+	glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
+	//set directional light intensity and direction(sun)
+	GLuint dirLightInt = glGetUniformLocation(programs[6], "sunColor");
+	GLuint dirLightDir = glGetUniformLocation(programs[6], "sunDirection");
+	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
+	glUniform4f(dirLightDir, sunDirection.x, sunDirection.y, sunDirection.z, 1.0f);
+	GLuint maxInt = glGetUniformLocation(programs[6], "maxIntensity");
+	glUniform1f(maxInt, sunColor.x * 1.0f);
+	//set camera pos
+	GLuint cameraPos = glGetUniformLocation(programs[6], "cameraPos");
+	glUniform4f(cameraPos, camera.getX(), camera.getY(), camera.getZ(), 0.0f);
+	//set screen size
+	GLuint screenSize = glGetUniformLocation(programs[6], "screenSize");
+	glUniform2f(screenSize, (float)wWidth, (float)wHeight);
+
+	glm::mat4 mat(1.0f);
+	glutil::MatrixStack matrix(mat);
+
+	Quad::display(matrix);
 }
 
 
@@ -659,7 +690,7 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 
 	shaderList.clear();
 
-	//program[6] - dslight
+	//program[6] - dslightdir
 	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
 	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentDir.txt")));
 
@@ -669,6 +700,18 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 		glDeleteShader;
 
 	shaderList.clear();
+
+	//program[7] - dslightpoint
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentPoint.txt")));
+
+	programs.push_back(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
+
 
 	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
 

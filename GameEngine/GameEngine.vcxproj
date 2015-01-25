@@ -147,6 +147,7 @@
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RotationConstraint.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="Wheel.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RotationConstraint.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="Wheel.h" />
@@ -182,6 +184,7 @@
     <Text Include="dsGeometryVertex.txt" />
     <Text Include="dsGeometryVertexTex.txt" />
     <Text Include="dsLightingFragmentDir.txt" />
+    <Text Include="dsLightingFragmentPoint.txt" />
     <Text Include="dsLightingVertex.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="FragmentShader2.txt" />

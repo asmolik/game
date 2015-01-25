@@ -55,7 +55,7 @@ void GBuffer::bindForReading()
 		glBindTexture(GL_TEXTURE_2D, textures[GBUFFER_POSITION_TEXTURE_UNIT + i]);
 	}
 
-	//glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
 }
 
 void GBuffer::bindForWriting()

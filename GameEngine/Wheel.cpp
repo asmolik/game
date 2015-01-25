@@ -36,6 +36,7 @@ void Wheel::init(GLuint program)
 	glUseProgram(program);
 	Wheel::colorUnif = glGetUniformLocation(program, "diffuseColor");
 	Wheel::matrixUnif = glGetUniformLocation(program, "matrix");
+	Wheel::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
 	glUseProgram(0);
 }
 
@@ -149,10 +150,12 @@ void Wheel::display(glutil::MatrixStack &matrix)
 {
 	glutil::PushStack push(matrix);
 
-	matrix.Translate(current.position);
-	matrix *= glm::mat4_cast(current.orientation);
+	worldMat = glm::translate(glm::mat4(), current.position);
+	worldMat *= glm::mat4_cast(current.orientation);
+	matrix *= worldMat;
 
 	glUniformMatrix4fv(Wheel::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
+	glUniformMatrix4fv(Wheel::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
 	glUniform4f(Wheel::colorUnif, 0.1f, 0.1f, 0.1f, 1.0f);
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLE_STRIP, sizeof(Wheel::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
@@ -163,6 +166,7 @@ GLuint Wheel::vertexBuffer = 0;
 GLuint Wheel::indexBuffer = 0;
 GLuint Wheel::vao = 0;
 GLuint Wheel::matrixUnif = 0;
+GLuint Wheel::worldMatrixUnif = 0;
 GLuint Wheel::colorUnif = 0;
 
 const float Wheel::vertexPositions[] = {

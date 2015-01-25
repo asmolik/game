@@ -93,6 +93,9 @@
     <ClCompile Include="Quad.cpp">
       <Filter>Source Files\Lights</Filter>
     </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Source Files\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -167,6 +170,9 @@
     <ClInclude Include="Quad.h">
       <Filter>Source Files\Lights</Filter>
     </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Source Files\Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="FragmentShader.txt">
@@ -215,6 +221,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="dsLightingFragmentDir.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dsLightingFragmentPoint.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
