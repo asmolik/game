@@ -55,7 +55,7 @@ void Plane::display(glutil::MatrixStack &matrix)
 	//material
 	glUniform4f(Plane::diffuseColorUnif, 0.9f, 0.9f, 0.9f, 1.0f);
 	glUniform4f(Plane::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-	glUniform1f(Plane::shininessFactorUnif, 0.1f);
+	glUniform1f(Plane::shininessFactorUnif, 0.8f);
 
 	glBindVertexArray(Plane::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Plane::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);

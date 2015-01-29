@@ -63,7 +63,7 @@ void Box::display(glutil::MatrixStack &matrix)
 	//material
 	glUniform4f(Box::diffuseColorUnif, 237.0f / 255.0f, 28.0f / 255.0f, 36.0f / 255.0f, 1.0f);
 	glUniform4f(Box::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-	glUniform1f(Box::shininessFactorUnif, 1.3f);
+	glUniform1f(Box::shininessFactorUnif, 0.3f);
 
 	glBindVertexArray(Box::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Box::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);

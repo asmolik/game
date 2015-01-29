@@ -5,7 +5,7 @@ Track::Track() : RigidBody(ObjectIDs::trackID) {}
 
 void Track::init(GLuint program)
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE6);
 	diffuseTexture = SOIL_load_OGL_texture("C:/Users/Olek/Documents/opengl/Road_Texture_Collection_Vol01/Road_0007_diffuse.jpg",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
@@ -18,7 +18,7 @@ void Track::init(GLuint program)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(GL_TEXTURE7);
 	specularTexture = SOIL_load_OGL_texture("C:/Users/Olek/Documents/opengl/Road_Texture_Collection_Vol01/Road_0007_specular.jpg",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
@@ -31,7 +31,7 @@ void Track::init(GLuint program)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glActiveTexture(GL_TEXTURE2);
+	glActiveTexture(GL_TEXTURE8);
 	normalTexture = SOIL_load_OGL_texture("C:/Users/Olek/Documents/opengl/Road_Texture_Collection_Vol01/Road_0007_bump.jpg",
 		SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID,
@@ -62,7 +62,7 @@ void Track::init(GLuint program)
 	glBindVertexArray(vao);
 
 	size_t normalsDataOffset = sizeof(float)* 3 * 12;
-	size_t tangentsDataOffset = sizeof(float)* 4 * 12;
+	size_t tangentsDataOffset = normalsDataOffset + sizeof(float) * 4 * 12;
 	size_t textureDataOffset = tangentsDataOffset + sizeof(float)* 4 * 12;
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -100,17 +100,17 @@ void Track::display(glutil::MatrixStack &matrix)
 	glUniformMatrix4fv(Track::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
 	glUniformMatrix4fv(Track::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
 	//material
-	glUniform1f(Track::shininessFactorUnif, 0.9f);
+	glUniform1f(Track::shininessFactorUnif, 0.6f);
 	//texture
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE6);
 	glBindTexture(GL_TEXTURE_2D, diffuseTexture);
-	glUniform1i(diffuseTextureUnif, 0);
-	glActiveTexture(GL_TEXTURE1);
+	glUniform1i(diffuseTextureUnif, 6);
+	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, specularTexture);
-	glUniform1i(specularTextureUnif, 0);
-	glActiveTexture(GL_TEXTURE2);
+	glUniform1i(specularTextureUnif, 7);
+	glActiveTexture(GL_TEXTURE8);
 	glBindTexture(GL_TEXTURE_2D, normalTexture);
-	glUniform1i(normalTextureUnif, 0);
+	glUniform1i(normalTextureUnif, 8);
 
 	glBindVertexArray(Track::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Track::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);

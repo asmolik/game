@@ -91,7 +91,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.10.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.11.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutilD.lib;glloadD.lib;glutil.lib;glload.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -116,14 +116,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutil.lib;glload.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.10.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutil.lib;glload.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.11.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -136,6 +136,7 @@
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GBuffer.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpenglRenderer.cpp" />
     <ClCompile Include="Physics.cpp" />
@@ -183,6 +184,7 @@
     <Text Include="dsGeometryFragmentTex.txt" />
     <Text Include="dsGeometryVertex.txt" />
     <Text Include="dsGeometryVertexTex.txt" />
+    <Text Include="dsGeometryVertexTexBump.txt" />
     <Text Include="dsLightingFragmentDir.txt" />
     <Text Include="dsLightingFragmentPoint.txt" />
     <Text Include="dsLightingVertex.txt" />

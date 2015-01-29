@@ -96,6 +96,9 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>Source Files\Lights</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Lights</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -224,6 +227,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="dsLightingFragmentPoint.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="dsGeometryVertexTexBump.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

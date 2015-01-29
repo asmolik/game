@@ -3,7 +3,7 @@
 
 PointLight::PointLight() {}
 
-PointLight::PointLight(glm::vec3& c, glm::vec3& p, float a) : color(c), position(p), attenuation(a) {}
+PointLight::PointLight(glm::vec3& c, glm::vec3& p, float a) : Light(c, p), attenuation(a) {}
 
 glm::vec3& PointLight::getColor()
 {

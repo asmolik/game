@@ -1,12 +1,10 @@
 
 #pragma once
 
-#include <glm/vec3.hpp>
+#include "Light.h"
 
-class PointLight
+class PointLight : public Light
 {
-	glm::vec3 color;
-	glm::vec3 position;
 	float attenuation;
 
 public:

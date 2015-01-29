@@ -24,6 +24,7 @@ void main()
 	vec4 diffuseColor = texture(diffuseTex, texCo);
 	vec4 specularColor = texture(specularTex, texCo);
 	vec4 normal = vec4(texture(normalTex, texCo).xyz, 0.0);
+	vec4 texxxx = texture(textTex, texCo);
 	normal = normalize(normal);
 	float shininess = texture(shininessTex, texCo);
 

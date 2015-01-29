@@ -1,13 +1,10 @@
 
 #pragma once
 
-#include <glm/vec3.hpp>
+#include "Light.h"
 
-class DirectionalLight
+class DirectionalLight : public Light
 {
-	glm::vec3 color;
-	glm::vec3 direction;
-
 public:
 	DirectionalLight();
 	DirectionalLight(glm::vec3& color, glm::vec3& direction);

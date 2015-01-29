@@ -13,6 +13,7 @@
 #define GBUFFER_TEXCOORD_TEXTURE_UNIT 4
 #define GBUFFER_SHININESS_TEXTURE_UNIT 5
 
+//delete texcoord
 class GBuffer
 {
 public:
