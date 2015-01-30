@@ -19,5 +19,5 @@ public:
 
 	void set(glm::vec3& color, glm::vec3& position);
 
-	virtual void display(glutil::MatrixStack& matrix) = 0;
+	//virtual void display(glutil::MatrixStack& matrix) = 0;
 };
