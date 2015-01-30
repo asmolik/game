@@ -1,9 +1,9 @@
 #version 330
 
 in vec4 vertexNormal;
-in vec4 worldPos;
+in vec4 cameraSpacePos;
 
-layout (location = 0) out vec3 worldPosOut;
+layout (location = 0) out vec3 cameraSpacePosOut;
 layout (location = 1) out vec3 diffuseOut;
 layout (location = 2) out vec3 specularOut;
 layout (location = 3) out vec3 normalOut;
@@ -16,7 +16,7 @@ uniform float shininessFactor;
 
 void main()
 {
-    worldPosOut = worldPos.xyz;
+    cameraSpacePosOut = cameraSpacePos.xyz;
     diffuseOut = diffuseColor.xyz;
 	specularOut = specularColor.xyz;
     normalOut = normalize(vertexNormal).xyz;

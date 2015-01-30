@@ -31,6 +31,8 @@ int main()
 	l5.set(sodiumLightColor, glm::vec3(500.0f, 5.2f, 507.0f), 1.0f / 15.0f);
 	PointLight l6;
 	l6.set(sodiumLightColor, glm::vec3(450.0f, 5.2f, 507.0f), 1.0f / 15.0f);
+	PointLight l7;
+	l7.set(sodiumLightColor, glm::vec3(450.0f, 4.2f, 515.0f), 1.0f / 30.0f);
 	Car car;
 	car.setPosition(glm::vec3(650.0f, 1.1f, 505.0f));
 	car.setMass(1500.0f);
@@ -57,6 +59,7 @@ int main()
 	game.addPointLight(l4);
 	game.addPointLight(l5);
 	game.addPointLight(l6);
+	game.addPointLight(l7);
 	game.init();
 	game.run();
 	return 0;

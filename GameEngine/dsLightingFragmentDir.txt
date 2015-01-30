@@ -13,14 +13,12 @@ uniform vec4 sunColor;
 uniform vec4 sunDirection;
 uniform float maxIntensity;
 
-uniform vec4 cameraPos;
-
 out vec4 outputColor;
 
 void main()
 {
 	vec2 texCo = gl_FragCoord.xy / screenSize;
-	vec4 worldPos = texture(positionTex, texCo);
+	vec4 cameraSpacePos = texture(positionTex, texCo);
 	vec4 diffuseColor = texture(diffuseTex, texCo);
 	vec4 specularColor = texture(specularTex, texCo);
 	vec4 normal = vec4(texture(normalTex, texCo).xyz, 0.0);
@@ -31,7 +29,7 @@ void main()
 	float cosAng = dot(normal, -sunDirection);
 	cosAng = clamp(cosAng, 0, 1);
 
-	vec4 viewDirection = normalize(cameraPos - worldPos);
+	vec4 viewDirection = normalize(-cameraSpacePos);
 
 	vec4 halfAngle = normalize(-sunDirection + viewDirection);
 	float angleNormalHalf = acos(dot(halfAngle, normal));
@@ -43,7 +41,7 @@ void main()
 
 	outputColor = (diffuseColor * ambientColor) + 
 		(diffuseColor * sunColor * cosAng) + 
-		(specularColor * sunColor * gaussianTerm);
-
+		(specularColor * sunColor * gaussianTerm) * 0.4;//0.4 because it was too bright
+		
 	outputColor /= maxIntensity;
 }

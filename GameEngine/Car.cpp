@@ -190,7 +190,6 @@ void Car::display(glutil::MatrixStack &matrix)
 	glutil::PushStack push(matrix);
 
 	box.setPosition(current.position);
-
 	box.display(matrix);
 
 	matrix.Translate(current.position);

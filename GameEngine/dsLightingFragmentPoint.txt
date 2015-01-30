@@ -13,8 +13,6 @@ uniform vec4 lightPosition;
 uniform float attenuation;
 uniform float maxIntensity;
 
-uniform vec4 cameraPos;
-
 out vec4 outputColor;
 
 vec4 applyLightIntensity(in vec4 worldP, out vec4 lightD)
@@ -29,7 +27,7 @@ vec4 applyLightIntensity(in vec4 worldP, out vec4 lightD)
 void main()
 {
 	vec2 texCo = gl_FragCoord.xy / screenSize;
-	vec4 worldPos = texture(positionTex, texCo);
+	vec4 cameraSpacePos = texture(positionTex, texCo);
 	vec4 diffuseColor = texture(diffuseTex, texCo);
 	vec4 specularColor = texture(specularTex, texCo);
 	vec4 normal = vec4(texture(normalTex, texCo).xyz, 0.0);
@@ -37,12 +35,12 @@ void main()
 	float shininess = texture(shininessTex, texCo);
 
 	vec4 lightDir = vec4(0.0);
-	vec4 attenIntensity = applyLightIntensity(worldPos, lightDir);
+	vec4 attenIntensity = applyLightIntensity(cameraSpacePos, lightDir);
 
 	float cosAng = dot(normal, -lightDir);
 	cosAng = clamp(cosAng, 0, 1);
 
-	vec4 viewDirection = normalize(cameraPos - worldPos);
+	vec4 viewDirection = normalize(-cameraSpacePos);
 
 	vec4 halfAngle = normalize(-lightDir + viewDirection);
 	float angleNormalHalf = acos(dot(halfAngle, normal));

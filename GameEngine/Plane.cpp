@@ -37,8 +37,7 @@ void Plane::init(GLuint program)
 	Plane::diffuseColorUnif = glGetUniformLocation(program, "diffuseColor");
 	Plane::specularColorUnif = glGetUniformLocation(program, "specularColor");
 	Plane::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
-	Plane::matrixUnif = glGetUniformLocation(program, "matrix");
-	Plane::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
+	Plane::matrixUnif = glGetUniformLocation(program, "modelToCameraMatrix");
 	glUseProgram(0);
 }
 
@@ -51,11 +50,10 @@ void Plane::display(glutil::MatrixStack &matrix)
 {
 	//matrices
 	glUniformMatrix4fv(Plane::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	glUniformMatrix4fv(Plane::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
 	//material
 	glUniform4f(Plane::diffuseColorUnif, 0.9f, 0.9f, 0.9f, 1.0f);
 	glUniform4f(Plane::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-	glUniform1f(Plane::shininessFactorUnif, 0.8f);
+	glUniform1f(Plane::shininessFactorUnif, 0.1f);
 
 	glBindVertexArray(Plane::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Plane::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);

@@ -84,8 +84,7 @@ void Track::init(GLuint program)
 	Track::specularTextureUnif = glGetUniformLocation(program, "specularColorSampler");
 	Track::normalTextureUnif = glGetUniformLocation(program, "normalSampler");
 	Track::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
-	Track::matrixUnif = glGetUniformLocation(program, "matrix");
-	Track::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
+	Track::matrixUnif = glGetUniformLocation(program, "modelToCameraMatrix");
 	glUseProgram(0);
 }
 
@@ -98,7 +97,6 @@ void Track::display(glutil::MatrixStack &matrix)
 {
 	//matrices
 	glUniformMatrix4fv(Track::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	glUniformMatrix4fv(Track::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
 	//material
 	glUniform1f(Track::shininessFactorUnif, 0.6f);
 	//texture

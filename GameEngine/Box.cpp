@@ -37,8 +37,7 @@ void Box::init(GLuint program)
 	Box::diffuseColorUnif = glGetUniformLocation(program, "diffuseColor");
 	Box::specularColorUnif = glGetUniformLocation(program, "specularColor");
 	Box::shininessFactorUnif = glGetUniformLocation(program, "shininessFactor");
-	Box::matrixUnif = glGetUniformLocation(program, "matrix");
-	Box::worldMatrixUnif = glGetUniformLocation(program, "worldMatrix");
+	Box::matrixUnif = glGetUniformLocation(program, "modelToCameraMatrix");
 	glUseProgram(0);
 }
 
@@ -53,17 +52,15 @@ void Box::display(glutil::MatrixStack &matrix)
 {
 	glutil::PushStack push(matrix);
 
-	worldMat = glm::translate(glm::mat4(), current.position);
-	worldMat *= glm::mat4_cast(current.orientation);
-	matrix *= worldMat;
+	matrix.Translate(current.position);
+	matrix *= glm::mat4_cast(current.orientation);
 
 	//matrices
 	glUniformMatrix4fv(Box::matrixUnif, 1, GL_FALSE, glm::value_ptr(matrix.Top()));
-	glUniformMatrix4fv(Box::worldMatrixUnif, 1, GL_FALSE, glm::value_ptr(worldMat));
 	//material
 	glUniform4f(Box::diffuseColorUnif, 237.0f / 255.0f, 28.0f / 255.0f, 36.0f / 255.0f, 1.0f);
 	glUniform4f(Box::specularColorUnif, 0.25f, 0.25f, 0.25f, 1.0f);
-	glUniform1f(Box::shininessFactorUnif, 0.3f);
+	glUniform1f(Box::shininessFactorUnif, 0.05f);
 
 	glBindVertexArray(Box::vao);
 	glDrawElements(GL_TRIANGLES, sizeof(Box::indexData) / sizeof(short), GL_UNSIGNED_SHORT, 0);
