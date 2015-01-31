@@ -55,6 +55,7 @@ public:
 
 	/* Draws this body (opengl). */
 	virtual void display(glutil::MatrixStack &matrix) = 0;
+	virtual void displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform) = 0;
 
 
 	glm::vec3 getFrontVector();

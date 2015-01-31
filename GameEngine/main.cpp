@@ -17,6 +17,7 @@ int main()
 	box.setForce(glm::vec3(50.0f, 0.0f, 0.0f));
 	box.setAngularVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
 	box.setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+
 	glm::vec3 sodiumLightColor(255.0f / 255.0f, 209.0f / 255.0f, 178.0f / 255.0f);
 	sodiumLightColor *= 400.0f;
 	PointLight l;
@@ -33,6 +34,11 @@ int main()
 	l6.set(sodiumLightColor, glm::vec3(450.0f, 5.2f, 507.0f), 1.0f / 15.0f);
 	PointLight l7;
 	l7.set(sodiumLightColor, glm::vec3(450.0f, 4.2f, 515.0f), 1.0f / 30.0f);
+
+	glm::vec3 headLight(209.0f / 255.0f, 209.0f / 255.0f, 255.0f / 255.0f);
+	SpotLight sl;
+	sl.set(headLight * 800.0f, glm::vec3(800.0f, 0.5f, 505.0f), glm::vec3(0.0f, 0.0f, 1.0f), 1.0f / 50.0f, Physics::degToRad(10.0f));
+
 	Car car;
 	car.setPosition(glm::vec3(650.0f, 1.1f, 505.0f));
 	car.setMass(1500.0f);
@@ -41,7 +47,7 @@ int main()
 	car.rotate(glm::vec3(0.0f, 1.0f, 0.0f), 180.0f);
 	//car.setAngularVelocity(glm::vec3(0.0f, 10.8f, 0.0f));
 	Wheel w;
-	w.setPosition(glm::vec3(708.0f, 5.5f, 505.0f));
+	w.setPosition(glm::vec3(800.0f, 5.5f, 505.0f));
 	w.setMass(5.0f);
 	w.setRestitution(0.7f);
 	w.setInertia(1.0f);
@@ -54,12 +60,13 @@ int main()
 	game.addBody(box);
 	game.addBody(w);
 	game.addPointLight(l);
-	game.addPointLight(l2);
-	game.addPointLight(l3);
+	//game.addPointLight(l2);
+	//game.addPointLight(l3);
 	game.addPointLight(l4);
 	game.addPointLight(l5);
 	game.addPointLight(l6);
 	game.addPointLight(l7);
+	game.addSpotLight(sl);
 	game.init();
 	game.run();
 	return 0;

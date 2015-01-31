@@ -158,15 +158,14 @@ void OpenglRenderer::init()
 	initializeVertexArrayObjects();
 
 	Plane::init(programs[4]);
-
 	Track::init(programs[5]);
-
 	Box::init(programs[4]);
-
 	Wheel::init(programs[4]);
 
+	SpotLight::init(programs[8]);
 	Quad::init(programs[6]);
 	Sphere::init(programs[7]);
+	Cone::init(programs[8]);
 
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -363,6 +362,7 @@ void OpenglRenderer::dsDisplay(std::vector<RigidBody*>& objects, std::vector<Poi
 {
 	dsGeometry(objects, camera);
 	dsLighting(pLights, sLights, camera);
+	dsLighting(objects, camera);
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -423,6 +423,7 @@ void OpenglRenderer::dsLighting(std::vector<PointLight>& pLights, std::vector<Sp
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	dsLightingPoint(pLights, camera);
+	dsLightingSpot(sLights, camera);
 	dsLightingDirectional(camera);
 
 	
@@ -506,6 +507,33 @@ void OpenglRenderer::dsLightingPoint(std::vector<PointLight>& pLights, Camera& c
 		Sphere::display(matrix, scale);
 	}
 }
+void OpenglRenderer::dsLightingSpot(std::vector<SpotLight>& sLights, Camera& camera)
+{
+	glm::mat4 camT = camera.cameraTransform();
+	glutil::MatrixStack matrix(perspectiveMatrix);
+	matrix.ApplyMatrix(camT);
+
+	glUseProgram(programs[8]);
+
+	for (SpotLight& s : sLights)
+	{
+		//set light params
+		s.display(camT);
+		GLuint maxInt = glGetUniformLocation(programs[8], "maxIntensity");
+		glUniform1f(maxInt, sunColor.x * 1.0f);
+		//set screen size
+		GLuint screenSize = glGetUniformLocation(programs[8], "screenSize");
+		glUniform2f(screenSize, (float)wWidth, (float)wHeight);
+		GLenum err = glGetError();
+		if (err != GL_NO_ERROR)
+			std::cout << "lol";
+
+		float scale = 2 / s.getAttenuation();
+		glutil::PushStack push(matrix);
+		matrix.Translate(s.getPosition());
+		Cone::display(matrix, scale);
+	}
+}
 void OpenglRenderer::dsLightingDirectional(Camera& camera)
 {
 	glUseProgram(programs[6]);
@@ -533,6 +561,18 @@ void OpenglRenderer::dsLightingDirectional(Camera& camera)
 	glutil::MatrixStack matrix(mat);
 
 	Quad::display(matrix);
+}
+void OpenglRenderer::dsLighting(std::vector<RigidBody*>& objects, Camera& camera)
+{
+	glm::mat4 camT = camera.cameraTransform();
+	glutil::MatrixStack matrix(perspectiveMatrix);
+	matrix.ApplyMatrix(camT);
+
+	glUseProgram(programs[8]);
+	for (RigidBody* object : objects)
+	{
+		object->displayLights(matrix, camT);
+	}
 }
 
 
@@ -698,6 +738,17 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 	//program[7] - dslightpoint
 	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
 	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentPoint.txt")));
+
+	programs.push_back(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
+
+	//program[8] - dslightspot
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentSpot.txt")));
 
 	programs.push_back(createProgram(shaderList));
 

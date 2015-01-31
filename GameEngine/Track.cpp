@@ -115,6 +115,11 @@ void Track::display(glutil::MatrixStack &matrix)
 	glBindVertexArray(0);
 }
 
+void Track::displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform)
+{
+
+}
+
 glm::vec3 Track::getNormal()
 {
 	return normal;

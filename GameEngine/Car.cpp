@@ -12,6 +12,21 @@ wheelRadius(0.4f), frontWheelRot(0.0f), trackWidth(2.0f), maxFrontWheelRot(Physi
 	wheels.push_back(fr);
 	wheels.push_back(rl);
 	wheels.push_back(rr);
+
+	SpotLight lfl, lfr, lrl, lrr;
+	lights.push_back(lfl);
+	lights.push_back(lfr);
+	lights.push_back(lrl);
+	lights.push_back(lrr);
+
+	glm::vec3 headLight(209.0f / 255.0f, 209.0f / 255.0f, 255.0f / 255.0f);
+	headLight *= 800.0f;
+	glm::vec3 tailLight(255.0f / 255.0f, 10.0f / 255.0f, 10.0f / 255.0f);
+	tailLight *= 200.0f;
+	lights[0].set(headLight, glm::vec3(1.7f, -0.2f, -0.85f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f / 30.0f, Physics::degToRad(12.0f));
+	lights[1].set(headLight, glm::vec3(1.7f, -0.2f, 0.85f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f / 30.0f, Physics::degToRad(12.0f));
+	lights[2].set(tailLight, glm::vec3(-1.7f, -0.2f, -0.85f), glm::vec3(-1.0f, 0.0f, 0.0f), 1.0f / 10.0f, Physics::degToRad(70.0f));
+	lights[3].set(tailLight, glm::vec3(-1.7f, -0.2f, 0.85f), glm::vec3(-1.0f, 0.0f, 0.0f), 1.0f / 10.0f, Physics::degToRad(70.0f));
 }
 
 /*Car::Car(glm::vec3& p, glm::vec3& n, float m, float i = 0, float d = 0,
@@ -197,6 +212,25 @@ void Car::display(glutil::MatrixStack &matrix)
 	for (Wheel& w : wheels)
 	{
 		w.display(matrix);
+	}
+}
+
+void Car::displayLights(glutil::MatrixStack &matrix, glm::mat4& camT)
+{
+	glutil::PushStack push(matrix);
+	matrix.Translate(current.position);
+	matrix *= glm::mat4_cast(current.orientation);
+
+	camT = glm::translate(camT, current.position);
+	camT *= glm::mat4_cast(current.orientation);
+
+	for (SpotLight& s : lights)
+	{
+		s.display(camT);
+		float scale = 2 / s.getAttenuation();
+		glutil::PushStack push2(matrix);
+		matrix.Translate(s.getPosition());
+		Cone::display(matrix, scale);
 	}
 }
 

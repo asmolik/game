@@ -25,6 +25,7 @@
 #include "SpotLight.h"
 #include "Quad.h"
 #include "Sphere.h"
+#include "Cone.h"
 
 class GameEngine;
 
@@ -83,10 +84,12 @@ public:
 	void dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, 
 		std::vector<SpotLight>& sLights, Camera& camera);
 	void dsGeometry(std::vector<RigidBody*>& objects, Camera& camera);
-	void dsLighting(std::vector<PointLight>& pLights, 
+	void dsLighting(std::vector<PointLight>& pLights,
 		std::vector<SpotLight>& sLights, Camera& camera);
+	void dsLighting(std::vector<RigidBody*>& objects, Camera& camera);
 	void dsLightingDirectional(Camera& camera);
 	void dsLightingPoint(std::vector<PointLight>& pLights, Camera& camera);
+	void dsLightingSpot(std::vector<SpotLight>& sLights, Camera& camera);
 
 
 	std::string txtToString(std::string fileName);

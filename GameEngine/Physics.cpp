@@ -12,6 +12,11 @@ float Physics::signum(float x)
 	return (x > 0) - (x < 0);
 }
 
+float Physics::degToRad(float d)
+{
+	return d * pi / 180.0f;
+}
+
 void State::recalculate()
 {
 	velocity = momentum * invMass;

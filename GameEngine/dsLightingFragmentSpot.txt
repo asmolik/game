@@ -1,0 +1,70 @@
+#version 330
+
+uniform sampler2D positionTex;
+uniform sampler2D diffuseTex;
+uniform sampler2D specularTex;
+uniform sampler2D normalTex;
+uniform sampler2D textTex;
+uniform sampler2D shininessTex;
+uniform vec2 screenSize;
+
+uniform vec4 lightColor;
+uniform vec4 lightPosition;
+uniform vec4 lightDirection;
+uniform float attenuation;
+uniform float spotAngle;
+uniform float maxIntensity;
+
+out vec4 outputColor;
+
+vec4 applyLightIntensity(in vec4 camSpaceP, out vec4 lightD)
+{
+	vec4 lightDifference = camSpaceP - lightPosition;
+	float lightDistanceSqr = dot(lightDifference, lightDifference);
+	lightD = lightDifference * inversesqrt(lightDistanceSqr);
+
+	return lightColor * (1 / ( 1.0 + attenuation * lightDistanceSqr));
+}
+
+void main()
+{
+	vec2 texCo = gl_FragCoord.xy / screenSize;
+	vec4 cameraSpacePos = texture(positionTex, texCo);
+	vec4 diffuseColor = texture(diffuseTex, texCo);
+	vec4 specularColor = texture(specularTex, texCo);
+	vec4 normal = vec4(texture(normalTex, texCo).xyz, 0.0);
+	normal = normalize(normal);
+	float shininess = texture(shininessTex, texCo);
+
+	vec4 lightDir = vec4(0.0);
+	vec4 attenIntensity = applyLightIntensity(cameraSpacePos, lightDir);
+
+	float cosAng = dot(normal, -lightDir);
+	cosAng = clamp(cosAng, 0, 1);
+
+	vec4 viewDirection = normalize(-cameraSpacePos);
+
+	vec4 halfAngle = normalize(-lightDir + viewDirection);
+	float angleNormalHalf = acos(dot(halfAngle, normal));
+	float exponent = angleNormalHalf / shininess;
+	exponent = -(exponent * exponent);
+	float gaussianTerm = exp(exponent);
+
+	gaussianTerm = cosAng != 0.0 ? gaussianTerm : 0.0;
+
+	outputColor = (diffuseColor * attenIntensity * cosAng) + 
+		(specularColor * attenIntensity * gaussianTerm);
+
+	outputColor /= maxIntensity;
+
+	float spotFactor = dot(lightDir, lightDirection);
+
+	if (spotFactor > spotAngle)
+	{
+		outputColor = outputColor * (1.0 - (1.0 - spotFactor) * 1.0 / (1.0 - spotAngle));
+	}
+	else
+	{
+		outputColor = vec4(0.0);
+	}
+}

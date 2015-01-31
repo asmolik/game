@@ -130,6 +130,7 @@
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="Cone.cpp" />
     <ClCompile Include="Constraint.cpp" />
     <ClCompile Include="Contact.cpp" />
     <ClCompile Include="DistanceConstraint.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="RotationConstraint.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="Wheel.cpp" />
   </ItemGroup>
@@ -156,6 +158,7 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Car.h" />
+    <ClInclude Include="Cone.h" />
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="Contact.h" />
     <ClInclude Include="DirectionalLight.h" />
@@ -187,6 +190,7 @@
     <Text Include="dsGeometryVertexTexBump.txt" />
     <Text Include="dsLightingFragmentDir.txt" />
     <Text Include="dsLightingFragmentPoint.txt" />
+    <Text Include="dsLightingFragmentSpot.txt" />
     <Text Include="dsLightingVertex.txt" />
     <Text Include="FragmentShader.txt" />
     <Text Include="FragmentShader2.txt" />

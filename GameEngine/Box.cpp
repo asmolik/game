@@ -67,6 +67,11 @@ void Box::display(glutil::MatrixStack &matrix)
 	glBindVertexArray(0);
 }
 
+void Box::displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform)
+{
+
+}
+
 glm::vec3 Box::getSize()
 {
 	return size;

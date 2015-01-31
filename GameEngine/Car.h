@@ -7,6 +7,8 @@
 #include "Wheel.h"
 #include "Track.h"
 #include "Contact.h"
+#include "SpotLight.h"
+#include "Cone.h"
 
 class Car : public RigidBody
 {
@@ -32,6 +34,7 @@ private:
 	Box box;
 	//0 - FL, 1 - FR, 2 - RL, 3 - RR
 	std::vector<Wheel> wheels;
+	std::vector<SpotLight> lights;
 
 public:
 	Car();
@@ -54,6 +57,7 @@ public:
 	std::vector<Contact*> generateContact(RigidBody* body);
 
 	void display(glutil::MatrixStack &matrix);
+	void displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform);
 
 	void setPosition(glm::vec3& p);
 

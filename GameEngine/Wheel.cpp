@@ -161,6 +161,11 @@ void Wheel::display(glutil::MatrixStack &matrix)
 	glBindVertexArray(0);
 }
 
+void Wheel::displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform)
+{
+
+}
+
 GLuint Wheel::vertexBuffer = 0;
 GLuint Wheel::indexBuffer = 0;
 GLuint Wheel::vao = 0;

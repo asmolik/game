@@ -37,6 +37,8 @@ private:
 	double gameTime;
 	double startHour;
 	double dayLength;
+	double sunriseTime;
+	double sunsetTime;
 
 	float timeStep;
 	std::vector<RigidBody*> bodies;
@@ -47,6 +49,7 @@ private:
 	Track track;
 
 	DirectionalLight sun;
+	float ambientIntensity;
 	std::vector<PointLight> pointLights;
 	std::vector<SpotLight> spotLights;
 	

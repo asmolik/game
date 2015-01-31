@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Lights">
       <UniqueIdentifier>{5dd118b2-1b0a-45d2-a3a2-5b376310635b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Forward">
+      <UniqueIdentifier>{7a057ecc-a5f1-4289-9504-a4e7fe7e1faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Deferred Shading">
+      <UniqueIdentifier>{5c7a5701-0c07-457a-8b98-3f8017f60172}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +103,12 @@
       <Filter>Source Files\Lights</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files\Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="Cone.cpp">
       <Filter>Source Files\Lights</Filter>
     </ClCompile>
   </ItemGroup>
@@ -176,61 +188,67 @@
     <ClInclude Include="Sphere.h">
       <Filter>Source Files\Lights</Filter>
     </ClInclude>
+    <ClInclude Include="Cone.h">
+      <Filter>Source Files\Lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="FragmentShader.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="VertexShader.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="FragmentShader2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="VertexShader2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="VertexShaderNormals.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="FragmentShaderNormals.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="FragmentShaderTexture.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="VertexShaderTextureBump.txt">
+      <Filter>Resource Files\Forward</Filter>
     </Text>
     <Text Include="VertexShaderTexture.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Forward</Filter>
+    </Text>
+    <Text Include="VertexShaderNormals.txt">
+      <Filter>Resource Files\Forward</Filter>
+    </Text>
+    <Text Include="VertexShader2.txt">
+      <Filter>Resource Files\Forward</Filter>
+    </Text>
+    <Text Include="VertexShader.txt">
+      <Filter>Resource Files\Forward</Filter>
     </Text>
     <Text Include="FragmentShaderTextureBump.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Forward</Filter>
     </Text>
-    <Text Include="VertexShaderTextureBump.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="FragmentShaderTexture.txt">
+      <Filter>Resource Files\Forward</Filter>
     </Text>
-    <Text Include="dsGeometryFragmentTex.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="FragmentShaderNormals.txt">
+      <Filter>Resource Files\Forward</Filter>
     </Text>
-    <Text Include="dsGeometryVertexTex.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="FragmentShader2.txt">
+      <Filter>Resource Files\Forward</Filter>
     </Text>
-    <Text Include="dsGeometryFragment.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="dsGeometryVertex.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="FragmentShader.txt">
+      <Filter>Resource Files\Forward</Filter>
     </Text>
     <Text Include="dsLightingVertex.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Deferred Shading</Filter>
+    </Text>
+    <Text Include="dsLightingFragmentSpot.txt">
+      <Filter>Resource Files\Deferred Shading</Filter>
     </Text>
     <Text Include="dsLightingFragmentDir.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Deferred Shading</Filter>
     </Text>
     <Text Include="dsLightingFragmentPoint.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Deferred Shading</Filter>
+    </Text>
+    <Text Include="dsGeometryVertexTex.txt">
+      <Filter>Resource Files\Deferred Shading</Filter>
     </Text>
     <Text Include="dsGeometryVertexTexBump.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Deferred Shading</Filter>
+    </Text>
+    <Text Include="dsGeometryFragment.txt">
+      <Filter>Resource Files\Deferred Shading</Filter>
+    </Text>
+    <Text Include="dsGeometryFragmentTex.txt">
+      <Filter>Resource Files\Deferred Shading</Filter>
+    </Text>
+    <Text Include="dsGeometryVertex.txt">
+      <Filter>Resource Files\Deferred Shading</Filter>
     </Text>
   </ItemGroup>
 </Project>

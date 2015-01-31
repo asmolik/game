@@ -34,6 +34,7 @@ public:
 	std::vector<Contact*> generateContact(RigidBody* body);
 
 	void display(glutil::MatrixStack &matrix);
+	void displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform);
 
 	glm::vec3 getNormal();
 

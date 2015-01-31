@@ -60,6 +60,11 @@ void Plane::display(glutil::MatrixStack &matrix)
 	glBindVertexArray(0);
 }
 
+void Plane::displayLights(glutil::MatrixStack &matrix, glm::mat4& cameraTransform)
+{
+
+}
+
 glm::vec3 Plane::getNormal()
 {
 	return normal;

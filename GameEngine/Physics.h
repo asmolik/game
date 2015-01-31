@@ -52,6 +52,8 @@ public:
 
 	static float signum(float a);
 
+	static float degToRad(float deg);
+
 	/* Evaluate derivative at time t */
 	static Derivative evaluate(State& state, float t);
 

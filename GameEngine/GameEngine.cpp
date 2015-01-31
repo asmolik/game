@@ -2,7 +2,7 @@
 #include "GameEngine.h"
 
 GameEngine::GameEngine() : gravity(glm::vec3(0, 9.80665f, 0)), gameTime(0.0), startHour(8.0), dayLength(1.0 / 144.0),
-timeStep(1.0f / 60.0f), renderer(1600, 900, "Game", this) {}
+sunriseTime(6.0), sunsetTime(22.0), timeStep(1.0f / 60.0f), renderer(1600, 900, "Game", this) {}
 
 GameEngine::GameEngine(float t) : gravity(glm::vec3(0, 9.80665f, 0)), timeStep(t), renderer(1600, 900, "Game", this) {}
 
