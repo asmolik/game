@@ -86,13 +86,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\assimp-3.1.1\include;C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.11.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutilD.lib;glloadD.lib;glutil.lib;glload.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\assimp-3.1.1\lib;C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.11.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;assimp.dll;assimpd.dll;glutilD.lib;glloadD.lib;glutil.lib;glload.lib;SOIL.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,14 +116,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\include;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\boost;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\include;C:\Users\Olek\Documents\opengl\glew-1.11.0\include;C:\Users\Olek\Documents\opengl\glm;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\include;%(AdditionalIncludeDirectories);C:\Users\Olek\Documents\opengl\assimp-3.1.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;glutil.lib;glload.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.11.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;assimp.dll;assimpd.dll;glutilD.lib;glloadD.lib;glutil.lib;glload.lib;SOIL.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Olek\Documents\opengl\assimp-3.1.1\lib;C:\Users\Olek\Documents\opengl\soil;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glload\lib;C:\Users\Olek\Documents\opengl\glsdk_0_5_2\glutil\lib;C:\Users\Olek\Documents\opengl\glfw-3.0.4.bin.WIN64\lib-msvc120;C:\Users\Olek\Documents\opengl\glew-1.11.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -139,6 +139,9 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="OpenglPrograms.cpp" />
     <ClCompile Include="OpenglRenderer.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PhysicsEngine.cpp" />
@@ -149,8 +152,11 @@
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RotationConstraint.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="Sampler.cpp" />
+    <ClCompile Include="SimpleMesh.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="Wheel.cpp" />
   </ItemGroup>
@@ -167,7 +173,10 @@
     <ClInclude Include="GBuffer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Light.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="ObjectIDs.h" />
+    <ClInclude Include="OpenglPrograms.h" />
     <ClInclude Include="OpenglRenderer.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsEngine.h" />
@@ -177,8 +186,11 @@
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RotationConstraint.h" />
+    <ClInclude Include="Sampler.h" />
+    <ClInclude Include="SimpleMesh.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="Wheel.h" />
   </ItemGroup>
