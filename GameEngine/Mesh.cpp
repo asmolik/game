@@ -109,43 +109,89 @@ void Mesh::loadPNTx(int index, const aiMesh* mesh)
 
 void Mesh::loadMaterial(int index, const aiMaterial* material)
 {
-	Material mat;
-	if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-	{
-		aiString path;
-		material->GetTexture(aiTextureType_DIFFUSE, 0, &path, 0, 0, 0, 0, 0);
-		Texture* diffuseTexture = new Texture(0);
-		diffuseTexture->loadTextureSRGB(std::string(path.C_Str()));
-		mat.setDiffuseTexture(diffuseTexture);
-	}
+	//Material has diffuse and specular textures.
+	if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0 &&
+		material->GetTextureCount(aiTextureType_SPECULAR) > 0)
+		loadMaterialDS(index, material);
+	//Material has only diffuse texture.
+	else if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+		loadMaterialD(index, material);
+	//No textures.
 	else
 	{
+		Material mat;
 		aiColor3D color;
 		material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
 		glm::vec3 diffuseColor(color.r, color.b, color.b);
 		mat.setDiffuseColor(diffuseColor);
-	}
 
-	if (material->GetTextureCount(aiTextureType_SPECULAR) > 0)
-	{
-		aiString path;
-		material->GetTexture(aiTextureType_SPECULAR, 0, &path, 0, 0, 0, 0, 0);
-		Texture* specularTexture = new Texture(1);
-		specularTexture->loadTextureSRGB(std::string(path.C_Str()));
-		mat.setSpecularTexture(specularTexture);
-	}
-	else
-	{
-		aiColor3D color;
 		material->Get(AI_MATKEY_COLOR_SPECULAR, color);
 		glm::vec3 specularColor(color.r, color.b, color.b);
 		mat.setSpecularColor(specularColor);
+
+		float shininess;
+		material->Get(AI_MATKEY_SHININESS, shininess);
+		mat.setShininess(shininess);
+
+		GLuint diffuseUnif = glGetUniformLocation(OpenglPrograms::dsPN, "diffuseColor");
+		GLuint specularUnif = glGetUniformLocation(OpenglPrograms::dsPN, "specularColor");
+		GLuint shininessUnif = glGetUniformLocation(OpenglPrograms::dsPN, "shininessFactor");
+		mat.setUniforms(diffuseUnif, specularUnif, shininessUnif);
+		simpleMeshes[index].setMaterial(mat);
 	}
+}
+
+
+void Mesh::loadMaterialDS(int index, const aiMaterial* material)
+{
+	Material mat;
+	aiString path;
+
+	material->GetTexture(aiTextureType_DIFFUSE, 0, &path, 0, 0, 0, 0, 0);
+	Texture* diffuseTexture = new Texture(0);
+	diffuseTexture->loadTextureSRGB(std::string(path.C_Str()));
+	mat.setDiffuseTexture(diffuseTexture);
+
+	material->GetTexture(aiTextureType_SPECULAR, 0, &path, 0, 0, 0, 0, 0);
+	Texture* specularTexture = new Texture(1);
+	specularTexture->loadTextureSRGB(std::string(path.C_Str()));
+	mat.setSpecularTexture(specularTexture);
 
 	float shininess;
 	material->Get(AI_MATKEY_SHININESS, shininess);
 	mat.setShininess(shininess);
 
+	GLuint diffuseUnif = glGetUniformLocation(OpenglPrograms::dsPNTxDS, "diffuseColorSampler");
+	GLuint specularUnif = glGetUniformLocation(OpenglPrograms::dsPNTxDS, "specularColorSampler");
+	GLuint shininessUnif = glGetUniformLocation(OpenglPrograms::dsPNTxDS, "shininessFactor");
+	mat.setUniforms(diffuseUnif, specularUnif, shininessUnif);
+	simpleMeshes[index].setMaterial(mat);
+}
+
+
+void Mesh::loadMaterialD(int index, const aiMaterial* material)
+{
+	Material mat;
+	aiString path;
+
+	material->GetTexture(aiTextureType_DIFFUSE, 0, &path, 0, 0, 0, 0, 0);
+	Texture* diffuseTexture = new Texture(0);
+	diffuseTexture->loadTextureSRGB(std::string(path.C_Str()));
+	mat.setDiffuseTexture(diffuseTexture);
+
+	aiColor3D color;
+	material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+	glm::vec3 specularColor(color.r, color.b, color.b);
+	mat.setSpecularColor(specularColor);
+
+	float shininess;
+	material->Get(AI_MATKEY_SHININESS, shininess);
+	mat.setShininess(shininess);
+
+	GLuint diffuseUnif = glGetUniformLocation(OpenglPrograms::dsPNTxD, "diffuseColorSampler");
+	GLuint specularUnif = glGetUniformLocation(OpenglPrograms::dsPNTxD, "specularColor");
+	GLuint shininessUnif = glGetUniformLocation(OpenglPrograms::dsPNTxD, "shininessFactor");
+	mat.setUniforms(diffuseUnif, specularUnif, shininessUnif);
 	simpleMeshes[index].setMaterial(mat);
 }
 

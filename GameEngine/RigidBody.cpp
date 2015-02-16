@@ -3,7 +3,7 @@
 
 RigidBody::RigidBody() : rigidBodyID(ObjectIDs::defaultID) {}
 
-RigidBody::RigidBody(int id = -1) : rigidBodyID(id) {}
+RigidBody::RigidBody(int id = 0) : rigidBodyID(id) {}
 
 void RigidBody::update(float time)
 {

@@ -22,11 +22,11 @@ void Material::load()
 	if (diffuseTexture)
 		diffuseTexture->bind();
 	else
-		glUniform3fv(diffuseUnif, glm::value_ptr(diffuseColor));
+		glUniform3fv(diffuseUnif, 1, glm::value_ptr(diffuseColor));
 	if (specularTexture)
 		specularTexture->bind();
 	else
-		glUniform3fv(specularUnif, glm::value_ptr(specularColor));
+		glUniform3fv(specularUnif, 1, glm::value_ptr(specularColor));
 }
 
 
@@ -57,4 +57,12 @@ void Material::setSpecularTexture(Texture* texture)
 void Material::setShininess(float s)
 {
 	shininess = s;
+}
+
+
+void Material::setUniforms(GLuint diffuse, GLuint specular, GLuint shininess)
+{
+	diffuseUnif = diffuse;
+	specularUnif = specular;
+	shininessUnif = shininess;
 }
