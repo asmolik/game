@@ -1,106 +1,4 @@
-
 #include "OpenglRenderer.h"
-const float vertexData[] ={
-	0.25f, 0.25f, -1.25f, 1.0f,
-	0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-
-	0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-
-	0.25f, 0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-	0.25f, -0.25f, -2.75f, 1.0f,
-
-	0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-
-	-0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-
-	-0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-
-	0.25f, 0.25f, -1.25f, 1.0f,
-	0.25f, -0.25f, -2.75f, 1.0f,
-	0.25f, -0.25f, -1.25f, 1.0f,
-
-	0.25f, 0.25f, -1.25f, 1.0f,
-	0.25f, 0.25f, -2.75f, 1.0f,
-	0.25f, -0.25f, -2.75f, 1.0f,
-
-	0.25f, 0.25f, -2.75f, 1.0f,
-	0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-
-	0.25f, 0.25f, -2.75f, 1.0f,
-	-0.25f, 0.25f, -1.25f, 1.0f,
-	-0.25f, 0.25f, -2.75f, 1.0f,
-
-	0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-	0.25f, -0.25f, -1.25f, 1.0f,
-
-	0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -2.75f, 1.0f,
-	-0.25f, -0.25f, -1.25f, 1.0f,
-
-
-
-
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-	0.0f, 0.0f, 1.0f, 1.0f,
-
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-	0.8f, 0.8f, 0.8f, 1.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-	0.0f, 1.0f, 0.0f, 1.0f,
-
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.0f, 1.0f,
-
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f, 1.0f,
-
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f, 1.0f,
-
-};
 
 void error_callback_o(int error, const char* description)
 {
@@ -154,8 +52,8 @@ OpenglRenderer::OpenglRenderer(int width, int height, std::string name, void* pt
 void OpenglRenderer::init()
 {
 	initializeProgram(programs);
-	initializeVertexBuffer();
-	initializeVertexArrayObjects();
+	initProgramdsPNTxDS();
+	initProgramdsPN();
 
 	Plane::init(programs[4]);
 	Track::init(programs[5]);
@@ -241,12 +139,6 @@ void OpenglRenderer::setKeyCallback(void* callback)
 void OpenglRenderer::setWindowSizeCallback(void* callback)
 {
 	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun)callback);
-}
-
-void OpenglRenderer::clear()
-{
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void OpenglRenderer::setAmbientColor(glm::vec3& c)
@@ -766,59 +658,6 @@ void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
 	glUseProgram(0);
 }
 
-void OpenglRenderer::initializeVertexBuffer()
-{
-	glGenBuffers(1, &box);
-
-	glBindBuffer(GL_ARRAY_BUFFER, box);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void OpenglRenderer::initializeVertexArrayObjects()
-{
-	glGenVertexArrays(1, &vaoObject1);
-	glBindVertexArray(vaoObject1);
-
-	//size_t colorDataOffset = sizeof(float)* 3 * numberOfVertices;
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-
-	glBindVertexArray(0);
-
-	glGenVertexArrays(1, &vaoObject2);
-	glBindVertexArray(vaoObject2);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, box);
-
-	size_t colorData = sizeof(vertexData) / 2;
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)colorData);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferObject);
-
-	glBindVertexArray(0);
-}
-
-void OpenglRenderer::initializeUniformBuffer()
-{
-	glGenBuffers(1, &lightBufferUniform);
-	glBindBuffer(GL_UNIFORM_BUFFER, lightBufferUniform);
-	glBufferData(lightBufferUniform, sizeof(float), NULL, GL_STREAM_DRAW);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-	GLuint lightBlock = glGetUniformBlockIndex(programs[2], "Light");
-	glUniformBlockBinding(programs[2], lightBlock, 0);
-
-	glBindBufferRange(GL_UNIFORM_BUFFER, 0,	lightBufferUniform, 0, sizeof(float));
-
-}
-
 void OpenglRenderer::initializeDS()
 {
 	gbuffer.init(wWidth, wHeight);
@@ -829,4 +668,33 @@ int OpenglRenderer::isRunning()
 	if (!glfwWindowShouldClose(window))
 		return 1;
 	return 0;
+}
+
+void OpenglRenderer::initProgramdsPNTxDS()
+{
+	std::vector<GLuint> shaderList;
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertexTex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragmentTex.txt")));
+	
+	OpenglPrograms::setPNTxDS(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
+}
+
+
+void OpenglRenderer::initProgramdsPN()
+{
+	std::vector<GLuint> shaderList;
+	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertex.txt")));
+	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragment.txt")));
+
+	OpenglPrograms::setPN(createProgram(shaderList));
+
+	for (GLuint& i : shaderList)
+		glDeleteShader;
+
+	shaderList.clear();
 }

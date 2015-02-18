@@ -2,7 +2,9 @@
 
 int main()
 {
+	Mesh mesh;
 	GameEngine game;
+	mesh.loadMesh("C:/Users/Olek/Downloads/assimp-3.1.1/test/models/OBJ/box.obj");
 	Plane map;
 	Track track;
 	track.setMass(0);
@@ -60,8 +62,8 @@ int main()
 	game.addBody(box);
 	game.addBody(w);
 	game.addPointLight(l);
-	//game.addPointLight(l2);
-	//game.addPointLight(l3);
+	game.addPointLight(l2);
+	game.addPointLight(l3);
 	game.addPointLight(l4);
 	game.addPointLight(l5);
 	game.addPointLight(l6);

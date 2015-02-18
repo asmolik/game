@@ -3,7 +3,7 @@
 
 namespace OpenglPrograms
 {
-	//Program for meshes with positions and normals. Colors are uniform.
+	//Program for meshes with positions and normals. Colors are uniforms.
 	extern GLuint dsPN;
 	/*
 	Program for meshes with positions, normals and texture coordinates.

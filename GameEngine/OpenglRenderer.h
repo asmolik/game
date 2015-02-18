@@ -12,8 +12,10 @@
 #include <SOIL.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "OpenglPrograms.h"
 #include "GBuffer.h"
 #include "RigidBody.h"
+#include "Mesh.h"
 #include "Plane.h"
 #include "Track.h"
 #include "Box.h"
@@ -37,14 +39,6 @@ private:
 	std::vector<GLuint> programs;
 
 	GBuffer gbuffer;
-
-	GLuint box;
-	GLuint vertexBufferObject;
-	GLuint indexBufferObject;
-	GLuint vaoObject1, vaoObject2;
-	GLuint offsetUniform;
-	GLuint colorUniform;
-	GLuint lightBufferUniform;
 
 	float zNear, zFar;
 
@@ -74,15 +68,19 @@ public:
 	void setKeyCallback(void* callback);
 	void setWindowSizeCallback(void* callback);
 
-	void clear();
-
 	void setAmbientColor(glm::vec3& color);
 	void setSun(glm::vec3& direction, glm::vec3& color);
 
 	void display(std::vector<RigidBody*>& objects, Camera& camera);
 
+	void initializeDS();
+
 	void dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, 
 		std::vector<SpotLight>& sLights, Camera& camera);
+
+	int isRunning();
+
+protected:
 	void dsGeometry(std::vector<RigidBody*>& objects, Camera& camera);
 	void dsLighting(std::vector<PointLight>& pLights,
 		std::vector<SpotLight>& sLights, Camera& camera);
@@ -98,13 +96,9 @@ public:
 	GLuint createProgram(const std::vector<GLuint> &shaderList);
 
 	void initializeProgram(std::vector<GLuint> &programs);
-	void initializeVertexBuffer();
-	void initializeVertexArrayObjects();
-	void initializeUniformBuffer();
 	
-	void initializeDS();
-
-	int isRunning();
+	void initProgramdsPNTxDS();
+	void initProgramdsPN();
 };
 
 #endif

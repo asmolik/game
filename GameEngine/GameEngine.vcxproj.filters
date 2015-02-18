@@ -34,12 +34,12 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{2b79fe4a-977b-4799-b6f4-73b35ef44b2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utility">
+      <UniqueIdentifier>{9a728f5d-7de8-41dd-bd4e-a586d53fab68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="OpenglRenderer.cpp">
@@ -90,9 +90,6 @@
     <ClCompile Include="RotationConstraint.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="GBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files\Lights</Filter>
     </ClCompile>
@@ -132,11 +129,20 @@
     <ClCompile Include="OpenglPrograms.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="GBuffer.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Clock.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Sun.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="OpenglRenderer.h">
       <Filter>Source Files\System</Filter>
     </ClInclude>
@@ -188,9 +194,6 @@
     <ClInclude Include="RotationConstraint.h">
       <Filter>Source Files\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="GBuffer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="DirectionalLight.h">
       <Filter>Source Files\Lights</Filter>
     </ClInclude>
@@ -229,6 +232,18 @@
     </ClInclude>
     <ClInclude Include="OpenglPrograms.h">
       <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GBuffer.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Clock.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Sun.h">
+      <Filter>Source Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +303,9 @@
     </Text>
     <Text Include="dsGeometryVertex.txt">
       <Filter>Resource Files\Deferred Shading</Filter>
+    </Text>
+    <Text Include="ToDoList.txt">
+      <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
 </Project>

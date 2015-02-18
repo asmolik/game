@@ -3,7 +3,7 @@
 
 const glm::vec3 Physics::gravity = glm::vec3(0, -9.80665f, 0);
 
-const float Physics::epsilon = 1.0e-8;
+const float Physics::epsilon = 1.0e-8f;
 
 const float Physics::pi = 3.14159265359f;
 

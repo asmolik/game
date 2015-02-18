@@ -1,0 +1,6 @@
+
+-better sun
+-tone mapping
+-bloom
+-shadow map
+-game data loading from file

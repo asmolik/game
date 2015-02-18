@@ -44,8 +44,8 @@ void Mesh::loadPN(int index, const aiMesh* mesh)
 {
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
-	vertices.resize(mesh->mNumVertices * 6);
-	indices.resize(mesh->mNumFaces * 3);
+	/*vertices.resize(mesh->mNumVertices * 6);
+	indices.resize(mesh->mNumFaces * 3);*/
 
 	for (int i = 0; i < mesh->mNumVertices; ++i)
 	{
