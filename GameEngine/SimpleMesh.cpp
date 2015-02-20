@@ -32,8 +32,8 @@ void SimpleMesh::loadMeshPN(std::vector<float>& vertices, std::vector<unsigned i
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)* 8, 0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)* 8, (void*)(sizeof(float)* 3));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)* 6, 0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)* 6, (void*)(sizeof(float)* 3));
 
 	glBindVertexArray(0);
 }

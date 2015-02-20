@@ -12,8 +12,8 @@ Diffuse and specular color can be read from textures.
 class Material
 {
 protected:
-	glm::vec3 diffuseColor;
-	glm::vec3 specularColor;
+	glm::vec4 diffuseColor;
+	glm::vec4 specularColor;
 	float shininess;
 	Texture* diffuseTexture;
 	Texture* specularTexture;

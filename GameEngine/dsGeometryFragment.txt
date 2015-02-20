@@ -1,7 +1,7 @@
 #version 330
 
-in vec4 vertexNormal;
 in vec4 cameraSpacePos;
+in vec3 vertexNormal;
 
 layout (location = 0) out vec3 cameraSpacePosOut;
 layout (location = 1) out vec3 diffuseOut;
@@ -19,7 +19,7 @@ void main()
     cameraSpacePosOut = cameraSpacePos.xyz;
     diffuseOut = diffuseColor.xyz;
 	specularOut = specularColor.xyz;
-    normalOut = normalize(vertexNormal).xyz;
+    normalOut = normalize(vertexNormal);
     texCoOut = vec3(0.0, 0.0, 0.0);
 	shininessOut = shininessFactor;
 }

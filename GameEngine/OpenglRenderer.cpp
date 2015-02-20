@@ -56,7 +56,7 @@ void OpenglRenderer::init()
 	initProgramdsPN();
 
 	Plane::init(programs[4]);
-	Track::init(programs[5]);
+	//Track::init(programs[5]);
 	Box::init(programs[4]);
 	Wheel::init(programs[4]);
 
@@ -285,6 +285,12 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 		GLuint m = glGetUniformLocation(programs[i], "cameraToClipMatrix");
 		glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
 	}
+	glUseProgram(OpenglPrograms::dsPN);
+	GLuint m = glGetUniformLocation(OpenglPrograms::dsPN, "cameraToClipMatrix");
+	glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
+	glUseProgram(OpenglPrograms::dsPNTxDS);
+	m = glGetUniformLocation(OpenglPrograms::dsPNTxDS, "cameraToClipMatrix");
+	glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
 
 	glUseProgram(programs[4]);
 
@@ -297,9 +303,11 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 	{
 		objects[i]->display(matrix);
 	}
+	glUseProgram(OpenglPrograms::dsPN);
+	objects[objects.size() - 1]->display(matrix);
 
 	glUseProgram(programs[5]);
-	objects[1]->display(matrix);
+	//objects[1]->display(matrix);
 
 	glDepthMask(GL_FALSE);
 	glDisable(GL_DEPTH_TEST);

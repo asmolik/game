@@ -18,14 +18,16 @@ class Mesh
 {
 protected:
 	std::vector<SimpleMesh> simpleMeshes;
+	GLuint program;
 
 public:
 	Mesh();
 	~Mesh();
 	//Load mesh from a file with assimp.
-	void loadMesh(std::string fileName);
+	void loadMesh(const std::string& fileName);
 	//Display this mesh. Appropriate opengl program is assumed to be bound.
 	void display();
+	GLuint getProgram();
 
 protected:
 	void loadSimpleMesh(int index, const aiMesh* mesh, const aiMaterial* material);

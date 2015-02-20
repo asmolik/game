@@ -1,17 +1,17 @@
 #version 330
 
 layout (location = 0) in vec4 position;
-layout (location = 1) in vec4 normal;
+layout (location = 1) in vec3 normal;
 
-out vec4 vertexNormal;
 out vec4 cameraSpacePos;
+out vec3 vertexNormal;
 
 uniform mat4 cameraToClipMatrix;
 uniform mat4 modelToCameraMatrix;
 
 void main()
 {
-	vertexNormal = modelToCameraMatrix * normal;
+	vertexNormal = (modelToCameraMatrix * vec4(normal, 0.0)).xyz;
 	vec4 tmp = modelToCameraMatrix * position;
 	cameraSpacePos = tmp;
 	gl_Position = cameraToClipMatrix * tmp;

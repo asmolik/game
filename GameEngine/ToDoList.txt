@@ -1,6 +1,8 @@
 
 -better sun
+-dynamic skybox
 -tone mapping
 -bloom
 -shadow map
 -game data loading from file
+-improved input handling

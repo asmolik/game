@@ -15,6 +15,7 @@
 #include "OpenglPrograms.h"
 #include "GBuffer.h"
 #include "RigidBody.h"
+#include "Object.h"
 #include "Mesh.h"
 #include "Plane.h"
 #include "Track.h"

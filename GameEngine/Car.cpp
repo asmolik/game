@@ -149,7 +149,7 @@ std::vector<Contact*> Car::generateContact(RigidBody* body)
 	switch (body->getID())
 	{
 		//track
-	case 4:
+	case ObjectIDs::trackID:
 	{
 			  //Check for contact for each wheel
 			  for (Wheel& w : wheels)

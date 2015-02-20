@@ -11,15 +11,19 @@ Mesh::~Mesh()
 }
 
 
-void Mesh::loadMesh(std::string fileName)
+void Mesh::loadMesh(const std::string& fileName)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName.c_str(),
 		aiProcess_Triangulate |
 		aiProcess_GenSmoothNormals |
-		aiProcess_JoinIdenticalVertices);
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_FlipWindingOrder);
 	if (!scene)
+	{
 		std::cout << "Import failed." << std::endl << importer.GetErrorString() << std::endl;
+		return;
+	}
 
 	simpleMeshes.resize(scene->mNumMeshes);
 	for (int i = 0; i < scene->mNumMeshes; ++i)
@@ -112,10 +116,16 @@ void Mesh::loadMaterial(int index, const aiMaterial* material)
 	//Material has diffuse and specular textures.
 	if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0 &&
 		material->GetTextureCount(aiTextureType_SPECULAR) > 0)
+	{
 		loadMaterialDS(index, material);
+		program = OpenglPrograms::dsPNTxDS;
+	}
 	//Material has only diffuse texture.
 	else if (material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+	{
 		loadMaterialD(index, material);
+		program = OpenglPrograms::dsPNTxD;
+	}
 	//No textures.
 	else
 	{
@@ -138,6 +148,8 @@ void Mesh::loadMaterial(int index, const aiMaterial* material)
 		GLuint shininessUnif = glGetUniformLocation(OpenglPrograms::dsPN, "shininessFactor");
 		mat.setUniforms(diffuseUnif, specularUnif, shininessUnif);
 		simpleMeshes[index].setMaterial(mat);
+
+		program = OpenglPrograms::dsPN;
 	}
 }
 
@@ -200,4 +212,10 @@ void Mesh::display()
 {
 	for (SimpleMesh& mesh : simpleMeshes)
 		mesh.display();
+}
+
+
+GLuint Mesh::getProgram()
+{
+	return program;
 }

@@ -2,9 +2,10 @@
 
 int main()
 {
-	Mesh mesh;
+	Object mesh;
 	GameEngine game;
-	mesh.loadMesh("C:/Users/Olek/Downloads/assimp-3.1.1/test/models/OBJ/box.obj");
+	mesh.loadMesh("C:/Users/Olek/Downloads/assimp-3.1.1/test/models/AC/Wuson.ac");
+	mesh.setPosition(glm::vec3(650.0f, 3.1f, 505.0f));
 	Plane map;
 	Track track;
 	track.setMass(0);
@@ -69,6 +70,7 @@ int main()
 	game.addPointLight(l6);
 	game.addPointLight(l7);
 	game.addSpotLight(sl);
+	game.addBody(mesh);
 	game.init();
 	game.run();
 	return 0;

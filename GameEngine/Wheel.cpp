@@ -49,13 +49,13 @@ std::vector<Contact*> Wheel::generateContact(RigidBody* body)
 	switch (body->getID())
 	{
 		//plane
-	case 0:
+	case ObjectIDs::planeID:
 	{
 			  break;
 	}
 
 		//box
-	case 1:
+	case ObjectIDs::boxID:
 	{
 			  Box* box = (Box*)body;
 			  glm::vec3 pos = current.position;
@@ -88,13 +88,13 @@ std::vector<Contact*> Wheel::generateContact(RigidBody* body)
 	}
 
 		//wheel
-	case 2:
+	case ObjectIDs::wheelID:
 	{
 			  break;
 	}
 
 		//track
-	case 4:
+	case ObjectIDs::trackID:
 	{
 			  Track* plane = (Track*)body;
 			  if (glm::length(current.velocity) < Physics::epsilon)

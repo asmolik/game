@@ -22,17 +22,17 @@ void Material::load()
 	if (diffuseTexture)
 		diffuseTexture->bind();
 	else
-		glUniform3fv(diffuseUnif, 1, glm::value_ptr(diffuseColor));
+		glUniform4fv(diffuseUnif, 1, glm::value_ptr(diffuseColor));
 	if (specularTexture)
 		specularTexture->bind();
 	else
-		glUniform3fv(specularUnif, 1, glm::value_ptr(specularColor));
+		glUniform4fv(specularUnif, 1, glm::value_ptr(specularColor));
 }
 
 
 void Material::setDiffuseColor(glm::vec3& color)
 {
-	diffuseColor = color;
+	diffuseColor = glm::vec4(color, 1.0f);
 }
 
 
@@ -44,7 +44,7 @@ void Material::setDiffuseTexture(Texture* texture)
 
 void Material::setSpecularColor(glm::vec3& color)
 {
-	specularColor = color;
+	specularColor = glm::vec4(color, 1.0f);
 }
 
 
