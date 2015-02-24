@@ -25,7 +25,10 @@ public:
 	Material();
 	~Material();
 
-	//Loads material information to opengl program.
+	/*
+	Loads material information to opengl program. If there isn't a texture it 
+	loads a uniform color.
+	*/
 	void load();
 
 	void setDiffuseColor(glm::vec3& color);

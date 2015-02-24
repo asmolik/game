@@ -33,7 +33,7 @@ glm::vec3& Sun::getSunColor(double hour)
 	if (hour > sunrise && hour < sunset)
 	{
 		float s = std::sinf(hour);
-		color;
+		color *= s * 10000.0f;
 	}
 	return color;
 }

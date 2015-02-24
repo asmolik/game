@@ -1,6 +1,4 @@
-
-#ifndef RIGIDBODY_H
-#define RIGIDBODY_H
+#pragma once
 
 class Contact;
 
@@ -14,6 +12,9 @@ class Contact;
 #include "ObjectIDs.h"
 #include "Physics.h"
 
+/*
+Base class for every object. ID decides how it is handled by the physics engine.
+*/
 class RigidBody
 {
 protected:
@@ -118,5 +119,3 @@ public:
 
 	void clearAccumulatedImpulses();
 };
-
-#endif

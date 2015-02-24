@@ -4,5 +4,5 @@
 -tone mapping
 -bloom
 -shadow map
--game data loading from file
+-game data loading from an xml file
 -improved input handling

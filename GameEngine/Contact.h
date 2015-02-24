@@ -1,12 +1,13 @@
-
-#ifndef CONTACT_H
-#define CONTACT_H
+#pragma once
 
 class RigidBody;
 
 #include <algorithm>
 #include <glm/vec3.hpp>
 
+/*
+Represents a collision point between two rigid bodies.
+*/
 class Contact
 {
 protected:
@@ -41,9 +42,12 @@ public:
 
 	RigidBody* getBody1();
 	RigidBody* getBody2();
+	/* Normal pointing to body2. */
 	glm::vec3 getNormal();
 	glm::vec3 getTangent();
+	/* Point of impact on body1. */
 	glm::vec3 getPoint1();
+	/* Point of impact on body2. */
 	glm::vec3 getPoint2();
 	float getDistance();
 	float getTimeOfImpact();
@@ -53,5 +57,3 @@ public:
 	void clampImpulse();
 	void clearAccumulator();
 };
-
-#endif

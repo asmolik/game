@@ -1,6 +1,4 @@
-
-#ifndef OPENGLRENDERER_H
-#define OPENGLRENDERER_H
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -32,6 +30,9 @@
 
 class GameEngine;
 
+/*
+Drawing on screen with opengl.
+*/
 class OpenglRenderer
 {
 private:
@@ -72,22 +73,39 @@ public:
 	void setAmbientColor(glm::vec3& color);
 	void setSun(glm::vec3& direction, glm::vec3& color);
 
+	/*
+	Display objects using forward shading.
+	*/
 	void display(std::vector<RigidBody*>& objects, Camera& camera);
 
+	/*
+	Initialize deferred shading.
+	1. Initialize gbuffer.
+	*/
 	void initializeDS();
 
+	/*
+	Display objects and lights using deferred shading.
+	*/
 	void dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, 
 		std::vector<SpotLight>& sLights, Camera& camera);
 
+	/* @return 0 if the window should close. */
 	int isRunning();
 
 protected:
+	/* Deferred shading geometry pass. */
 	void dsGeometry(std::vector<RigidBody*>& objects, Camera& camera);
+	/* Deferred shading lighting pass. */
 	void dsLighting(std::vector<PointLight>& pLights,
 		std::vector<SpotLight>& sLights, Camera& camera);
+	/* Deferred shading lighting pass for lights which are connected to rigid bodies. */
 	void dsLighting(std::vector<RigidBody*>& objects, Camera& camera);
+	/* Directional light part. */
 	void dsLightingDirectional(Camera& camera);
+	/* Point light part. */
 	void dsLightingPoint(std::vector<PointLight>& pLights, Camera& camera);
+	/* Spot light part. */
 	void dsLightingSpot(std::vector<SpotLight>& sLights, Camera& camera);
 
 
@@ -98,8 +116,8 @@ protected:
 
 	void initializeProgram(std::vector<GLuint> &programs);
 	
+	/* Initialize opengl program for displaying objects with textures. */
 	void initProgramdsPNTxDS();
+	/* Initialize opengl program for displaying objects with a uniform material. */
 	void initProgramdsPN();
 };
-
-#endif

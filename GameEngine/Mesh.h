@@ -27,14 +27,20 @@ public:
 	void loadMesh(const std::string& fileName);
 	//Display this mesh. Appropriate opengl program is assumed to be bound.
 	void display();
+	//A program that is appropriate for this mesh.
 	GLuint getProgram();
 
 protected:
 	void loadSimpleMesh(int index, const aiMesh* mesh, const aiMaterial* material);
+	//Load a mesh with positions and normals.
 	void loadPN(int index, const aiMesh* mesh);
+	//Load a mesh with positions, normals and texture coordinates.
 	void loadPNTx(int index, const aiMesh* mesh);
+	//Load material for the mesh.
 	void loadMaterial(int index, const aiMaterial* material);
+	//Load material with diffuse and specular textures.
 	void loadMaterialDS(int index, const aiMaterial* material);
+	//Load material with diffuse texture.
 	void loadMaterialD(int index, const aiMaterial* material);
 };
 

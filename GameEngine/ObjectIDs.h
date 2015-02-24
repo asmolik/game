@@ -10,8 +10,10 @@ noCollisionsID body with its own speed but without forces or collisions.
 class ObjectIDs
 {
 public:
+	//body with its own speed but without forces or collisions
 	static const int noCollisionsID = -2;
-	static const int noPhysicsID = -1;
+	//static body
+	static const int staticID = -1;
 	static const int defaultID = 0;
 	static const int planeID = 1;
 	static const int boxID = 2;

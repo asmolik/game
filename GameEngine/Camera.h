@@ -1,6 +1,4 @@
-
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/vec3.hpp>
@@ -21,6 +19,9 @@ public:
 	Camera();
 	Camera(glm::vec3 position, glm::fquat orientation);
 
+	/*
+	Get current transformation matrix from world space to camera space.
+	*/
 	glm::mat4 cameraTransform();
 	glm::vec3 getPosition();
 	glm::fquat getOrientation();
@@ -44,5 +45,3 @@ public:
 	void setVelocity(glm::vec3& velocity);
 	void setObjectToFollow(RigidBody* object);
 };
-
-#endif

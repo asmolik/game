@@ -1,6 +1,9 @@
 #pragma once
 #include <cmath>
 
+/*
+A clock which keeps track of the in game time. It advances in discreet steps.
+*/
 class Clock
 {
 protected:
