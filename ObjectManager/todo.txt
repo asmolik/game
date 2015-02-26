@@ -1,0 +1,2 @@
+﻿-display object data in the right tab
+-load materials and display them in the right tab
