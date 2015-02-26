@@ -3,17 +3,16 @@
   <Type>
     
   </Type>
-  <colorDiffuse>
+  <ColorDiffuse>
     <R></R>
     <G></G>
     <B></B>
-  </colorDiffuse>
-  <colorSpecular>
+  </ColorDiffuse>
+  <ColorSpecular>
     <R></R>
     <G></G>
     <B></B>
-  </colorSpecular>
-  <meshFile></meshFile>
+  </ColorSpecular>
   <diffuseTexture></diffuseTexture>
   <specularTexture></specularTexture>
   <normalTexture></normalTexture>
