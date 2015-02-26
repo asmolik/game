@@ -313,5 +313,31 @@
     <Text Include="ToDoList.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="xmlWorldFormat.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="xmlMaterialFormat.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="xmlLightFormat.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="xmlMeshFormat.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="WorldData.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="material.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="lightProperties.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="Mesh.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

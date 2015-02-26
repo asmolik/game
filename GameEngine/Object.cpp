@@ -1,7 +1,7 @@
 #include "Object.h"
 
 
-Object::Object() : RigidBody(ObjectIDs::noPhysicsID)
+Object::Object() : RigidBody(ObjectIDs::defaultID)
 {
 }
 

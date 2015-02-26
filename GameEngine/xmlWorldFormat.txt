@@ -1,0 +1,18 @@
+Format for world data.
+
+Node can contain other nodes. In such case the child node's position and orientation is 
+relative to the parent node's position and orientation.
+
+Every node can have following elements:
+-position (x, y, z)
+-orientation (x, y, z, w)
+-subtype
+
+Node of type light can have following elements:
+-subtype (directional light, spotlight, point light)
+-properties file
+
+Node of type object:
+-scale (x, y, z)
+-mesh file
+-material file

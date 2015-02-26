@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Scene>
+  <Node>
+    <Type>
+      <Subtype></Subtype>
+    </Type>
+    <Position>
+      <X></X>
+      <Y></Y>
+      <Z></Z>
+    </Position>
+    <Orientation>
+      <X></X>
+      <Y></Y>
+      <Z></Z>
+      <W></W>
+    </Orientation>
+    <Scale>
+      <X></X>
+      <Y></Y>
+      <Z></Z>
+      <W></W>      
+    </Scale>
+  </Node>
+</Scene>

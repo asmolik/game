@@ -1,0 +1,12 @@
+Format for material.
+
+-type
+	Textured:
+	-diffuse texture
+	-specular texture
+	-shininess texture
+	-normal texture
+	Non-textured:
+	-diffuse color
+	-specular color
+	-shininess

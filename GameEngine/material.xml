@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Material>
+  <Type>
+    
+  </Type>
+  <colorDiffuse>
+    <R></R>
+    <G></G>
+    <B></B>
+  </colorDiffuse>
+  <colorSpecular>
+    <R></R>
+    <G></G>
+    <B></B>
+  </colorSpecular>
+  <meshFile></meshFile>
+  <diffuseTexture></diffuseTexture>
+  <specularTexture></specularTexture>
+  <normalTexture></normalTexture>
+  <shininessTexture></shininessTexture>
+</Material>

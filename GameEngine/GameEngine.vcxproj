@@ -227,6 +227,18 @@
     <Text Include="VertexShaderNormals.txt" />
     <Text Include="VertexShaderTexture.txt" />
     <Text Include="VertexShaderTextureBump.txt" />
+    <Text Include="xmlLightFormat.txt" />
+    <Text Include="xmlMaterialFormat.txt" />
+    <Text Include="xmlMeshFormat.txt" />
+    <Text Include="xmlWorldFormat.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="lightProperties.xml" />
+    <Xml Include="material.xml" />
+    <Xml Include="Mesh.xml" />
+    <Xml Include="WorldData.xml">
+      <SubType>Designer</SubType>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

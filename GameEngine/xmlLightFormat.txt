@@ -1,0 +1,13 @@
+Format for light properties.
+
+-color (r, g, b)
+-type
+	Directional light:
+	-direction (x, y, z)
+	Point light:
+	-position (x, y, z)
+	-attenuation (f)
+	Spotlight:
+	-position (x, y, z)
+	-attenuation (f)
+	-angle (a)
