@@ -7,14 +7,22 @@ using System.Globalization;
 
 namespace ObjectManager
 {
+	// add xelement to this class
 	class Object
 	{
+		private String name = "";
 		protected String type = "";
 		protected float[] position = new float[3] { 0.0f, 0.0f, 0.0f };
 		protected float[] orientation = new float[4] { 0.0f, 0.0f, 0.0f, 1.0f };
 		protected float[] scale = new float[3] { 1.0f, 1.0f, 1.0f };
 		protected String meshFile = "";
 		protected String materialFile = "";
+
+		public String Name
+		{
+			get { return name; }
+			set { name = value; }
+		}
 
 		public String Type
 		{

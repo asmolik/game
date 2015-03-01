@@ -60,7 +60,7 @@ Global
 		{E628AD46-18B0-4346-92CD-1F05D7AE8842}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{E628AD46-18B0-4346-92CD-1F05D7AE8842}.Release|Win32.ActiveCfg = Release|Win32
 		{E628AD46-18B0-4346-92CD-1F05D7AE8842}.Release|Win32.Build.0 = Release|Win32
-		{E628AD46-18B0-4346-92CD-1F05D7AE8842}.Release|x64.ActiveCfg = Release|Win32
+		{E628AD46-18B0-4346-92CD-1F05D7AE8842}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

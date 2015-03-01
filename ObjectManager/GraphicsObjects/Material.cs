@@ -9,6 +9,7 @@ namespace ObjectManager
 {
 	class Material
 	{
+		private String name = "";
 		protected float[] diffuseColor = new float[4] { 135.0f / 255.0f, 206.0f / 255.0f, 235.0f / 255.0f, 1.0f };
 		protected float[] specularColor = new float[4] { 0.25f, 0.25f, 0.25f, 1.0f };
 		protected float shininess;
@@ -16,6 +17,12 @@ namespace ObjectManager
 		protected String specularTexture;
 		protected String normalTexture;
 		protected String shininessTexture;
+
+		protected String Name
+		{
+			get { return name; }
+			set { name = value; }
+		}
 
 		public float[] DiffuseColor
 		{

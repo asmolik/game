@@ -30,7 +30,7 @@
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ObjectManager));
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.menu = new System.Windows.Forms.MenuStrip();
 			this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.open = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,21 +43,21 @@
 			this.lightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
 			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.menu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// menu
@@ -86,7 +86,7 @@
 			// 
 			this.open.Name = "open";
 			this.open.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.open.Size = new System.Drawing.Size(152, 22);
+			this.open.Size = new System.Drawing.Size(146, 22);
 			this.open.Text = "Open";
 			this.open.Click += new System.EventHandler(this.open_Click);
 			// 
@@ -94,7 +94,7 @@
 			// 
 			this.save.Name = "save";
 			this.save.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.save.Size = new System.Drawing.Size(152, 22);
+			this.save.Size = new System.Drawing.Size(146, 22);
 			this.save.Text = "Save";
 			this.save.Click += new System.EventHandler(this.save_Click);
 			// 
@@ -109,7 +109,7 @@
 			// convertMesh
 			// 
 			this.convertMesh.Name = "convertMesh";
-			this.convertMesh.Size = new System.Drawing.Size(152, 22);
+			this.convertMesh.Size = new System.Drawing.Size(103, 22);
 			this.convertMesh.Text = "Mesh";
 			this.convertMesh.Click += new System.EventHandler(this.convertMesh_Click);
 			// 
@@ -140,14 +140,14 @@
 			// boxToolStripMenuItem
 			// 
 			this.boxToolStripMenuItem.Name = "boxToolStripMenuItem";
-			this.boxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.boxToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
 			this.boxToolStripMenuItem.Text = "Object";
 			this.boxToolStripMenuItem.Click += new System.EventHandler(this.boxToolStripMenuItem_Click);
 			// 
 			// lightToolStripMenuItem
 			// 
 			this.lightToolStripMenuItem.Name = "lightToolStripMenuItem";
-			this.lightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.lightToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
 			this.lightToolStripMenuItem.Text = "Light";
 			// 
 			// tabControl1
@@ -161,16 +161,6 @@
 			this.tabControl1.Size = new System.Drawing.Size(664, 508);
 			this.tabControl1.TabIndex = 2;
 			// 
-			// tabPage2
-			// 
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(638, 431);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "tabPage2";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
 			// tabPage1
 			// 
 			this.tabPage1.Controls.Add(this.dataGridView1);
@@ -181,6 +171,37 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "World";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// dataGridView1
+			// 
+			this.dataGridView1.AllowUserToAddRows = false;
+			this.dataGridView1.AllowUserToDeleteRows = false;
+			this.dataGridView1.AllowUserToOrderColumns = true;
+			this.dataGridView1.AllowUserToResizeRows = false;
+			this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+			this.dataGridView1.MultiSelect = false;
+			this.dataGridView1.Name = "dataGridView1";
+			dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Empty;
+			dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Empty;
+			this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
+			this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+			this.dataGridView1.Size = new System.Drawing.Size(650, 476);
+			this.dataGridView1.TabIndex = 0;
+			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(656, 482);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "tabPage2";
+			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
 			// tableLayoutPanel1
 			// 
@@ -210,25 +231,6 @@
 			this.splitContainer1.SplitterDistance = 664;
 			this.splitContainer1.TabIndex = 3;
 			// 
-			// dataGridView1
-			// 
-			this.dataGridView1.AllowUserToAddRows = false;
-			this.dataGridView1.AllowUserToDeleteRows = false;
-			this.dataGridView1.AllowUserToOrderColumns = true;
-			this.dataGridView1.AllowUserToResizeRows = false;
-			this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.dataGridView1.Location = new System.Drawing.Point(3, 3);
-			this.dataGridView1.MultiSelect = false;
-			this.dataGridView1.Name = "dataGridView1";
-			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Transparent;
-			this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle1;
-			this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-			this.dataGridView1.Size = new System.Drawing.Size(650, 476);
-			this.dataGridView1.TabIndex = 0;
-			this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-			// 
 			// ObjectManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -248,11 +250,11 @@
 			((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
