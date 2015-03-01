@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "OpenglPrograms.h"
 #include "GBuffer.h"
+#include "UniformBuffer.h"
 #include "RigidBody.h"
 #include "Object.h"
 #include "Mesh.h"
@@ -30,19 +31,22 @@
 
 class GameEngine;
 
-/*
-Drawing on screen with opengl.
-*/
+
+// Drawing on screen with opengl.
 class OpenglRenderer
 {
-private:
+protected:
 	GLFWwindow* window;
 	int wWidth, wHeight;
+
 	std::vector<GLuint> programs;
-
 	GBuffer gbuffer;
+	UniformBuffer perspectiveMatrixUB;
 
-	float zNear, zFar;
+	std::vector<RigidBody*>* objects;
+	Camera* camera;
+	std::vector<PointLight>* pointLights;
+	std::vector<SpotLight>* spotLights;
 
 	glm::vec3 ambientColor;
 	glm::vec3 sunDirection;
@@ -50,6 +54,7 @@ private:
 
 	glm::mat4 perspectiveMatrix;
 	float fFrustumScale;
+	float zNear, zFar;
 
 	void init();
 
@@ -73,40 +78,41 @@ public:
 	void setAmbientColor(glm::vec3& color);
 	void setSun(glm::vec3& direction, glm::vec3& color);
 
-	/*
-	Display objects using forward shading.
-	*/
-	void display(std::vector<RigidBody*>& objects, Camera& camera);
+	// Set the vector of objects to be displayed.
+	void setObjects(std::vector<RigidBody*>* objects);
+	// Set the camera with which to display the scene.
+	void setCamera(Camera* camera);
+	// Set the vector of point lights to be displayed.
+	void setPointLights(std::vector<PointLight>* pointLights);
+	// Set the vector of spotlights to be displayed.
+	void setSpotLights(std::vector<SpotLight>* spotLights);
 
-	/*
-	Initialize deferred shading.
-	1. Initialize gbuffer.
-	*/
+	// Display objects using forward shading.
+	void display();
+
+	// Initialize deferred shading.
+	// 1. Initialize gbuffer.
 	void initializeDS();
 
-	/*
-	Display objects and lights using deferred shading.
-	*/
-	void dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, 
-		std::vector<SpotLight>& sLights, Camera& camera);
+	// Display objects and lights using deferred shading.
+	void dsDisplay();
 
-	/* @return 0 if the window should close. */
+	// @return 0 if the window should close.
 	int isRunning();
 
 protected:
-	/* Deferred shading geometry pass. */
-	void dsGeometry(std::vector<RigidBody*>& objects, Camera& camera);
-	/* Deferred shading lighting pass. */
-	void dsLighting(std::vector<PointLight>& pLights,
-		std::vector<SpotLight>& sLights, Camera& camera);
-	/* Deferred shading lighting pass for lights which are connected to rigid bodies. */
-	void dsLighting(std::vector<RigidBody*>& objects, Camera& camera);
-	/* Directional light part. */
-	void dsLightingDirectional(Camera& camera);
-	/* Point light part. */
-	void dsLightingPoint(std::vector<PointLight>& pLights, Camera& camera);
-	/* Spot light part. */
-	void dsLightingSpot(std::vector<SpotLight>& sLights, Camera& camera);
+	// Deferred shading geometry pass.
+	void dsGeometry();
+	// Deferred shading lighting pass.
+	void dsLighting();
+	// Deferred shading lighting pass for lights which are connected to rigid bodies.
+	void dsLightingFromObjects();
+	// Directional light part.
+	void dsLightingDirectional();
+	// Point light part.
+	void dsLightingPoint();
+	// Spotlight part.
+	void dsLightingSpot();
 
 
 	std::string txtToString(std::string fileName);
@@ -116,8 +122,8 @@ protected:
 
 	void initializeProgram(std::vector<GLuint> &programs);
 	
-	/* Initialize opengl program for displaying objects with textures. */
+	// Initialize opengl program for displaying objects with textures.
 	void initProgramdsPNTxDS();
-	/* Initialize opengl program for displaying objects with a uniform material. */
+	// Initialize opengl program for displaying objects with a uniform material.
 	void initProgramdsPN();
 };

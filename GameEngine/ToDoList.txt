@@ -6,3 +6,7 @@
 -shadow map
 -game data loading from an xml file
 -improved input handling
+
+-remove assimp from game engine
+-create shaders for more materials
+-gui

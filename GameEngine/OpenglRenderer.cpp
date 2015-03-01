@@ -54,6 +54,7 @@ void OpenglRenderer::init()
 	initializeProgram(programs);
 	initProgramdsPNTxDS();
 	initProgramdsPN();
+	perspectiveMatrixUB.setSize();
 
 	Plane::init(programs[4]);
 	//Track::init(programs[5]);
@@ -106,6 +107,7 @@ void OpenglRenderer::reshapeWindow(int width, int height)
 	wWidth = width;
 	wHeight = height;
 	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
+	perspectiveMatrixUB.setData(perspectiveMatrix, 0);
 
 	glViewport(0, 0, width, height);
 }
@@ -150,6 +152,37 @@ void OpenglRenderer::setSun(glm::vec3& d, glm::vec3& c)
 	sunDirection = d;
 	sunColor = c;
 }
+
+
+// Set the vector of objects to be displayed.
+void OpenglRenderer::setObjects(std::vector<RigidBody*>* objects)
+{
+	this->objects = objects;
+}
+
+
+//Set the camera with which to display the scene.
+void OpenglRenderer::setCamera(Camera* camera)
+{
+	this->camera = camera;
+}
+
+
+
+// Set the vector of point lights to be displayed.
+void OpenglRenderer::setPointLights(std::vector<PointLight>* pointLights)
+{
+	this->pointLights = pointLights;
+}
+
+
+// Set the vector of spotlights to be displayed.
+void OpenglRenderer::setSpotLights(std::vector<SpotLight>* spotLights)
+{
+	this->spotLights = spotLights;
+}
+
+
 //
 //void OpenglRenderer::display(std::vector<RigidBody*>& objects, Camera& camera)
 //{
@@ -250,16 +283,17 @@ void OpenglRenderer::setSun(glm::vec3& d, glm::vec3& c)
 //}
 
 
-void OpenglRenderer::dsDisplay(std::vector<RigidBody*>& objects, std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
+void OpenglRenderer::dsDisplay()
 {
-	dsGeometry(objects, camera);
-	dsLighting(pLights, sLights, camera);
-	dsLighting(objects, camera);
+	dsGeometry();
+	dsLighting();
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 }
-void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera)
+
+
+void OpenglRenderer::dsGeometry()
 {
 	gbuffer.bindForWriting();
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -276,7 +310,7 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glutil::MatrixStack matrix(camera.cameraTransform());
+	glutil::MatrixStack matrix(camera->cameraTransform());
 
 	for (int i = 4; i < 6; ++i)
 	{
@@ -296,15 +330,15 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 
 	//draw ground
 	glDepthMask(GL_FALSE);
-	objects[0]->display(matrix);
+	objects->at(0)->display(matrix);
 	glDepthMask(GL_TRUE);
 
-	for (int i = 2; i < objects.size(); ++i)
+	for (int i = 2; i < objects->size(); ++i)
 	{
-		objects[i]->display(matrix);
+		objects->at(i)->display(matrix);
 	}
 	glUseProgram(OpenglPrograms::dsPN);
-	objects[objects.size() - 1]->display(matrix);
+	(*objects)[objects->size() - 1]->display(matrix);
 
 	glUseProgram(programs[5]);
 	//objects[1]->display(matrix);
@@ -312,7 +346,9 @@ void OpenglRenderer::dsGeometry(std::vector<RigidBody*>& objects, Camera& camera
 	glDepthMask(GL_FALSE);
 	glDisable(GL_DEPTH_TEST);
 }
-void OpenglRenderer::dsLighting(std::vector<PointLight>& pLights, std::vector<SpotLight>& sLights, Camera& camera)
+
+
+void OpenglRenderer::dsLighting()
 {
 	glEnable(GL_BLEND);
 	glBlendEquation(GL_FUNC_ADD);
@@ -322,9 +358,10 @@ void OpenglRenderer::dsLighting(std::vector<PointLight>& pLights, std::vector<Sp
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	dsLightingPoint(pLights, camera);
-	dsLightingSpot(sLights, camera);
-	dsLightingDirectional(camera);
+	dsLightingPoint();
+	dsLightingSpot();
+	dsLightingFromObjects();
+	dsLightingDirectional();
 
 	
 	GLenum err = glGetError();
@@ -375,14 +412,16 @@ void OpenglRenderer::dsLighting(std::vector<PointLight>& pLights, std::vector<Sp
 	glBlitFramebuffer(0, 0, wWidth, wHeight,
 		hw, 0, wWidth, hh, GL_COLOR_BUFFER_BIT, GL_LINEAR);*/
 }
-void OpenglRenderer::dsLightingPoint(std::vector<PointLight>& pLights, Camera& camera)
+
+
+void OpenglRenderer::dsLightingPoint()
 {
 	glutil::MatrixStack matrix(perspectiveMatrix);
-	matrix.ApplyMatrix(camera.cameraTransform());
+	matrix.ApplyMatrix(camera->cameraTransform());
 
 	glUseProgram(programs[7]);
 
-	for (PointLight& p : pLights)
+	for (PointLight& p : *pointLights)
 	{
 		//set light params
 		GLuint lightColor = glGetUniformLocation(programs[7], "lightColor");
@@ -390,7 +429,7 @@ void OpenglRenderer::dsLightingPoint(std::vector<PointLight>& pLights, Camera& c
 		GLuint attenuation = glGetUniformLocation(programs[7], "attenuation");
 		GLuint maxInt = glGetUniformLocation(programs[7], "maxIntensity");
 		glUniform4f(lightColor, p.getColor().x, p.getColor().y, p.getColor().z, 1.0f);
-		glm::vec4 lPos = camera.cameraTransform() * glm::vec4(p.getPosition(), 1.0f);
+		glm::vec4 lPos = camera->cameraTransform() * glm::vec4(p.getPosition(), 1.0f);
 		glUniform4fv(lightPosition, 1, glm::value_ptr(lPos));
 		glUniform1f(attenuation, p.getAttenuation());
 		glUniform1f(maxInt, sunColor.x * 1.0f);
@@ -407,15 +446,17 @@ void OpenglRenderer::dsLightingPoint(std::vector<PointLight>& pLights, Camera& c
 		Sphere::display(matrix, scale);
 	}
 }
-void OpenglRenderer::dsLightingSpot(std::vector<SpotLight>& sLights, Camera& camera)
+
+
+void OpenglRenderer::dsLightingSpot()
 {
-	glm::mat4 camT = camera.cameraTransform();
+	glm::mat4 camT = camera->cameraTransform();
 	glutil::MatrixStack matrix(perspectiveMatrix);
 	matrix.ApplyMatrix(camT);
 
 	glUseProgram(programs[8]);
 
-	for (SpotLight& s : sLights)
+	for (SpotLight& s : *spotLights)
 	{
 		//set light params
 		s.display(camT);
@@ -434,7 +475,9 @@ void OpenglRenderer::dsLightingSpot(std::vector<SpotLight>& sLights, Camera& cam
 		Cone::display(matrix, scale);
 	}
 }
-void OpenglRenderer::dsLightingDirectional(Camera& camera)
+
+
+void OpenglRenderer::dsLightingDirectional()
 {
 	glUseProgram(programs[6]);
 
@@ -449,7 +492,7 @@ void OpenglRenderer::dsLightingDirectional(Camera& camera)
 	GLuint dirLightInt = glGetUniformLocation(programs[6], "sunColor");
 	GLuint dirLightDir = glGetUniformLocation(programs[6], "sunDirection");
 	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
-	glm::vec4 sunDir = camera.cameraTransform() * glm::vec4(sunDirection, 0.0f);
+	glm::vec4 sunDir = camera->cameraTransform() * glm::vec4(sunDirection, 0.0f);
 	glUniform4fv(dirLightDir, 1, glm::value_ptr(sunDir));
 	GLuint maxInt = glGetUniformLocation(programs[6], "maxIntensity");
 	glUniform1f(maxInt, sunColor.x * 1.0f);
@@ -462,14 +505,16 @@ void OpenglRenderer::dsLightingDirectional(Camera& camera)
 
 	Quad::display(matrix);
 }
-void OpenglRenderer::dsLighting(std::vector<RigidBody*>& objects, Camera& camera)
+
+
+void OpenglRenderer::dsLightingFromObjects()
 {
-	glm::mat4 camT = camera.cameraTransform();
+	glm::mat4 camT = camera->cameraTransform();
 	glutil::MatrixStack matrix(perspectiveMatrix);
 	matrix.ApplyMatrix(camT);
 
 	glUseProgram(programs[8]);
-	for (RigidBody* object : objects)
+	for (RigidBody* object : *objects)
 	{
 		object->displayLights(matrix, camT);
 	}

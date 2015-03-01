@@ -165,7 +165,9 @@
     <ClCompile Include="Sun.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Track.cpp" />
+    <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="Wheel.cpp" />
+    <ClCompile Include="Xml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Box.h" />
@@ -204,7 +206,9 @@
     <ClInclude Include="Sun.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Track.h" />
+    <ClInclude Include="UniformBuffer.h" />
     <ClInclude Include="Wheel.h" />
+    <ClInclude Include="Xml.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dsGeometryFragment.txt" />

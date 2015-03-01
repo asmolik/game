@@ -5,7 +5,7 @@
 #include <assimp/postprocess.h>
 #include <string>
 #include <vector>
-#include <iostream>
+#include "Xml.h"
 #include "SimpleMesh.h"
 #include "OpenglPrograms.h"
 
@@ -23,8 +23,8 @@ protected:
 public:
 	Mesh();
 	~Mesh();
-	//Load mesh from a file with assimp.
-	void loadMesh(const std::string& fileName);
+	//Load mesh from an xml file.
+	int loadMesh(const std::string& fileName);
 	//Display this mesh. Appropriate opengl program is assumed to be bound.
 	void display();
 	//A program that is appropriate for this mesh.

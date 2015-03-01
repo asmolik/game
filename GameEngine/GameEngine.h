@@ -43,7 +43,6 @@ private:
 	float timeStep;
 	std::vector<RigidBody*> bodies;
 	std::vector<RigidBody*> balls;
-	//cars
 	std::vector<Car> cars;
 	std::vector<RigidBody*> planes;
 	Track track;

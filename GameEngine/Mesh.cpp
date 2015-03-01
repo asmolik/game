@@ -10,7 +10,7 @@ Mesh::~Mesh()
 }
 
 
-void Mesh::loadMesh(const std::string& fileName)
+int Mesh::loadMesh(const std::string& fileName)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName.c_str(),
@@ -21,14 +21,15 @@ void Mesh::loadMesh(const std::string& fileName)
 	if (!scene)
 	{
 		std::cout << "Import failed." << std::endl << importer.GetErrorString() << std::endl;
-		return;
+		return -1;
 	}
 
 	simpleMeshes.resize(scene->mNumMeshes);
-	for (int i = 0; i < scene->mNumMeshes; ++i)
+	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		loadSimpleMesh(i, scene->mMeshes[i], scene->mMaterials[i]);
 	}
+	return 0;
 }
 
 
@@ -50,7 +51,7 @@ void Mesh::loadPN(int index, const aiMesh* mesh)
 	/*vertices.resize(mesh->mNumVertices * 6);
 	indices.resize(mesh->mNumFaces * 3);*/
 
-	for (int i = 0; i < mesh->mNumVertices; ++i)
+	for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
 	{
 		const aiVector3D* pos = &mesh->mVertices[i];
 		const aiVector3D* nor = &mesh->mNormals[i];
@@ -63,7 +64,7 @@ void Mesh::loadPN(int index, const aiMesh* mesh)
 		vertices.push_back(nor->z);
 	}
 
-	for (int i = 0; i < mesh->mNumFaces; ++i)
+	for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
 	{
 		const aiFace* face = &mesh->mFaces[i];
 		indices.push_back(face->mIndices[0]);
@@ -82,7 +83,7 @@ void Mesh::loadPNTx(int index, const aiMesh* mesh)
 	vertices.resize(mesh->mNumVertices * 8);
 	indices.resize(mesh->mNumFaces * 3);
 
-	for (int i = 0; i < mesh->mNumVertices; ++i)
+	for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
 	{
 		const aiVector3D* pos = &mesh->mVertices[i];
 		const aiVector3D* nor = &mesh->mNormals[i];
@@ -98,7 +99,7 @@ void Mesh::loadPNTx(int index, const aiMesh* mesh)
 		vertices.push_back(tex->y);
 	}
 
-	for (int i = 0; i < mesh->mNumFaces; ++i)
+	for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
 	{
 		const aiFace* face = &mesh->mFaces[i];
 		indices.push_back(face->mIndices[0]);

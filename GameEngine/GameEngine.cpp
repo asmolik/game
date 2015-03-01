@@ -19,6 +19,10 @@ void GameEngine::init()
 	renderer.setCursorPosCallback(Input::glfwCursorPosCallback);
 	renderer.setKeyCallback(Input::glfwKeyCallback);
 	renderer.initializeDS();
+	renderer.setObjects(&bodies);
+	renderer.setCamera(&camera);
+	renderer.setPointLights(&pointLights);
+	renderer.setSpotLights(&spotLights);
 
 	input.init(renderer.getWindow());
 
@@ -135,7 +139,7 @@ double GameEngine::currentHour()
 
 int GameEngine::display()
 {
-	renderer.dsDisplay(bodies, pointLights, spotLights, camera);
+	renderer.dsDisplay();
 	return renderer.isRunning();
 }
 
