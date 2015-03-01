@@ -8,7 +8,11 @@ out vec4 cameraSpacePos;
 out vec3 vertexNormal;
 out vec2 texCo;
 
-uniform mat4 cameraToClipMatrix;
+layout(std140) uniform matrices
+{
+	mat4 cameraToClipMatrix;
+	mat4 notused;
+};
 uniform mat4 modelToCameraMatrix;
 
 void main()

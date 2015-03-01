@@ -39,9 +39,8 @@ protected:
 	GLFWwindow* window;
 	int wWidth, wHeight;
 
-	std::vector<GLuint> programs;
 	GBuffer gbuffer;
-	UniformBuffer perspectiveMatrixUB;
+	UniformBuffer* perspectiveMatrixUB;
 
 	std::vector<RigidBody*>* objects;
 	Camera* camera;
@@ -60,6 +59,7 @@ protected:
 
 public:
 	OpenglRenderer(int width, int height, std::string name, void* ptr);
+	~OpenglRenderer();
 
 	GLFWwindow* createWindow(int width, int height, std::string name);
 	GLFWwindow* getWindow();
@@ -114,16 +114,6 @@ protected:
 	// Spotlight part.
 	void dsLightingSpot();
 
-
-	std::string txtToString(std::string fileName);
-
-	GLuint createShader(GLenum eShaderType, const std::string &strShaderFile);
-	GLuint createProgram(const std::vector<GLuint> &shaderList);
-
-	void initializeProgram(std::vector<GLuint> &programs);
-	
-	// Initialize opengl program for displaying objects with textures.
-	void initProgramdsPNTxDS();
-	// Initialize opengl program for displaying objects with a uniform material.
-	void initProgramdsPN();
+	// Initialize OpenglPrograms.
+	void initializePrograms();
 };

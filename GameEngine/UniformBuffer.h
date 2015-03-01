@@ -7,6 +7,8 @@ class UniformBuffer
 {
 protected:
 	GLuint buffer;
+	int bindingPoint;
+	size_t size;
 
 public:
 	UniformBuffer();
@@ -15,5 +17,6 @@ public:
 	void setSize();
 	void setSize(size_t size);
 	void setData(glm::mat4& matrix, int index);
+	void bind();
 };
 

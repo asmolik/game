@@ -47,24 +47,33 @@ OpenglRenderer::OpenglRenderer(int width, int height, std::string name, void* pt
 }
 
 
+OpenglRenderer::~OpenglRenderer()
+{
+	delete perspectiveMatrixUB;
+}
+
+
 
 
 void OpenglRenderer::init()
 {
-	initializeProgram(programs);
-	initProgramdsPNTxDS();
-	initProgramdsPN();
-	perspectiveMatrixUB.setSize();
+	initializePrograms();
 
-	Plane::init(programs[4]);
-	//Track::init(programs[5]);
-	Box::init(programs[4]);
-	Wheel::init(programs[4]);
+	perspectiveMatrixUB = new UniformBuffer();
+	perspectiveMatrixUB->setSize();
+	perspectiveMatrixUB->bind();
 
-	SpotLight::init(programs[8]);
-	Quad::init(programs[6]);
-	Sphere::init(programs[7]);
-	Cone::init(programs[8]);
+	Plane::init(OpenglPrograms::dsPN);
+	//Track::init(OpenglPrograms::dsPNTxDS);
+	Box::init(OpenglPrograms::dsPN);
+	Wheel::init(OpenglPrograms::dsPN);
+
+	SpotLight::init(OpenglPrograms::dsLightSpot);
+	Cone::init(OpenglPrograms::dsLightSpot);
+	Quad::init(OpenglPrograms::dsLightDirectional);
+	Sphere::init(OpenglPrograms::dsLightPoint);
+
+	reshapeWindow(wWidth, wHeight);
 
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -107,7 +116,7 @@ void OpenglRenderer::reshapeWindow(int width, int height)
 	wWidth = width;
 	wHeight = height;
 	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
-	perspectiveMatrixUB.setData(perspectiveMatrix, 0);
+	perspectiveMatrixUB->setData(perspectiveMatrix, 0);
 
 	glViewport(0, 0, width, height);
 }
@@ -312,21 +321,7 @@ void OpenglRenderer::dsGeometry()
 
 	glutil::MatrixStack matrix(camera->cameraTransform());
 
-	for (int i = 4; i < 6; ++i)
-	{
-		glUseProgram(programs[i]);
-
-		GLuint m = glGetUniformLocation(programs[i], "cameraToClipMatrix");
-		glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
-	}
 	glUseProgram(OpenglPrograms::dsPN);
-	GLuint m = glGetUniformLocation(OpenglPrograms::dsPN, "cameraToClipMatrix");
-	glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
-	glUseProgram(OpenglPrograms::dsPNTxDS);
-	m = glGetUniformLocation(OpenglPrograms::dsPNTxDS, "cameraToClipMatrix");
-	glUniformMatrix4fv(m, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
-
-	glUseProgram(programs[4]);
 
 	//draw ground
 	glDepthMask(GL_FALSE);
@@ -337,10 +332,9 @@ void OpenglRenderer::dsGeometry()
 	{
 		objects->at(i)->display(matrix);
 	}
-	glUseProgram(OpenglPrograms::dsPN);
 	(*objects)[objects->size() - 1]->display(matrix);
 
-	glUseProgram(programs[5]);
+	glUseProgram(OpenglPrograms::dsPNTxDS);
 	//objects[1]->display(matrix);
 
 	glDepthMask(GL_FALSE);
@@ -419,22 +413,22 @@ void OpenglRenderer::dsLightingPoint()
 	glutil::MatrixStack matrix(perspectiveMatrix);
 	matrix.ApplyMatrix(camera->cameraTransform());
 
-	glUseProgram(programs[7]);
+	glUseProgram(OpenglPrograms::dsLightPoint);
 
 	for (PointLight& p : *pointLights)
 	{
 		//set light params
-		GLuint lightColor = glGetUniformLocation(programs[7], "lightColor");
-		GLuint lightPosition = glGetUniformLocation(programs[7], "lightPosition");
-		GLuint attenuation = glGetUniformLocation(programs[7], "attenuation");
-		GLuint maxInt = glGetUniformLocation(programs[7], "maxIntensity");
+		GLuint lightColor = glGetUniformLocation(OpenglPrograms::dsLightPoint, "lightColor");
+		GLuint lightPosition = glGetUniformLocation(OpenglPrograms::dsLightPoint, "lightPosition");
+		GLuint attenuation = glGetUniformLocation(OpenglPrograms::dsLightPoint, "attenuation");
+		GLuint maxInt = glGetUniformLocation(OpenglPrograms::dsLightPoint, "maxIntensity");
 		glUniform4f(lightColor, p.getColor().x, p.getColor().y, p.getColor().z, 1.0f);
 		glm::vec4 lPos = camera->cameraTransform() * glm::vec4(p.getPosition(), 1.0f);
 		glUniform4fv(lightPosition, 1, glm::value_ptr(lPos));
 		glUniform1f(attenuation, p.getAttenuation());
 		glUniform1f(maxInt, sunColor.x * 1.0f);
 		//set screen size
-		GLuint screenSize = glGetUniformLocation(programs[7], "screenSize");
+		GLuint screenSize = glGetUniformLocation(OpenglPrograms::dsLightPoint, "screenSize");
 		glUniform2f(screenSize, (float)wWidth, (float)wHeight);
 		GLenum err = glGetError();
 		if (err != GL_NO_ERROR)
@@ -454,16 +448,16 @@ void OpenglRenderer::dsLightingSpot()
 	glutil::MatrixStack matrix(perspectiveMatrix);
 	matrix.ApplyMatrix(camT);
 
-	glUseProgram(programs[8]);
+	glUseProgram(OpenglPrograms::dsLightSpot);
 
 	for (SpotLight& s : *spotLights)
 	{
 		//set light params
 		s.display(camT);
-		GLuint maxInt = glGetUniformLocation(programs[8], "maxIntensity");
+		GLuint maxInt = glGetUniformLocation(OpenglPrograms::dsLightSpot, "maxIntensity");
 		glUniform1f(maxInt, sunColor.x * 1.0f);
 		//set screen size
-		GLuint screenSize = glGetUniformLocation(programs[8], "screenSize");
+		GLuint screenSize = glGetUniformLocation(OpenglPrograms::dsLightSpot, "screenSize");
 		glUniform2f(screenSize, (float)wWidth, (float)wHeight);
 		GLenum err = glGetError();
 		if (err != GL_NO_ERROR)
@@ -479,25 +473,25 @@ void OpenglRenderer::dsLightingSpot()
 
 void OpenglRenderer::dsLightingDirectional()
 {
-	glUseProgram(programs[6]);
+	glUseProgram(OpenglPrograms::dsLightDirectional);
 
 	//set ambient intensity
-	GLuint ambInt = glGetUniformLocation(programs[6], "ambientColor");
+	GLuint ambInt = glGetUniformLocation(OpenglPrograms::dsLightDirectional, "ambientColor");
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR || ambInt == -1)
 		std::cout << "lol";
 
 	glUniform4f(ambInt, ambientColor.x, ambientColor.y, ambientColor.z, 1.0f);
 	//set directional light intensity and direction(sun)
-	GLuint dirLightInt = glGetUniformLocation(programs[6], "sunColor");
-	GLuint dirLightDir = glGetUniformLocation(programs[6], "sunDirection");
+	GLuint dirLightInt = glGetUniformLocation(OpenglPrograms::dsLightDirectional, "sunColor");
+	GLuint dirLightDir = glGetUniformLocation(OpenglPrograms::dsLightDirectional, "sunDirection");
 	glUniform4f(dirLightInt, sunColor.x, sunColor.y, sunColor.z, 0.0f);
 	glm::vec4 sunDir = camera->cameraTransform() * glm::vec4(sunDirection, 0.0f);
 	glUniform4fv(dirLightDir, 1, glm::value_ptr(sunDir));
-	GLuint maxInt = glGetUniformLocation(programs[6], "maxIntensity");
+	GLuint maxInt = glGetUniformLocation(OpenglPrograms::dsLightDirectional, "maxIntensity");
 	glUniform1f(maxInt, sunColor.x * 1.0f);
 	//set screen size
-	GLuint screenSize = glGetUniformLocation(programs[6], "screenSize");
+	GLuint screenSize = glGetUniformLocation(OpenglPrograms::dsLightDirectional, "screenSize");
 	glUniform2f(screenSize, (float)wWidth, (float)wHeight);
 
 	glm::mat4 mat(1.0f);
@@ -513,7 +507,7 @@ void OpenglRenderer::dsLightingFromObjects()
 	glutil::MatrixStack matrix(perspectiveMatrix);
 	matrix.ApplyMatrix(camT);
 
-	glUseProgram(programs[8]);
+	glUseProgram(OpenglPrograms::dsLightSpot);
 	for (RigidBody* object : *objects)
 	{
 		object->displayLights(matrix, camT);
@@ -521,194 +515,9 @@ void OpenglRenderer::dsLightingFromObjects()
 }
 
 
-
-std::string OpenglRenderer::txtToString(std::string fileName)
+void OpenglRenderer::initializePrograms()
 {
-	std::ifstream file(fileName);
-	std::string line;
-	std::string txt;
-	if (!file.is_open())
-		return txt;
-
-	while (std::getline(file, line))
-		txt.append(line + '\n');
-
-	file.close();
-
-	return txt;
-}
-
-GLuint OpenglRenderer::createShader(GLenum eShaderType, const std::string &strShaderFile)
-{
-	GLuint shader = glCreateShader(eShaderType);
-	const char *strFileData = strShaderFile.c_str();
-	glShaderSource(shader, 1, &strFileData, NULL);
-
-	glCompileShader(shader);
-
-	GLint status;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
-
-		const char *strShaderType = NULL;
-		switch (eShaderType)
-		{
-		case GL_VERTEX_SHADER: strShaderType = "vertex"; break;
-		case GL_GEOMETRY_SHADER: strShaderType = "geometry"; break;
-		case GL_FRAGMENT_SHADER: strShaderType = "fragment"; break;
-		}
-
-		fprintf(stderr, "Compile failure in %s shader:\n%s\n", strShaderType, strInfoLog);
-		delete[] strInfoLog;
-	}
-
-	return shader;
-}
-
-GLuint OpenglRenderer::createProgram(const std::vector<GLuint> &shaderList)
-{
-	GLuint program = glCreateProgram();
-
-	for (size_t iLoop = 0; iLoop < shaderList.size(); iLoop++)
-		glAttachShader(program, shaderList[iLoop]);
-
-	glLinkProgram(program);
-
-	GLint status;
-	glGetProgramiv(program, GL_LINK_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
-		glGetProgramInfoLog(program, infoLogLength, NULL, strInfoLog);
-		fprintf(stderr, "Linker failure: %s\n", strInfoLog);
-		delete[] strInfoLog;
-	}
-
-	for (size_t iLoop = 0; iLoop < shaderList.size(); iLoop++)
-		glDetachShader(program, shaderList[iLoop]);
-
-	return program;
-}
-
-void OpenglRenderer::initializeProgram(std::vector<GLuint> &programs)
-{
-	std::vector<GLuint> shaderList;
-
-	//plane and track program
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShader.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShader.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//cool box program
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShader2.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShader2.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[2]
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShaderNormals.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShaderNormals.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[3] - texture
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("VertexShaderTextureBump.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("FragmentShaderTextureBump.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[4] - dsgeo
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragment.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[5] - dsgeotexture
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertexTex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragmentTex.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[6] - dslightdir
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentDir.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[7] - dslightpoint
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentPoint.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-	//program[8] - dslightspot
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsLightingVertex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsLightingFragmentSpot.txt")));
-
-	programs.push_back(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-
-
-	perspectiveMatrix = glm::perspective(45.0f, (wWidth / (float)wHeight), zNear, zFar);
-
-	glUseProgram(programs[0]);
-	GLuint frustumUnif = glGetUniformLocation(programs[0], "perspectiveMatrix");
-	glUniformMatrix4fv(frustumUnif, 1, GL_FALSE, glm::value_ptr(perspectiveMatrix));
-	glUseProgram(0);
+	OpenglPrograms::init();
 }
 
 void OpenglRenderer::initializeDS()
@@ -721,33 +530,4 @@ int OpenglRenderer::isRunning()
 	if (!glfwWindowShouldClose(window))
 		return 1;
 	return 0;
-}
-
-void OpenglRenderer::initProgramdsPNTxDS()
-{
-	std::vector<GLuint> shaderList;
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertexTex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragmentTex.txt")));
-	
-	OpenglPrograms::setPNTxDS(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
-}
-
-
-void OpenglRenderer::initProgramdsPN()
-{
-	std::vector<GLuint> shaderList;
-	shaderList.push_back(createShader(GL_VERTEX_SHADER, txtToString("dsGeometryVertex.txt")));
-	shaderList.push_back(createShader(GL_FRAGMENT_SHADER, txtToString("dsGeometryFragment.txt")));
-
-	OpenglPrograms::setPN(createProgram(shaderList));
-
-	for (GLuint& i : shaderList)
-		glDeleteShader;
-
-	shaderList.clear();
 }
