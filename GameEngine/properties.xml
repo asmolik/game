@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Properties>
+	<Type></Type>
+	<Name>Sodium</Name>
+	<Color>
+		<R>1.0</R>
+		<G>0.82</G>
+		<B>0.7</B>
+	</Color>
+	<Intensity>400</Intensity>
+	<Attenuation>0.05</Attenuation>
+</Properties>

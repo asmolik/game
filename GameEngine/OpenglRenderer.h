@@ -13,6 +13,7 @@
 #include "OpenglPrograms.h"
 #include "GBuffer.h"
 #include "UniformBuffer.h"
+#include "World.h"
 #include "RigidBody.h"
 #include "Object.h"
 #include "Mesh.h"
@@ -78,6 +79,8 @@ public:
 	void setAmbientColor(glm::vec3& color);
 	void setSun(glm::vec3& direction, glm::vec3& color);
 
+	// Set the world to be displayed. Sets objects and lights of this world to renderer.
+	void setWorld(World& world);
 	// Set the vector of objects to be displayed.
 	void setObjects(std::vector<RigidBody*>* objects);
 	// Set the camera with which to display the scene.

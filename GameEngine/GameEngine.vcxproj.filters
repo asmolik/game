@@ -150,6 +150,12 @@
     <ClCompile Include="UniformBuffer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="pugixml.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenglRenderer.h">
@@ -263,6 +269,15 @@
     <ClInclude Include="UniformBuffer.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="pugixml.hpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="pugiconfig.hpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Source Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="VertexShaderTextureBump.txt">
@@ -349,6 +364,9 @@
       <Filter>Resource Files</Filter>
     </Xml>
     <Xml Include="Mesh.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+    <Xml Include="properties.xml">
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>

@@ -8,7 +8,7 @@
 
 class PhysicsEngine
 {
-private:
+protected:
 	float timeStep;
 	glm::vec3 gravity;
 

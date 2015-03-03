@@ -14,6 +14,6 @@ public:
 	~Xml();
 	int openFile(std::string fileName);
 	// Read the value of the element.
-	std::string valueOfElement(std::string& element);
+	std::string valueOfElement(const std::string& element);
 };
 

@@ -23,18 +23,23 @@ int Xml::openFile(std::string fileName)
 
 
 // Read the value of the element.
-std::string Xml::valueOfElement(std::string& elementName)
+// Very simple - reads the string after the element until '<' is found.
+std::string Xml::valueOfElement(const std::string& element)
 {
 	std::stringstream stream;
 	std::string line;
+	std::string tmp;
 	std::string value;
-	std::string element = "<" + elementName + ">";
 
-	// Look for <element>
-	while (getline(file, line))
+	// Look for <elementName>
+	while (true)
 	{
-		if (line.find(element) == std::string::npos)
+		getline(stream, tmp, '<');
+		getline(stream, tmp, '>');
+		if (tmp.find(element) == std::string::npos)
 			continue;
+		getline(stream, value, '<');
+		break;
 	}
 	return value;
 }

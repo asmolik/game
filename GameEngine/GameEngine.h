@@ -12,6 +12,7 @@ class Plane;
 #include "OpenglRenderer.h"
 #include "Input.h"
 #include "PhysicsEngine.h"
+#include "World.h"
 #include "RigidBody.h"
 #include "Plane.h"
 #include "Track.h"
@@ -41,16 +42,11 @@ private:
 	double sunsetTime;
 
 	float timeStep;
-	std::vector<RigidBody*> bodies;
-	std::vector<RigidBody*> balls;
-	std::vector<Car> cars;
-	std::vector<RigidBody*> planes;
-	Track track;
+
+	World world;
 
 	DirectionalLight sun;
 	float ambientIntensity;
-	std::vector<PointLight> pointLights;
-	std::vector<SpotLight> spotLights;
 	
 	glm::vec3 gravity;
 
@@ -66,6 +62,9 @@ public:
 
 	void init();
 
+	// Read world data from file.
+	void loadWorld(const std::string& fileName);
+
 	void addBody(RigidBody& body);
 	void addCar(Car& car);
 	void addBall(Ball& ball);
@@ -74,9 +73,6 @@ public:
 	void addPointLight(PointLight& pointLight);
 	void addSpotLight(SpotLight& spotLight);
 
-	glm::vec3 getCameraRightVector();
-	glm::vec3 getCameraUpVector();
-	glm::vec3 getCameraFrontVector();
 	void setCameraVelocity(glm::vec3& v);
 	void moveCamera(glm::vec3& v);
 	void rotateCamera(glm::vec3& axis, float angleDeg);

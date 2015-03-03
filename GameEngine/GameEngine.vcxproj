@@ -154,6 +154,7 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="PositionConstraint.cpp" />
+    <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="RotationConstraint.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="Wheel.cpp" />
+    <ClCompile Include="World.cpp" />
     <ClCompile Include="Xml.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +198,8 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="PositionConstraint.h" />
+    <ClInclude Include="pugiconfig.hpp" />
+    <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="Quad.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="RotationConstraint.h" />
@@ -208,6 +212,7 @@
     <ClInclude Include="Track.h" />
     <ClInclude Include="UniformBuffer.h" />
     <ClInclude Include="Wheel.h" />
+    <ClInclude Include="World.h" />
     <ClInclude Include="Xml.h" />
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +245,7 @@
     <Xml Include="lightProperties.xml" />
     <Xml Include="material.xml" />
     <Xml Include="Mesh.xml" />
+    <Xml Include="properties.xml" />
     <Xml Include="WorldData.xml">
       <SubType>Designer</SubType>
     </Xml>

@@ -19,10 +19,8 @@ void GameEngine::init()
 	renderer.setCursorPosCallback(Input::glfwCursorPosCallback);
 	renderer.setKeyCallback(Input::glfwKeyCallback);
 	renderer.initializeDS();
-	renderer.setObjects(&bodies);
+	renderer.setWorld(world);
 	renderer.setCamera(&camera);
-	renderer.setPointLights(&pointLights);
-	renderer.setSpotLights(&spotLights);
 
 	input.init(renderer.getWindow());
 
@@ -31,50 +29,33 @@ void GameEngine::init()
 	camera.setPosition(glm::vec3(650.0f, 2.0f, 530.0f));
 }
 
+
+// Read world data from file.
+void GameEngine::loadWorld(const std::string& fileName)
+{
+	world.loadWorld(fileName);
+}
+
+
 void GameEngine::addBody(RigidBody& body)
 {
-	bodies.push_back(&body);
+	world.addObject(body);
 }
 
 void GameEngine::addCar(Car& car)
 {
 	controlledCar = &car;
-	cars.push_back(car);
-	bodies.push_back(&car);
-}
-/*
-void GameEngine::addBall(Ball& ball)
-{
-	balls.push_back(&ball);
-}*/
-
-void GameEngine::addPlane(Plane& plane)
-{
-	planes.push_back(&plane);
-	bodies.push_back(&plane);
+	world.addObject(car);
 }
 
 void GameEngine::addPointLight(PointLight& l)
 {
-	pointLights.push_back(l);
+	world.addPointLight(l);
 }
 
 void GameEngine::addSpotLight(SpotLight& l)
 {
-	spotLights.push_back(l);
-}
-
-glm::vec3 GameEngine::getCameraRightVector()
-{
-	return camera.getRightVector();
-}
-glm::vec3 GameEngine::getCameraUpVector()
-{
-	return camera.getUpVector();
-}
-glm::vec3 GameEngine::getCameraFrontVector()
-{
-	return camera.getFrontVector();
+	world.addSpotLight(l);
 }
 
 void GameEngine::setCameraVelocity(glm::vec3& v)
@@ -164,7 +145,7 @@ void GameEngine::run()
 
 		//physics
 		double lol = std::clock() / (double)(CLOCKS_PER_SEC / 1000);
-		physics.update(bodies);
+		physics.update(world.objects);
 		camera.move(timeStep);
 
 		//graphics

@@ -57,12 +57,12 @@ int main()
 	w.rotate(glm::vec3(1.0f, 0.0f, 0.0f), -90.0f);
 	w.setStaticFriction(0.5f);
 	w.setDynamicFriction(0.5f);
-	game.addPlane(map);
+	game.addBody(map);
 	game.addBody(track);
 	game.addCar(car);
 	game.addBody(box);
 	game.addBody(w);
-	game.addPointLight(l);
+	//game.addPointLight(l);
 	game.addPointLight(l2);
 	game.addPointLight(l3);
 	game.addPointLight(l4);
@@ -72,6 +72,7 @@ int main()
 	game.addSpotLight(sl);
 	game.addBody(mesh);
 	game.init();
+	game.loadWorld("WorldData.xml");
 	game.run();
 	return 0;
 }

@@ -163,6 +163,15 @@ void OpenglRenderer::setSun(glm::vec3& d, glm::vec3& c)
 }
 
 
+// Set the world to be displayed. Sets objects and lights of this world to renderer.
+void OpenglRenderer::setWorld(World& world)
+{
+	this->objects = &world.objects;
+	this->pointLights = &world.pointLights;
+	this->spotLights = &world.spotLights;
+}
+
+
 // Set the vector of objects to be displayed.
 void OpenglRenderer::setObjects(std::vector<RigidBody*>* objects)
 {
